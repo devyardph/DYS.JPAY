@@ -1,0 +1,74 @@
+﻿@using DYS.JPay.Shared.Shared.Dtos
+@if (Display == "grid")
+{
+
+     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4">
+        @foreach (var product in Products)
+        {
+            <button @onclick="@(() => OnAddToOrder(product))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 hover:border-primary/30 hover:shadow-md transition-all text-left flex flex-col items-center group">
+                <div class="w-24 h-24 rounded-full overflow-hidden mb-4 bg-surface-container-low">
+                    <img alt="@product.Name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" referrerpolicy="no-referrer"
+                         src="@product.ImageUrl">
+                </div>
+                <h3 class="font-bold text-on-surface text-center mb-1">@product.Name</h3>
+                <p class="text-primary font-headline font-bold">$@product.Price?.ToString("N2")</p>
+            </button>
+        }
+    </div>
+}
+else if(Display == "list")
+{
+     <div class="flex flex-col gap-3">
+        @foreach (var product in Products)
+        {
+            <button @onclick="@(() => OnAddToOrder(product))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10
+        hover:border-primary/30 hover:shadow-md transition-all text-left
+        flex items-center gap-4 group">
+
+                <!-- Product Image -->
+                <div class="w-16 h-16 rounded-xl overflow-hidden bg-surface-container-low shrink-0">
+                    <img alt="@product.Name"
+                         src="@product.ImageUrl"
+                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                    referrerpolicy="no-referrer" />
+                </div>
+
+                <!-- Product Info -->
+                <div class="flex-1">
+                    <h3 class="font-bold text-on-surface mb-1">Espresso</h3>
+                    <p class="text-xs text-on-surface-variant uppercase tracking-wider">@product.Type</p>
+                </div>
+
+                <!-- Price -->
+                <p class="text-primary font-headline font-bold text-lg">$@product.Price</p>
+
+                <!-- Add Button -->
+                <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center
+            group-hover:bg-primary group-hover:text-white transition-colors ml-2">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                    width="24" height="24" viewBox="0 0 24 24"
+                    fill="none" stroke="currentColor" stroke-width="2"
+                    stroke-linecap="round" stroke-linejoin="round"
+                    class="lucide lucide-plus w-5 h-5" aria-hidden="true">
+                        <path d="M5 12h14"></path>
+                        <path d="M12 5v14"></path>
+                    </svg>
+                </div>
+            </button>
+        }
+    </div>
+}
+
+@code {
+    [Parameter]
+    public string Display { get; set; } = "grid";
+    [Parameter]
+    public List<ProductDto> Products { get; set; } = new List<ProductDto>();
+    [Parameter]
+    public EventCallback<ProductDto> AddToOrder { get; set; }
+
+    public void OnAddToOrder(ProductDto product)
+    {
+        AddToOrder.InvokeAsync(product);
+    }
+}

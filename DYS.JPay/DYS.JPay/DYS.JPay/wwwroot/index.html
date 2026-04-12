@@ -1,0 +1,234 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>JPay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        headline: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#6d28d9',
+                        'primary-container': '#4c1d95',
+                        secondary: '#8b5cf6',
+                        background: '#f7f9ff',
+                        surface: '#f7f9ff',
+                        'surface-container-low': '#f1f4fa',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-highest': '#dfe3e8',
+                        'on-surface': '#181c20',
+                        'on-surface-variant': '#40484c',
+                        'outline-variant': '#c0c7cd',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.4s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html, body, #app {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+            color: #181c20;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .ledger-gradient {
+            background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+        }
+
+        .glass-nav {
+            backdrop-filter: blur(16px);
+            background-color: rgba(247, 249, 255, 0.8);
+        }
+
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+
+<body id="app" class="min-h-screen">
+
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+    <script>
+        function openPaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            const content = document.getElementById('payment-modal-content');
+            modal.classList.remove('hidden');
+            // small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closePaymentModal() {
+            const modal = document.getElementById('payment-modal');
+            const content = document.getElementById('payment-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function processPayment(method) {
+            closePaymentModal();
+            setTimeout(() => {
+                openReferenceModal();
+            }, 300);
+        }
+
+        function openReferenceModal() {
+            const modal = document.getElementById('reference-modal');
+            const content = document.getElementById('reference-modal-content');
+            modal.classList.remove('hidden');
+            // small delay to allow display:block to apply before opacity transition
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeReferenceModal() {
+            const modal = document.getElementById('reference-modal');
+            const content = document.getElementById('reference-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+                //openSuccessModal();
+            }, 300);
+        }
+
+        function openSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            const content = document.getElementById('success-modal-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeSuccessModal() {
+            const modal = document.getElementById('success-modal');
+            const content = document.getElementById('success-modal-content');
+            modal.classList.add('opacity-0');
+            content.classList.add('scale-95');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const texts = document.querySelectorAll('.sidebar-text');
+            const logo = document.getElementById('sidebar-logo');
+            const iconLogo = document.getElementById('sidebar-icon-logo');
+            const header = document.getElementById('sidebar-header');
+            const collapseIcon = document.getElementById('collapse-icon');
+            const navLinks = document.querySelectorAll('.nav-link');
+
+            const isCollapsed = sidebar.classList.contains('w-20');
+
+            if (isCollapsed) {
+                sidebar.classList.remove('w-20');
+                sidebar.classList.add('w-64');
+                mainContent.classList.remove('lg:ml-20');
+                mainContent.classList.add('lg:ml-64');
+
+                texts.forEach(t => t.classList.remove('hidden'));
+                logo.classList.remove('hidden');
+                iconLogo.classList.add('hidden');
+                iconLogo.classList.remove('flex');
+                header.classList.remove('justify-center');
+                header.classList.add('justify-between');
+
+                navLinks.forEach(link => {
+                    link.classList.remove('justify-center', 'px-0');
+                    link.classList.add('space-x-3', 'px-4');
+                });
+
+                collapseIcon.setAttribute('d', 'M15 19l-7-7 7-7');
+            } else {
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-20');
+                mainContent.classList.remove('lg:ml-64');
+                mainContent.classList.add('lg:ml-20');
+
+                texts.forEach(t => t.classList.add('hidden'));
+                logo.classList.add('hidden');
+                iconLogo.classList.remove('hidden');
+                iconLogo.classList.add('flex');
+                header.classList.remove('justify-between');
+                header.classList.add('justify-center');
+
+                navLinks.forEach(link => {
+                    link.classList.remove('space-x-3', 'px-4');
+                    link.classList.add('justify-center', 'px-0');
+                });
+
+                collapseIcon.setAttribute('d', 'M9 5l7 7-7 7');
+            }
+        }
+
+        function animateCart(id) {
+            const element = document.getElementById(id);
+            if (!element) return;
+
+            // Add highlight + subtle scale
+            element.classList.add(
+                'bg-primary/10',
+                'ring-2',
+                'ring-primary/40',
+                'scale-[1.02]',
+                'transition',
+                'duration-300',
+                'ease-in-out'
+            );
+
+            // Smooth scroll to element
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+
+            // Remove highlight after 2 seconds
+            setTimeout(() => {
+                element.classList.remove(
+                    'bg-primary/10',
+                    'ring-2',
+                    'ring-primary/40',
+                    'scale-[1.02]'
+                );
+            }, 2000);
+        }
+    </script>
+</body>
+</html>

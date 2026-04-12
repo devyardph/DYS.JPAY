@@ -1,0 +1,20 @@
+﻿@using DYS.JPay.Shared.Features.Accounts.Components
+@using Microsoft.AspNetCore.Components.Authorization
+@using DYS.JPay.Shared.Shared.Layout
+
+<CascadingAuthenticationState>
+    <Router AppAssembly="@typeof(App).Assembly">
+        <Found Context="routeData">
+            <AuthorizeRouteView RouteData="@routeData" DefaultLayout="@typeof(MainLayout)">
+                <NotAuthorized>
+                    <RedirectToLogin />
+                </NotAuthorized>
+            </AuthorizeRouteView>
+        </Found>
+        <NotFound>
+            <LayoutView Layout="@typeof(MainLayout)">
+                <p>Page not found.</p>
+            </LayoutView>
+        </NotFound>
+    </Router>
+</CascadingAuthenticationState>

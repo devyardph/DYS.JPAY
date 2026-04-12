@@ -1,0 +1,102 @@
+﻿@page "/settings"
+@using DYS.JPay.Shared.Features.Orders.ViewModels
+@using DYS.JPay.Shared.Shared.Components
+@using DYS.JPay.Shared.Shared.Extensions
+@using Microsoft.AspNetCore.Authorization
+@inject AppSettingsViewModel VM
+
+ 
+<PageComponent>
+    <PageContent>
+        <div id="main-content" class="flex-1 lg:ml-64 min-h-screen flex flex-col transition-all duration-300">
+            <main class="flex-1 pt-10 px-4 md:px-8 lg:px-12 pb-16 max-w-7xl mx-auto w-full opacity-0 animate-fade-in-up">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <div>
+                        <h2 class="text-4xl font-headline font-extrabold text-dark">General settings</h2>
+                        <p class="text-on-surface-variant">View and manage your store's transaction.</p>
+                    </div>
+                </div>
+
+                <div class="p-10 bg-surface-container-lowest rounded-3xl border border-outline-variant/10 shadow-sm overflow-hidden">
+                    <div class="space-y-6">
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Store Name</label>
+                            <input @bind-value="@VM.AppSetting.StoreName" type="text" placeholder="e.g. Store name" class="w-full bg-[#f1f4fa] border-none rounded-2xl px-6 py-4 text-lg font-headline font-bold focus:ring-2 focus:ring-[#003345] transition-all">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Store description</label>
+                            <input @bind-value="@VM.AppSetting.StoreDescription" type="text" placeholder="e.g. Store name" class="w-full bg-[#f1f4fa] border-none rounded-2xl px-6 py-4 text-lg font-headline font-bold focus:ring-2 focus:ring-[#003345] transition-all">
+                        </div>
+
+                        <div class="space-y-2">
+                            <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Product display settings</label>
+                            <div class="flex gap-2">
+                         
+                                <button @onclick="@(() => @VM.SetDisplay("grid"))" class="p-3 rounded-xl shadow-lg scale-110 @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "grid", "bg-[#003345] text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round"
+                                         class="lucide lucide-layout-grid w-5 h-5"
+                                         aria-hidden="true">
+                                        <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+                                        <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+                                        <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+                                        <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+                                    </svg>
+                                </button>
+                                <button @onclick="@(() => @VM.SetDisplay("list"))" class="p-3 rounded-xl @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "list", "bg-[#003345] text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
+                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                         width="24" height="24"
+                                         viewBox="0 0 24 24"
+                                         fill="none"
+                                         stroke="currentColor"
+                                         stroke-width="2"
+                                         stroke-linecap="round"
+                                         stroke-linejoin="round"
+                                         class="lucide lucide-list w-5 h-5"
+                                         aria-hidden="true">
+                                        <path d="M3 5h.01"></path>
+                                        <path d="M3 12h.01"></path>
+                                        <path d="M3 19h.01"></path>
+                                        <path d="M8 5h13"></path>
+                                        <path d="M8 12h13"></path>
+                                        <path d="M8 19h13"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="pt-4 flex justify-end">
+                        <button @onclick="@(() => VM.SaveAppSettings())" class="bg-primary text-white px-6 py-3 rounded-xl font-bold shadow-md hover:shadow-lg hover:bg-primary-container transition-all">
+                            Save Changes
+                        </button>
+                    </div>
+                </div>
+            </main>
+        </div>
+    
+    </PageContent>
+</PageComponent>
+
+
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        await VM.LoadAppSetting();
+        await base.OnInitializedAsync();
+        StateHasChanged();
+    }
+    public void SetDisplay(string display)
+    {
+        VM.AppSetting.Display = display;
+        StateHasChanged();
+    }
+}

@@ -1,0 +1,85 @@
+﻿
+@using System.Security.Claims
+<!-- Top Bar -->
+<header class="fixed top-0 right-0 left-0 lg:left-64 h-16 glass-nav flex justify-between items-center px-4 md:px-8 z-40 border-b border-[#dfe3e8]/30">
+    <div class="flex items-center flex-1 gap-4">
+        <button id="mobile-menu-button" class="lg:hidden p-2 text-[#40484c] hover:bg-[#dfe3e8] rounded-full transition-colors">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12" /><line x1="4" x2="20" y1="6" y2="6" /><line x1="4" x2="20" y1="18" y2="18" /></svg>
+        </button>
+        <form id="search-form" class="relative w-full max-w-md hidden sm:block">
+            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-[#40484c]"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+            <input type="text" id="search-input" placeholder="Search transactions, accounts..." class="w-full pl-10 pr-4 py-2 bg-[#dfe3e8]/50 border-none rounded-xl text-sm focus:ring-1 focus:ring-[#003345] transition-all">
+        </form>
+    </div>
+
+    @* <div class="flex items-center space-x-2 md:space-x-6">
+        <button class="text-[#40484c] hover:bg-[#dfe3e8] p-2 rounded-full transition-colors relative">
+            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
+            <span class="absolute top-2 right-2 w-2 h-2 bg-[#ba1a1a] rounded-full border-2 border-[#f7f9ff]"></span>
+        </button>
+        <div class="flex items-center space-x-3 pl-2 md:pl-4 border-l border-[#dfe3e8]/20">
+            <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFafOhbVAHqdgDoqjZ2wSpa-aywBp0f5BMToA9yAhERKttOnQIjCdeF-PuBC--o3ahZR8RwSFAbrWm0lv2oopc70NHRhEPu2tA2uZntvYWp5vFu_cZ_rbMRbbp4CkTcmDMmeV0bSavf3jPcc517Wt49ZOtMvc_dqnVu3NkkIinheKLT2lYBojsbrTcIbthUfMKCxZz4PP4msHG1kDFPXkZNzDmbLyi48D8S3z5Pu7y-rEPkjiPXpdbsfIk_Eh1JnnSYbdsmzKA6Sc" alt="User" class="w-8 h-8 rounded-full object-cover border border-[#dfe3e8]/30" referrerPolicy="no-referrer">
+            <div class="hidden lg:block">
+                <p class="text-xs font-bold text-[#003345]">Jeffrey Valeroso</p>
+                <p class="text-[10px] text-[#40484c] font-medium">Senior Software Developer</p>
+            </div>
+        </div>
+    </div> *@
+    <div class="flex items-center space-x-2 md:space-x-6">
+        <div class="relative">
+            <button id="notif-button" class="text-on-surface-variant hover:bg-surface-container-highest p-2 rounded-full transition-colors relative">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9" /><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0" /></svg>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-error rounded-full border-2 border-background"></span>
+            </button>
+                
+            <!-- Notification Dropdown -->
+            <div id="notif-dropdown" class="absolute right-0 mt-2 w-80 bg-white rounded-3xl shadow-2xl border border-outline-variant/10 overflow-hidden z-50 hidden origin-top-right transition-all duration-200 scale-95 opacity-0">
+                <div class="p-6 border-b border-outline-variant/10 flex justify-between items-center">
+                    <h3 class="font-headline font-bold text-primary">Notifications</h3>
+                    <span class="bg-error/10 text-error text-[10px] font-bold px-2 py-0.5 rounded-full">3 New</span>
+                </div>
+                <div class="max-h-[400px] overflow-y-auto">
+                    <div class="p-4 hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/5">
+                        <div class="flex gap-3">
+                            <div class="w-8 h-8 rounded-full bg-secondary/10 flex items-center justify-center text-secondary shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22c5.523 0 10-4.477 10-10S17.523 2 12 2 2 6.477 2 12s4.477 10 10 10z" /><path d="m9 12 2 2 4-4" /></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-on-surface">Invoice Paid</p>
+                                <p class="text-[10px] text-on-surface-variant mt-0.5">Blue Ribbon Project payout of $8,400 settled.</p>
+                                <p class="text-[9px] text-on-surface-variant/60 mt-1 uppercase font-bold">2 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="p-4 hover:bg-surface-container-low transition-colors cursor-pointer border-b border-outline-variant/5">
+                        <div class="flex gap-3">
+                            <div class="w-8 h-8 rounded-full bg-warning/10 flex items-center justify-center text-warning shrink-0">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10" /><line x1="12" y1="8" x2="12" y2="12" /><line x1="12" y1="16" x2="12.01" y2="16" /></svg>
+                            </div>
+                            <div>
+                                <p class="text-xs font-bold text-on-surface">Budget Alert</p>
+                                <p class="text-[10px] text-on-surface-variant mt-0.5">Chelsea Expansion budget is at 75% capacity.</p>
+                                <p class="text-[9px] text-on-surface-variant/60 mt-1 uppercase font-bold">5 hours ago</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <a href="#" class="block p-4 text-center text-[10px] font-bold text-primary hover:bg-surface-container-low transition-colors uppercase tracking-widest">View All Notifications</a>
+            </div>
+        </div>
+        <div class="flex items-center space-x-3 pl-2 md:pl-4 border-l border-outline-variant/20">
+            <AuthorizeView>
+                <Authorized>
+                    <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+                        JC
+                    </div>
+                    <div class="hidden lg:block">
+                        <p class="text-xs font-bold text-primary"> JC</p>
+                        <p class="text-[10px] text-on-surface-variant font-medium">email.com</p>
+                    </div>
+                </Authorized>
+               </AuthorizeView>
+           
+        </div>
+    </div>
+</header>

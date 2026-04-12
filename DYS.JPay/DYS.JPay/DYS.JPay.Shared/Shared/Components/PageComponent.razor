@@ -1,0 +1,27 @@
+﻿@using DYS.JPay.Shared.Features.Accounts.Components
+@using Microsoft.AspNetCore.Components.Authorization
+@using System.Security.Claims
+
+
+<AuthorizeView Roles="@Roles">
+        <NotAuthorized>
+            @if (context.User.Identity?.IsAuthenticated ?? false)
+            {
+                <p>You are authenticated but do not have access to this page.</p>
+            }
+            else
+            {
+                <RedirectToLogin />
+            }
+        </NotAuthorized>
+        <Authorized>
+            @PageContent
+        </Authorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public string Roles { get; set; } = "Admin";
+    [Parameter]
+    public RenderFragment? PageContent { get; set; } 
+}

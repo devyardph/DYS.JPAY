@@ -1,0 +1,84 @@
+﻿@using DYS.JPay.Shared.Shared.Services
+@using DYS.JPay.Shared.Shared.ViewModels
+@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+@inject MenuViewModel MenuVM
+
+<!-- Sidebar -->
+<aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-primary-container border-r border-primary/20 flex flex-col py-6 z-[70] transition-all duration-300 ease-in-out hidden lg:flex">
+    <div id="sidebar-header" class="mb-8 flex justify-between items-center px-6">
+        <div id="sidebar-logo" class="overflow-hidden whitespace-nowrap">
+            <h1 class="text-xl font-black text-white tracking-tight font-headline">Point of Sale</h1>
+            <p class="text-[10px] text-white/70 font-bold uppercase tracking-widest">Store Management</p>
+        </div>
+        <div id="sidebar-icon-logo" class="hidden w-10 h-10 bg-white/10 rounded-xl items-center justify-center text-white font-bold">
+            POS
+        </div>
+    </div>
+
+    <nav class="flex-1 space-y-2 px-4">
+        <a href="/" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold bg-white text-primary shadow-sm group" title="Point of Sale">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <span class="sidebar-text whitespace-nowrap">Point of Sale</span>
+        </a>
+        <a href="/dashboard" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Dashboard">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+        </a>
+        <a href="/report" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Reports">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+            <span class="sidebar-text whitespace-nowrap">Reports</span>
+        </a>
+        <a href="/products" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Accounts">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+            <span class="sidebar-text whitespace-nowrap">Products</span>
+        </a>
+        <a href="/transactions" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Transactions">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+            <span class="sidebar-text whitespace-nowrap">Transactions</span>
+        </a>
+        <a href="users.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Users">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+            <span class="sidebar-text whitespace-nowrap">Users</span>
+        </a>
+        <a href="/settings" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Settings">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+            <span class="sidebar-text whitespace-nowrap">Settings</span>
+        </a>
+    </nav>
+
+    <div class="mt-auto space-y-2 border-t border-white/10 pt-4 px-4">
+        <button class="nav-link w-full flex items-center space-x-3 px-4 py-2 transition-colors font-headline text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 rounded-xl" title="Help">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+            <span class="sidebar-text whitespace-nowrap">Help</span>
+        </button>
+        <a href="javascript:void(0)" @onclick="@MenuVM.Signout" class="nav-link w-full flex items-center space-x-3 px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors font-headline text-sm font-medium" title="Logout">
+            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+            <span class="sidebar-text whitespace-nowrap">Logout</span>
+        </a>
+    </div>
+
+    <!-- Collapse Toggle (Desktop Only) -->
+    <button onclick="toggleSidebar()" class="hidden lg:flex absolute -right-3 top-8 w-6 h-6 bg-surface-container-lowest border border-outline-variant/20 rounded-full items-center justify-center text-on-surface-variant hover:text-primary shadow-sm z-50 transition-transform">
+        <svg id="collapse-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+    </button>
+</aside>
+
+
+
+@code {
+    public async Task NavigationToPath(string id, string path)
+    {
+        NavigationManager.NavigateTo(path, forceLoad: false);
+        await JS.InvokeVoidAsync("toggleSidebar");
+    }
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender) await JS.InvokeVoidAsync("toggleSidebar");
+        await base.OnAfterRenderAsync(firstRender);
+    }
+}
+
+
+

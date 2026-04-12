@@ -1,0 +1,139 @@
+﻿@page "/products"
+@using DYS.JPay.Shared.Features.Products.ViewModels
+@using DYS.JPay.Shared.Shared.Components
+@using DYS.JPay.Shared.Shared.Extensions
+@using Microsoft.AspNetCore.Authorization
+@inject ProductsViewModel VM
+
+ 
+<PageComponent>
+    <PageContent>
+        <div id="main-content" class="flex-1 lg:ml-64 min-h-screen flex flex-col transition-all duration-300">
+            <main class="flex-1 pt-10 px-4 md:px-8 lg:px-12 pb-16 max-w-7xl mx-auto w-full opacity-0 animate-fade-in-up">
+                <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+                    <div>
+                        <h2 class="text-3xl font-headline font-bold text-primary">Product management</h2>
+                        <p class="text-on-surface-variant">View and manage your store's transaction history.</p>
+                    </div>
+                    <button class="ledger-gradient text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+                        New Transaction
+                    </button>
+                </div>
+
+                <div class="bg-surface-container-lowest rounded-3xl border border-outline-variant/10 shadow-sm overflow-hidden">
+                    <div class="p-6 border-b border-outline-variant/10 flex flex-col sm:flex-row gap-4 justify-between items-center bg-surface-container-low/30">
+                        <div class="flex gap-2 w-full sm:w-auto overflow-x-auto no-scrollbar">
+                            <button class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-primary text-white shadow-md">All</button>
+                            <button class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Completed</button>
+                            <button class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Refunded</button>
+                        </div>
+                        <div class="relative w-full sm:w-64">
+                            <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+                            <input type="text" placeholder="Search transactions..." class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant/20 rounded-xl text-sm focus:ring-1 focus:ring-primary transition-all" />
+                        </div>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse min-w-[600px] table-hover">
+                            <thead>
+                                <tr class="bg-[#f1f4fa]">
+                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Product name</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Type</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Price</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c] text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-gray-100">
+                                @if (VM?.isBusy == true)
+                                {
+                                    @for (int i = 0; i < 50; i++)
+                                    {
+                                        <tr class="hover:bg-surface-container-low/50 transition-colors group">
+                                            <td class="px-3 py-2">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="size-10 rounded-full bg-gray-200"></div>
+                                                    <div class="flex-1 space-y-2 py-1">
+                                                        <div class="space-y-3">
+                                                            <div class="grid grid-cols-3 gap-4">
+                                                                <div class="col-span-2 h-2 rounded bg-gray-200"></div>
+                                                            </div>
+                                                            <div class="h-2 rounded bg-gray-200"></div>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-3 py-2">
+                                                <div class="h-2 rounded bg-gray-200"></div>
+                                            </td>
+                                            <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
+                                                <div class="h-2 rounded bg-gray-200"></div>
+                                            </td>
+                                            <td class="px-3 py-2 text-right font-bold text-[#016a60]">
+                                                <div class="h-2 rounded bg-gray-200"></div>
+                                            </td>
+                                            <td class="px-6 py-2 text-right gap-5">
+                                                <div class="col-span-2 h-2 rounded bg-gray-200"></div>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                                else
+                                {
+                                    @foreach (var product in VM?.Products?.Results!)
+                                    {
+                                        <tr class="hover:bg-surface-container-low/50 transition-colors group">
+                                            <td class="px-3 py-2">
+                                                <div class="flex items-center gap-3">
+                                                    <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
+                                                        @product.Name.FirstLetter()
+                                                    </div>
+                                                    <div>
+                                                        <p class="text-sm font-bold text-gray-900">@product.Name</p>
+                                                        <p class="text-xs text-gray-500">@product.Name</p>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                            <td class="px-3 py-2"><span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#9ff2e4] text-[#117166]">@product.Type</span></td>
+                                            <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
+                                                @product.Price?.ToString("C2")
+                                            </td>
+          
+                                            <td class="px-6 py-2 text-right">
+                                                <button @onclick="@(() => VM.NavigationToLink("/product-info", forceLoad: false))" class="p-2 hover:bg-primary/10 text-primary rounded-xl transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button>
+                                            </td>
+                                        </tr>
+                                    }
+                                }
+                            </tbody>
+                        </table>
+
+                    </div>
+          
+                    <div class="p-7 bg-surface-container-low/10 border-t border-outline-variant/20 flex justify-between items-center">
+                        <p class="text-xs text-on-surface-variant font-medium">@VM!.Search.Summary</p>
+                        <div class="flex gap-2">
+                            <button disabled="@(VM!.Search.PreviousEnabled == false)" @onclick="@((async) => VM!.SearchProductsWithPagingAsync("previous"))" class="p-2 bg-white border border-outline-variant rounded-lg text-on-surface-variant @BooleanExtensions.GetConditionalString(VM.Search.PreviousEnabled, "", "disabled:opacity-50")">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rotate-180"><path d="m9 18 6-6-6-6" /></svg>
+                            </button>
+                            <button disabled="@(VM!.Search.NextEnabled == false)" @onclick="@((async) => VM!.SearchProductsWithPagingAsync("next"))" class="p-2 bg-white border border-outline-variant rounded-lg text-on-surface-variant @BooleanExtensions.GetConditionalString(VM.Search.NextEnabled, "", "disabled:opacity-50")">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </main>
+        </div>
+    
+    </PageContent>
+</PageComponent>
+
+
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        await VM.SearchProductsWithPagingAsync(action: "", refresh: true);
+        await base.OnInitializedAsync();
+    }
+}
