@@ -1,4 +1,4 @@
-﻿@page "/transactions"
+﻿@page "/users"
 @using DYS.JPay.Shared.Features.Orders.ViewModels
 @using DYS.JPay.Shared.Shared.Components
 @using DYS.JPay.Shared.Shared.Extensions
@@ -12,12 +12,12 @@
             <main class="flex-1 pt-10 px-4 md:px-8 lg:px-12 pb-16 max-w-7xl mx-auto w-full opacity-0 animate-fade-in-up">
                 <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
                     <div>
-                        <h2 id="feature-text" class="text-3xl font-headline font-bold text-primary">Transactions</h2>
+                        <h2 class="text-3xl font-headline font-bold text-primary">Transactions</h2>
                         <p class="text-on-surface-variant">View and manage your store's transaction history.</p>
                     </div>
-                    <button @onclick="@(() => VM.Trigger("checking"))" class="ledger-gradient text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
+                    <button class="ledger-gradient text-white px-6 py-3 rounded-xl font-bold shadow-lg hover:opacity-90 transition-all flex items-center gap-2">
                         <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
-                        Check me
+                        New Transaction
                     </button>
                 </div>
 

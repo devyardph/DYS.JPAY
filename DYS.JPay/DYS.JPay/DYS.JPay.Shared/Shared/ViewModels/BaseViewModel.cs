@@ -50,5 +50,10 @@ namespace DYS.JPay.Shared.Shared.ViewModels
         {
             _navigationManager.NavigateTo(path, forceLoad: forceLoad);
         }
+
+        public async Task Trigger(string id)
+        {
+            await _jsRuntime.InvokeVoidAsync(id);
+        }
     }
 }

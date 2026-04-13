@@ -36,24 +36,24 @@ namespace DYS.JPay.Shared.Shared.ViewModels
         private string activeMenu = "";
         #endregion
 
-        //public override Task OnInitializedAsync()
-        //{
-        //     _menu = new List<MenuDto>() {
-        //     new MenuDto(){ Id="home", Title="Home", Icon="bx-home-smile", Path= "/", Active= false },
-        //     new MenuDto(){ Id="accounts", Title="Accounts", Icon="bx-credit-card", Path= "/accounts", Active= false },
-        //     new MenuDto(){ Id="report", Title="Report", Icon="bx-file", Path= "/report", Active= false },
-        //    };
-
-        //    //_activeMenu = _navigationManager.Uri.Replace(_navigationManager.BaseUri, "").Split('/').FirstOrDefault() ?? "";
-        //    return base.oni();
-        //}
-
+        public void GenerateMenu()
+        {
+            Menu = new List<MenuDto>() {
+             new MenuDto(){ Id="sale", Title="Point of Sale", Icon="bx-home-smile", Path= "/", Active= true },
+             new MenuDto(){ Id="dashboard", Title="Dashboard", Icon="bx-credit-card", Path= "/dashboard", Active= false },
+             new MenuDto(){ Id="products", Title="Products", Icon="bx-file", Path= "/products", Active= false },
+             new MenuDto(){ Id="transactions", Title="Transactions", Icon="bx-file", Path= "/transactions", Active= false },
+             new MenuDto(){ Id="reports", Title="Reports", Icon="bx-file", Path= "/reports", Active= false },
+             new MenuDto(){ Id="users", Title="Users", Icon="bx-file", Path= "/transactions", Active= false },
+             new MenuDto(){ Id="settings", Title="Settings", Icon="bx-file", Path= "/settings", Active= false },
+            };
+        }
 
         public async Task NavigationToPath(string id, string path)
         {
             base.NavigationToPath(path, forceLoad: false);
             ActiveMenu = id;
-            await _jsRuntime.InvokeVoidAsync("toggleSidebar");
+            await _jsRuntime.InvokeVoidAsync("toggleMainbar");
         }
 
         public void GoogleSign()
