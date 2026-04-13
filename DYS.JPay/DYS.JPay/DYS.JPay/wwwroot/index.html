@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
@@ -35,20 +35,40 @@
                             '0%': { opacity: '0', transform: 'translateY(20px)' },
                             '100%': { opacity: '1', transform: 'translateY(0)' },
                         }
+                    },
+                     padding: {
+                        'safe-top': 'env(safe-area-inset-top)',
+                        /*'safe-bottom': 'env(safe-area-inset-bottom)',*/
+                        'safe-left': 'env(safe-area-inset-left)',
+                        'safe-right': 'env(safe-area-inset-right)',
                     }
+
                 }
             }
         }
     </script>
     <style>
-        html, body, #app {
+        html, body {
             font-family: 'Inter', sans-serif;
             background-color: #f7f9ff;
             color: #181c20;
             height: 100%;
             margin: 0;
             padding: 0;
+            overscroll-behavior: none;
+            -webkit-overflow-scrolling: touch;
+            overscroll-behavior: none;
+            /*  padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);*/
         }
+
+  /*      #app {
+            -webkit-overflow-scrolling: touch;
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+        }*/
 
         h1, h2, h3, h4, h5, h6 {
             font-family: 'Manrope', sans-serif;
@@ -74,7 +94,7 @@
     </style>
 </head>
 
-<body id="app" class="min-h-screen">
+<body id="app" class="h-full pt-safe-top pb-safe-bottom">
 
     <script src="_framework/blazor.webview.js" autostart="false"></script>
     <script>
