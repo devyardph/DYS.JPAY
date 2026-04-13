@@ -110,7 +110,9 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             }
             await _orderService.AddOrderItemsAsync(items);
             await _jsRuntime.InvokeVoidAsync("closeModal", "charge-modal");
-            await _jsRuntime.InvokeVoidAsync("openModal", "result-modal");
+            await _jsRuntime.InvokeVoidAsync("showProgessBar");
+            Order = new OrderDto();
+            OrderItems = new List<OrderItemDto>();
         }
         public void SetDisplay(string display) => AppSetting.Display = display;
 

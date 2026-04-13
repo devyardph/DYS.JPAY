@@ -40,6 +40,7 @@
                                 <tr class="bg-[#f1f4fa]">
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Customer name</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Reference number</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Transaction date</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Item count</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Price</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c] text-right">Action</th>
@@ -96,6 +97,9 @@
                                                 </div>
                                             </td>
                                             <td class="px-3 py-2"><span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[#9ff2e4] text-[#117166]">@order.ReferenceNo</span></td>
+                                            <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
+                                                @order.Date.FormatDate("dd MMM yyyy hh:mmss")
+                                            </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
                                                 @order.Count
                                             </td>

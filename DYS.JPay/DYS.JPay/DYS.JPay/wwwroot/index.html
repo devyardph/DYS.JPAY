@@ -204,6 +204,31 @@
                 );
             }, 2000);
         }
+        function showProgessBar() {
+            const modal = document.getElementById("result-modal");
+            const progressBar = document.getElementById("progress-bar");
+
+            // Show modal
+            modal.classList.remove("hidden", "opacity-0");
+            modal.classList.add("opacity-100");
+
+            // Reset bar instantly to full width
+            progressBar.style.transition = "none";
+            progressBar.style.width = "100%";
+
+            // Force reflow so browser registers the reset
+            void progressBar.offsetWidth;
+
+            // Animate shrinking to 0% over 10s
+            progressBar.style.transition = "width 10s linear";
+            progressBar.style.width = "0%";
+
+            // Close modal after 10s
+            setTimeout(() => {
+                modal.classList.add("opacity-0");
+                setTimeout(() => modal.classList.add("hidden"), 300);
+            }, 2000);
+        }
     </script>
 </body>
 </html>
