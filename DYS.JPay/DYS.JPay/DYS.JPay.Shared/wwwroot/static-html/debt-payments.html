@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architect Ledger - Payment History</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        headline: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#003345',
+                        'primary-container': '#004b63',
+                        secondary: '#016a60',
+                        'secondary-container': '#9ff2e4',
+                        tertiary: '#003816',
+                        'tertiary-fixed-dim': '#7fda91',
+                        error: '#ba1a1a',
+                        'error-container': '#ffdad6',
+                        background: '#f7f9ff',
+                        surface: '#f7f9ff',
+                        'surface-container-low': '#f1f4fa',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-highest': '#dfe3e8',
+                        'on-surface': '#181c20',
+                        'on-surface-variant': '#40484c',
+                        'outline-variant': '#c0c7cd',
+                        'on-primary': '#ffffff',
+                        'on-primary-container': '#83bad6',
+                        'on-secondary-container': '#117166',
+                        'on-tertiary-fixed-variant': '#005323',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f7f9ff; color: #181c20; font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
+        .ledger-gradient { background: linear-gradient(135deg, #003345 0%, #004b63 100%); }
+        .glass-nav { background: rgba(247, 249, 255, 0.8); backdrop-filter: blur(12px); }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Sidebar Overlay -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-[50] hidden lg:hidden"></div>
+
+    <!-- Sidebar -->
+    <aside id="sidebar" class="fixed top-0 left-0 h-full w-64 bg-[#f1f4fa] border-r border-[#dfe3e8]/30 z-[60] -translate-x-full lg:translate-x-0 transition-transform duration-300 flex flex-col p-6">
+        <div class="flex justify-between items-center mb-12 lg:block">
+            <div>
+                <h1 class="text-xl font-black text-primary tracking-tight">Finance Tracker</h1>
+                <p class="text-[10px] text-on-surface-variant font-bold uppercase tracking-widest opacity-70">Architect Ledger</p>
+            </div>
+            <button id="close-sidebar" class="lg:hidden p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <nav class="flex-1 space-y-1">
+            <a href="dashboard.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-white/50 transition-all font-bold text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="accounts.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-white/50 transition-all font-bold text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+                <span>Accounts</span>
+            </a>
+            <a href="transactions.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-white/50 transition-all font-bold text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5V18.5"/><path d="M12 5.5v1"/></svg>
+                <span>Transactions</span>
+            </a>
+            <a href="budget.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-on-surface-variant hover:text-primary hover:bg-white/50 transition-all font-bold text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2h0V5z"/><path d="M7 11h.01"/><path d="M11 11h.01"/><path d="M15 11h.01"/></svg>
+                <span>Budget</span>
+            </a>
+            <a href="debt-tracker.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl ledger-gradient text-white shadow-lg shadow-primary/20 font-bold text-sm">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>
+                <span>Debt Tracker</span>
+            </a>
+        </nav>
+
+        <div class="mt-auto pt-6 border-t border-outline-variant/10 space-y-2">
+            <a href="help.html" class="w-full flex items-center space-x-3 px-4 py-2 text-on-surface-variant hover:text-primary transition-colors font-bold text-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                <span>Help Center</span>
+            </a>
+            <a href="login.html" class="w-full flex items-center space-x-3 px-4 py-2 text-error hover:bg-error/5 rounded-xl transition-all font-bold text-xs">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 min-h-screen p-4 md:p-8 pt-20 lg:pt-8">
+        <!-- Header -->
+        <div class="flex flex-col md:flex-row md:items-center justify-between gap-6 mb-12">
+            <div class="flex items-center gap-4">
+                <a href="debt-tracker.html" class="p-2 hover:bg-surface-container-low rounded-full transition-colors">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rotate-180"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                </a>
+                <div>
+                    <h2 class="text-4xl font-headline font-extrabold text-primary tracking-tight">Payment History</h2>
+                    <p class="text-on-surface-variant mt-1">Studio Mortgage &bull; Chase Bank</p>
+                </div>
+            </div>
+            <a href="create-payment.html" class="flex items-center justify-center space-x-2 bg-primary text-white px-6 py-3 rounded-2xl font-bold shadow-lg shadow-primary/20 hover:shadow-xl hover:-translate-y-0.5 transition-all active:scale-95">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                <span>Record Payment</span>
+            </a>
+        </div>
+
+        <!-- Debt Summary Mini Card -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+            <div class="bg-white p-6 rounded-3xl border border-outline-variant/10 shadow-sm flex items-center space-x-4">
+                <div class="p-3 bg-blue-50 text-blue-600 rounded-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Remaining Balance</p>
+                    <p class="text-2xl font-headline font-black text-primary">$383,750.00</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-outline-variant/10 shadow-sm flex items-center space-x-4">
+                <div class="p-3 bg-emerald-50 text-emerald-600 rounded-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 7 13.5 15.5 8.5 10.5 2 17"/><polyline points="16 7 22 7 22 13"/></svg>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Total Paid</p>
+                    <p class="text-2xl font-headline font-black text-primary">$66,250.00</p>
+                </div>
+            </div>
+            <div class="bg-white p-6 rounded-3xl border border-outline-variant/10 shadow-sm flex items-center space-x-4">
+                <div class="p-3 bg-amber-50 text-amber-600 rounded-2xl">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+                </div>
+                <div>
+                    <p class="text-[10px] font-bold text-on-surface-variant uppercase tracking-widest">Next Payment</p>
+                    <p class="text-2xl font-headline font-black text-primary">Apr 01</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payments Table -->
+        <div class="bg-white rounded-[2.5rem] border border-outline-variant/10 shadow-sm overflow-hidden">
+            <div class="overflow-x-auto">
+                <table class="w-full text-left border-collapse">
+                    <thead>
+                        <tr class="bg-surface-container-low">
+                            <th class="px-8 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-widest">Date</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-widest">Amount</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-widest">Source Account</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-widest">Status</th>
+                            <th class="px-8 py-5 text-[10px] font-black text-on-surface-variant uppercase tracking-widest text-right">Action</th>
+                        </tr>
+                    </thead>
+                    <tbody class="divide-y divide-outline-variant/10">
+                        <!-- Payment 1 -->
+                        <tr class="hover:bg-surface-container-lowest transition-colors group">
+                            <td class="px-8 py-6">
+                                <p class="font-bold text-primary">Mar 20, 2026</p>
+                                <p class="text-[10px] text-on-surface-variant font-medium">10:45 AM</p>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="text-lg font-headline font-black text-primary">$1,250.00</span>
+                            </td>
+                            <td class="px-8 py-6">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <span class="text-sm font-bold text-on-surface-variant">Main Checking</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded-full uppercase tracking-tighter">Completed</span>
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Payment 2 -->
+                        <tr class="hover:bg-surface-container-lowest transition-colors group">
+                            <td class="px-8 py-6">
+                                <p class="font-bold text-primary">Feb 20, 2026</p>
+                                <p class="text-[10px] text-on-surface-variant font-medium">09:15 AM</p>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="text-lg font-headline font-black text-primary">$1,250.00</span>
+                            </td>
+                            <td class="px-8 py-6">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <span class="text-sm font-bold text-on-surface-variant">Main Checking</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded-full uppercase tracking-tighter">Completed</span>
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Payment 3 -->
+                        <tr class="hover:bg-surface-container-lowest transition-colors group">
+                            <td class="px-8 py-6">
+                                <p class="font-bold text-primary">Jan 20, 2026</p>
+                                <p class="text-[10px] text-on-surface-variant font-medium">11:30 AM</p>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="text-lg font-headline font-black text-primary">$1,250.00</span>
+                            </td>
+                            <td class="px-8 py-6">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <span class="text-sm font-bold text-on-surface-variant">Main Checking</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded-full uppercase tracking-tighter">Completed</span>
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                </button>
+                            </td>
+                        </tr>
+                        <!-- Payment 4 -->
+                        <tr class="hover:bg-surface-container-lowest transition-colors group">
+                            <td class="px-8 py-6">
+                                <p class="font-bold text-primary">Dec 20, 2025</p>
+                                <p class="text-[10px] text-on-surface-variant font-medium">08:45 AM</p>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="text-lg font-headline font-black text-primary">$1,250.00</span>
+                            </td>
+                            <td class="px-8 py-6">
+                                <div class="flex items-center space-x-2">
+                                    <div class="w-2 h-2 rounded-full bg-blue-500"></div>
+                                    <span class="text-sm font-bold text-on-surface-variant">Main Checking</span>
+                                </div>
+                            </td>
+                            <td class="px-8 py-6">
+                                <span class="px-3 py-1 bg-emerald-100 text-emerald-700 text-[10px] font-black rounded-full uppercase tracking-tighter">Completed</span>
+                            </td>
+                            <td class="px-8 py-6 text-right">
+                                <button class="p-2 text-on-surface-variant hover:text-primary hover:bg-surface-container-low rounded-xl transition-all">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="1"/><circle cx="12" cy="5" r="1"/><circle cx="12" cy="19" r="1"/></svg>
+                                </button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+            <div class="px-8 py-6 bg-surface-container-low flex items-center justify-between">
+                <p class="text-xs text-on-surface-variant font-bold uppercase tracking-widest">Showing 4 of 48 payments</p>
+                <div class="flex gap-2">
+                    <button class="px-4 py-2 bg-white border border-outline-variant/10 rounded-xl text-xs font-bold text-on-surface-variant hover:bg-surface-container-low transition-all disabled:opacity-50" disabled>Previous</button>
+                    <button class="px-4 py-2 bg-white border border-outline-variant/10 rounded-xl text-xs font-bold text-primary hover:bg-surface-container-low transition-all">Next</button>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Mobile Menu Logic
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const closeSidebar = document.getElementById('close-sidebar');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        overlay.addEventListener('click', toggleSidebar);
+        closeSidebar.addEventListener('click', toggleSidebar);
+    </script>
+</body>
+</html>

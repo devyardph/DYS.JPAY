@@ -1,0 +1,71 @@
+﻿@using DYS.JPay.Shared.Shared.Dtos
+
+ <div id="cart-items" class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-3 scroll-smooth">
+    @if (OrderItems.Any())
+    {
+        @foreach (var orderItem in OrderItems)
+        {
+            <div class="flex items-center justify-between gap-0 p-2 rounded-xl transition-all duration-500" id="cart-@orderItem.Id">
+                <!-- Item Info -->
+                <div class="flex-1">
+                    <h4 class="font-bold text-sm text-on-surface">@orderItem.Product.Name</h4>
+                    <p class="text-xs text-on-surface-variant">$@orderItem.Product.Price</p>
+                </div>
+                <!-- Quantity Controls -->
+                <div class="flex items-center gap-3 bg-surface-container-low rounded-lg p-1">
+                    <button @onclick="@(() => @DecreaseOrder(orderItem))" class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-white text-on-surface-variant hover:text-primary transition-colors">-</button>
+                    <span class="text-sm font-bold w-4 text-center">@orderItem.Count</span>
+                    <button @onclick="@(() => IncreaseOrder(orderItem))" class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-white text-on-surface-variant hover:text-primary transition-colors">+</button>
+                </div>
+                <!-- Price -->
+                <div class="text-right w-16">
+                    <p class="font-bold text-sm">$@((orderItem.Product.Price * @orderItem.Count)?.ToString("N2"))</p>
+                </div>
+                <!-- Remove Button -->
+                <button class="text-error/70 hover:text-error p-1" @onclick="@(() => OnRemoveOrder(orderItem))">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-x w-4 h-4" aria-hidden="true">
+                        <path d="M18 6 6 18"></path>
+                        <path d="m6 6 12 12"></path>
+                    </svg>
+                </button>
+            </div>
+        }    
+    }
+
+    else
+    {
+        <div class="h-full flex flex-col items-center justify-center text-on-surface-variant opacity-50"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart w-12 h-12 mb-4" aria-hidden="true"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg><p>Cart is empty</p></div>
+            
+    }
+</div>
+@code {
+    [Parameter]
+    public List<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
+    [Parameter]
+    public EventCallback<OrderItemDto> OrderChanged { get; set; }
+
+    public async Task OnRemoveOrder(OrderItemDto order)
+    {
+        order.Count = 0;
+        await OrderChanged.InvokeAsync(order);
+    }
+
+    public async Task IncreaseOrder(OrderItemDto order)
+    {
+        var orderItem = OrderItems?.FirstOrDefault(query => query.Id == order.Id);
+        if (orderItem != null) {
+            orderItem.Count = order.Count + 1;
+            await OrderChanged.InvokeAsync(orderItem);
+        }
+    }
+
+    public async Task DecreaseOrder(OrderItemDto order)
+    {
+        order.Count = order.Count - 1;
+        await OrderChanged.InvokeAsync(order);
+    }
+}

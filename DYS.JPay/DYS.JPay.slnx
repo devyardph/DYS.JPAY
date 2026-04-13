@@ -2,5 +2,7 @@
   <Project Path="DYS.JPay/DYS.JPay.Shared/DYS.JPay.Shared.csproj" />
   <Project Path="DYS.JPay/DYS.JPay.Web.Client/DYS.JPay.Web.Client.csproj" />
   <Project Path="DYS.JPay/DYS.JPay.Web/DYS.JPay.Web.csproj" />
-  <Project Path="DYS.JPay/DYS.JPay/DYS.JPay.csproj" />
+  <Project Path="DYS.JPay/DYS.JPay/DYS.JPay.csproj">
+    <Deploy Solution="Debug|*" />
+  </Project>
 </Solution>

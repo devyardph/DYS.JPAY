@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architect Ledger - Payment Successful</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        headline: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#003345',
+                        'primary-container': '#004b63',
+                        secondary: '#016a60',
+                        'secondary-container': '#9ff2e4',
+                        tertiary: '#003816',
+                        'tertiary-fixed-dim': '#7fda91',
+                        error: '#ba1a1a',
+                        'error-container': '#ffdad6',
+                        background: '#f7f9ff',
+                        surface: '#f7f9ff',
+                        'surface-container-low': '#f1f4fa',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-highest': '#dfe3e8',
+                        'on-surface': '#181c20',
+                        'on-surface-variant': '#40484c',
+                        'outline-variant': '#c0c7cd',
+                        'on-primary': '#ffffff',
+                        'on-primary-container': '#83bad6',
+                        'on-secondary-container': '#117166',
+                        'on-tertiary-fixed-variant': '#005323',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f7f9ff; color: #181c20; font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
+        .ledger-gradient { background: linear-gradient(135deg, #003345 0%, #004b63 100%); }
+    </style>
+</head>
+<body class="antialiased min-h-screen flex items-center justify-center p-4">
+    <div class="max-w-md w-full bg-white p-12 rounded-[3rem] shadow-2xl shadow-primary/10 border border-outline-variant/10 text-center space-y-8">
+        <div class="w-24 h-24 bg-emerald-50 text-emerald-600 rounded-full flex items-center justify-center mx-auto shadow-inner">
+            <svg xmlns="http://www.w3.org/2000/svg" width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </div>
+        
+        <div class="space-y-3">
+            <h1 class="text-4xl font-headline font-extrabold text-primary tracking-tight">Payment Recorded</h1>
+            <p class="text-on-surface-variant font-medium">Your architectural ledger has been updated successfully.</p>
+        </div>
+
+        <div class="p-6 bg-surface-container-low rounded-2xl space-y-4">
+            <div class="flex justify-between text-sm">
+                <span class="text-on-surface-variant font-bold uppercase tracking-widest">Amount Paid</span>
+                <span class="text-primary font-black">$1,250.00</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-on-surface-variant font-bold uppercase tracking-widest">Debt Updated</span>
+                <span class="text-primary font-black">Studio Mortgage</span>
+            </div>
+            <div class="flex justify-between text-sm">
+                <span class="text-on-surface-variant font-bold uppercase tracking-widest">Remaining Balance</span>
+                <span class="text-primary font-black">$383,750.00</span>
+            </div>
+        </div>
+
+        <div class="pt-4 space-y-4">
+            <a href="debt-payments.html" class="block w-full py-4 bg-primary text-white rounded-2xl font-bold shadow-xl active:scale-95 transition-all">
+                View Payment History
+            </a>
+            <a href="debt-tracker.html" class="block w-full py-4 text-on-surface-variant font-bold hover:bg-surface-container-low rounded-2xl transition-colors">
+                Back to Debt Tracker
+            </a>
+            <a href="dashboard.html" class="block w-full py-4 text-on-surface-variant font-bold hover:bg-surface-container-low rounded-2xl transition-colors">
+                Go to Dashboard
+            </a>
+        </div>
+    </div>
+</body>
+</html>

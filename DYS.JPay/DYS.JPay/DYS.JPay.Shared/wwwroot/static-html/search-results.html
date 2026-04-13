@@ -1,0 +1,295 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architect Ledger - Search Results</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        headline: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#003345',
+                        'primary-container': '#004b63',
+                        secondary: '#016a60',
+                        'secondary-container': '#9ff2e4',
+                        tertiary: '#003816',
+                        'tertiary-fixed-dim': '#7fda91',
+                        error: '#ba1a1a',
+                        'error-container': '#ffdad6',
+                        background: '#f7f9ff',
+                        surface: '#f7f9ff',
+                        'surface-container-low': '#f1f4fa',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-highest': '#dfe3e8',
+                        'on-surface': '#181c20',
+                        'on-surface-variant': '#40484c',
+                        'outline-variant': '#c0c7cd',
+                        'on-primary': '#ffffff',
+                        'on-primary-container': '#83bad6',
+                        'on-secondary-container': '#117166',
+                        'on-tertiary-fixed-variant': '#005323',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f7f9ff; color: #181c20; font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
+        .glass-nav { backdrop-filter: blur(12px); background-color: rgba(247, 249, 255, 0.8); }
+        .ledger-gradient { background: linear-gradient(135deg, #003345 0%, #004b63 100%); }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Sidebar -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden lg:hidden"></div>
+    <aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-[#f1f4fa] border-r border-[#dfe3e8]/30 flex flex-col p-6 z-[70] -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        <div class="flex justify-between items-center mb-12 lg:block">
+            <div>
+                <h1 class="text-xl font-black text-[#003345] tracking-tight">Finance Tracker</h1>
+                <p class="text-[10px] text-[#40484c] font-bold uppercase tracking-widest opacity-70">Architect Ledger</p>
+            </div>
+            <button id="close-sidebar" class="lg:hidden p-2 text-[#40484c] hover:bg-[#dfe3e8] rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <nav class="flex-1 space-y-2">
+            <a href="dashboard.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="accounts.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+                <span>Accounts</span>
+            </a>
+            <a href="transactions.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5V18.5"/><path d="M12 5.5v1"/></svg>
+                <span>Transactions</span>
+            </a>
+            <a href="budget.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2h0V5z"/><path d="M7 11h.01"/><path d="M11 11h.01"/><path d="M15 11h.01"/></svg>
+                <span>Budget</span>
+            </a>
+            <a href="debt-tracker.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>
+                <span>Debt Tracker</span>
+            </a>
+            <a href="insights.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+                <span>Insights</span>
+            </a>
+            <a href="monthly-report.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <div class="pt-4">
+            <a href="create-transaction.html" class="w-full ledger-gradient text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all flex items-center justify-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                <span>Add Transaction</span>
+            </a>
+        </div>
+
+        <div class="mt-auto space-y-2 border-t border-[#dfe3e8]/30 pt-4">
+            <a href="help.html" class="w-full flex items-center space-x-3 px-4 py-2 text-[#40484c] hover:text-[#003345] transition-colors text-sm font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                <span>Help</span>
+            </a>
+            <a href="login.html" class="w-full flex items-center space-x-3 px-4 py-2 text-[#40484c] hover:text-[#003345] transition-colors text-sm font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <header class="fixed top-0 right-0 left-0 lg:left-64 h-16 glass-nav flex justify-between items-center px-4 md:px-8 z-40 border-b border-[#dfe3e8]/30">
+        <div class="flex items-center flex-1 gap-4">
+            <button id="open-sidebar" class="lg:hidden p-2 text-[#40484c] hover:bg-[#dfe3e8] rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+            </button>
+            <form id="search-form" class="relative w-full max-w-md hidden sm:block">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-[#40484c] opacity-50"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="search-input" placeholder="Search transactions, accounts..." class="w-full pl-10 pr-4 py-2 bg-[#dfe3e8] border-none rounded-xl text-sm focus:ring-1 focus:ring-[#004b63] transition-all">
+            </form>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="lg:ml-64 pt-24 px-4 md:px-8 lg:px-12 pb-16 max-w-7xl mx-auto w-full">
+        <div class="max-w-4xl mx-auto space-y-12">
+            <div class="space-y-4">
+                <h2 class="text-4xl font-black text-[#003345] tracking-tight">Search Results</h2>
+                <p class="text-[#40484c] text-lg">
+                    Showing results for "<span class="font-bold text-[#003345]" id="search-query-display"></span>"
+                </p>
+            </div>
+
+            <div id="accounts-results" class="space-y-6 hidden">
+                <h3 class="text-xl font-extrabold text-[#003345]">Accounts</h3>
+                <div id="accounts-list" class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <!-- Account items will be injected here -->
+                </div>
+            </div>
+
+            <div id="transactions-results" class="space-y-6">
+                <h3 class="text-xl font-extrabold text-[#003345]">Transactions</h3>
+                <div class="bg-white rounded-[2.5rem] shadow-sm border border-[#dfe3e8]/30 overflow-hidden">
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead>
+                                <tr class="bg-[#f1f4fa]">
+                                    <th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Date</th>
+                                    <th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Description</th>
+                                    <th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Category</th>
+                                    <th class="px-8 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c] text-right">Amount</th>
+                                </tr>
+                            </thead>
+                            <tbody id="transactions-list" class="divide-y divide-[#dfe3e8]/30">
+                                <!-- Transaction items will be injected here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <div id="no-results" class="hidden py-12 text-center text-[#40484c] font-medium italic">
+                No results found for your search.
+            </div>
+        </div>
+    </main>
+
+    <script>
+        // Sidebar Toggle Logic
+        const sidebar = document.getElementById('sidebar');
+        const sidebarOverlay = document.getElementById('sidebar-overlay');
+        const openSidebarBtn = document.getElementById('open-sidebar');
+        const closeSidebarBtn = document.getElementById('close-sidebar');
+
+        function openSidebar() {
+            sidebar.classList.remove('-translate-x-full');
+            sidebarOverlay.classList.remove('hidden');
+        }
+
+        function closeSidebar() {
+            sidebar.classList.add('-translate-x-full');
+            sidebarOverlay.classList.add('hidden');
+        }
+
+        openSidebarBtn.addEventListener('click', openSidebar);
+        closeSidebarBtn.addEventListener('click', closeSidebar);
+        sidebarOverlay.addEventListener('click', closeSidebar);
+
+        // Search Logic
+        const urlParams = new URLSearchParams(window.location.search);
+        const query = urlParams.get('q') || '';
+        document.getElementById('search-query-display').textContent = query;
+        document.getElementById('search-input').value = query;
+
+        const mockTransactions = [
+            { id: '1', date: '2026-03-20', description: 'Monthly Studio Rent', category: 'Housing', amount: 3200.00, type: 'Expense' },
+            { id: '2', date: '2026-03-18', description: 'Project Fee - Sterling', category: 'Income', amount: 8500.00, type: 'Income' },
+            { id: '3', date: '2026-03-15', description: 'New Drafting Table', category: 'Equipment', amount: 1420.00, type: 'Expense' },
+            { id: '4', date: '2026-03-10', description: 'Consulting - Green Roof', category: 'Income', amount: 3950.00, type: 'Income' },
+            { id: '5', date: '2026-03-05', description: 'Office Supplies', category: 'Supplies', amount: 1850.00, type: 'Expense' }
+        ];
+
+        const mockAccounts = [
+            { id: '1', name: 'Main Business Checking', type: 'Checking', balance: 45280.50 },
+            { id: '2', name: 'Studio Savings', type: 'Savings', balance: 12500.00 }
+        ];
+
+        function performSearch() {
+            if (!query) return;
+
+            const filteredTransactions = mockTransactions.filter(t => 
+                t.description.toLowerCase().includes(query.toLowerCase()) ||
+                t.category.toLowerCase().includes(query.toLowerCase())
+            );
+
+            const filteredAccounts = mockAccounts.filter(a => 
+                a.name.toLowerCase().includes(query.toLowerCase()) ||
+                a.type.toLowerCase().includes(query.toLowerCase())
+            );
+
+            const transactionsList = document.getElementById('transactions-list');
+            const accountsList = document.getElementById('accounts-list');
+            const accountsResults = document.getElementById('accounts-results');
+            const transactionsResults = document.getElementById('transactions-results');
+            const noResults = document.getElementById('no-results');
+
+            transactionsList.innerHTML = '';
+            accountsList.innerHTML = '';
+
+            if (filteredAccounts.length > 0) {
+                accountsResults.classList.remove('hidden');
+                filteredAccounts.forEach(account => {
+                    const div = document.createElement('div');
+                    div.className = 'bg-white p-6 rounded-[2rem] shadow-sm border border-[#dfe3e8]/30 flex justify-between items-center';
+                    div.innerHTML = `
+                        <div>
+                            <p class="text-sm font-bold text-[#003345]">${account.name}</p>
+                            <p class="text-[10px] text-[#40484c] uppercase tracking-widest opacity-70">${account.type}</p>
+                        </div>
+                        <p class="text-xl font-black text-[#003345]">$${account.balance.toLocaleString()}</p>
+                    `;
+                    accountsList.appendChild(div);
+                });
+            } else {
+                accountsResults.classList.add('hidden');
+            }
+
+            if (filteredTransactions.length > 0) {
+                transactionsResults.classList.remove('hidden');
+                filteredTransactions.forEach(t => {
+                    const row = document.createElement('tr');
+                    row.className = 'hover:bg-[#f1f4fa] transition-colors';
+                    row.innerHTML = `
+                        <td class="px-8 py-4 text-sm font-medium text-[#40484c]">${t.date}</td>
+                        <td class="px-8 py-4">
+                            <div class="text-sm font-bold text-[#003345]">${t.description}</div>
+                            <div class="text-[10px] text-[#40484c] uppercase tracking-widest opacity-70">${t.type}</div>
+                        </td>
+                        <td class="px-8 py-4">
+                            <span class="text-xs font-bold bg-[#dfe3e8] px-3 py-1 rounded-full text-[#003345] uppercase tracking-widest">
+                                ${t.category}
+                            </span>
+                        </td>
+                        <td class="px-8 py-4 text-sm font-black text-right ${t.type === 'Income' ? 'text-emerald-600' : 'text-rose-600'}">
+                            ${t.type === 'Income' ? '+' : '-'}$${t.amount.toLocaleString()}
+                        </td>
+                    `;
+                    transactionsList.appendChild(row);
+                });
+            } else {
+                transactionsResults.classList.add('hidden');
+            }
+
+            if (filteredAccounts.length === 0 && filteredTransactions.length === 0) {
+                noResults.classList.remove('hidden');
+            } else {
+                noResults.classList.add('hidden');
+            }
+        }
+
+        performSearch();
+
+        document.getElementById('search-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const q = document.getElementById('search-input').value;
+            if (q.trim()) {
+                window.location.href = `search-results.html?q=${encodeURIComponent(q)}`;
+            }
+        });
+    </script>
+</body>
+</html>

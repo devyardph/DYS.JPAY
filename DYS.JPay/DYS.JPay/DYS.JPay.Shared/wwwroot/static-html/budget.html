@@ -1,0 +1,237 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Architect Ledger - Budget</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        headline: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#003345',
+                        'primary-container': '#004b63',
+                        secondary: '#016a60',
+                        'secondary-container': '#9ff2e4',
+                        tertiary: '#003816',
+                        'tertiary-fixed-dim': '#7fda91',
+                        error: '#ba1a1a',
+                        'error-container': '#ffdad6',
+                        background: '#f7f9ff',
+                        surface: '#f7f9ff',
+                        'surface-container-low': '#f1f4fa',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-highest': '#dfe3e8',
+                        'on-surface': '#181c20',
+                        'on-surface-variant': '#40484c',
+                        'outline-variant': '#c0c7cd',
+                        'on-primary': '#ffffff',
+                        'on-primary-container': '#83bad6',
+                        'on-secondary-container': '#117166',
+                        'on-tertiary-fixed-variant': '#005323',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        body { background-color: #f7f9ff; color: #181c20; font-family: 'Inter', sans-serif; }
+        h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
+        .glass-nav { backdrop-filter: blur(12px); background-color: rgba(247, 249, 255, 0.8); }
+        .pulse-meter-track { height: 0.5rem; background-color: #dfe3e8; border-radius: 9999px; overflow: hidden; }
+        .ledger-gradient { background: linear-gradient(135deg, #003345 0%, #004b63 100%); }
+    </style>
+</head>
+<body class="antialiased">
+    <!-- Sidebar -->
+    <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-[60] hidden lg:hidden"></div>
+    <aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-[#f1f4fa] border-r border-[#dfe3e8]/30 flex flex-col p-6 z-[70] -translate-x-full lg:translate-x-0 transition-transform duration-300">
+        <div class="flex justify-between items-center mb-12 lg:block">
+            <div>
+                <h1 class="text-xl font-black text-[#003345] tracking-tight">Finance Tracker</h1>
+                <p class="text-[10px] text-[#40484c] font-bold uppercase tracking-widest opacity-70">Architect Ledger</p>
+            </div>
+            <button id="close-sidebar" class="lg:hidden p-2 text-[#40484c] hover:bg-[#dfe3e8] rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+            </button>
+        </div>
+
+        <nav class="flex-1 space-y-2">
+            <a href="dashboard.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect width="7" height="9" x="3" y="3" rx="1"/><rect width="7" height="5" x="14" y="3" rx="1"/><rect width="7" height="9" x="14" y="12" rx="1"/><rect width="7" height="5" x="3" y="16" rx="1"/></svg>
+                <span>Dashboard</span>
+            </a>
+            <a href="accounts.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 7V4a1 1 0 0 0-1-1H5a2 2 0 0 0 0 4h15a1 1 0 0 1 1 1v4h-3a2 2 0 0 0 0 4h3a1 1 0 0 0 1-1v-2a1 1 0 0 0-1-1"/><path d="M3 5v14a2 2 0 0 0 2 2h15a1 1 0 0 0 1-1v-4"/></svg>
+                <span>Accounts</span>
+            </a>
+            <a href="transactions.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"/><path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"/><path d="M12 17.5V18.5"/><path d="M12 5.5v1"/></svg>
+                <span>Transactions</span>
+            </a>
+            <a href="budget.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl bg-white text-[#003345] shadow-sm font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M19 5c-1.5 0-2.8 1.4-3 2-3.5-1.5-11-.3-11 5 0 1.8 0 3 2 4.5V20h4v-2h3v2h4v-4c1-.5 1.7-1 2-2h2v-4h-2c0-1-.5-1.5-1-2h0V5z"/><path d="M7 11h.01"/><path d="M11 11h.01"/><path d="M15 11h.01"/></svg>
+                <span>Budget</span>
+            </a>
+            <a href="debt-tracker.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 22h14"/><path d="M5 2h14"/><path d="M17 22v-4.172a2 2 0 0 0-.586-1.414L12 12l-4.414 4.414A2 2 0 0 0 7 17.828V22"/><path d="M7 2v4.172a2 2 0 0 0 .586 1.414L12 12l4.414-4.414A2 2 0 0 0 17 6.172V2"/></svg>
+                <span>Debt Tracker</span>
+            </a>
+            <a href="insights.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m3 11 18-5v12L3 14v-3z"/><path d="M11.6 16.8a3 3 0 1 1-5.8-1.6"/></svg>
+                <span>Insights</span>
+            </a>
+            <a href="monthly-report.html" class="w-full flex items-center space-x-3 px-4 py-3 rounded-xl text-[#40484c] hover:text-[#003345] hover:translate-x-1 transition-all font-semibold">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><line x1="10" y1="9" x2="8" y2="9"/></svg>
+                <span>Reports</span>
+            </a>
+        </nav>
+
+        <div class="pt-4">
+            <a href="create-transaction.html" class="w-full ledger-gradient text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all flex items-center justify-center space-x-2">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                <span>Add Transaction</span>
+            </a>
+        </div>
+
+        <div class="mt-auto space-y-2 border-t border-[#dfe3e8]/30 pt-4">
+            <a href="help.html" class="w-full flex items-center space-x-3 px-4 py-2 text-[#40484c] hover:text-[#003345] transition-colors text-sm font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><path d="M12 17h.01"/></svg>
+                <span>Help</span>
+            </a>
+            <a href="login.html" class="w-full flex items-center space-x-3 px-4 py-2 text-[#40484c] hover:text-[#003345] transition-colors text-sm font-medium">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+                <span>Logout</span>
+            </a>
+        </div>
+    </aside>
+
+    <!-- Top Bar -->
+    <header class="fixed top-0 right-0 left-0 lg:left-64 h-16 glass-nav flex justify-between items-center px-4 md:px-8 z-40 border-b border-[#dfe3e8]/30">
+        <div class="flex items-center flex-1 gap-4">
+            <button id="mobile-menu-button" class="lg:hidden p-2 text-[#40484c] hover:bg-[#dfe3e8] rounded-full transition-colors">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"/><line x1="4" x2="20" y1="6" y2="6"/><line x1="4" x2="20" y1="18" y2="18"/></svg>
+            </button>
+            <form id="search-form" class="relative w-full max-w-md hidden sm:block">
+                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-[#40484c]"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+                <input type="text" id="search-input" placeholder="Search transactions, accounts..." class="w-full pl-10 pr-4 py-2 bg-[#dfe3e8]/50 border-none rounded-xl text-sm focus:ring-1 focus:ring-[#003345] transition-all">
+            </form>
+        </div>
+
+        <div class="flex items-center space-x-2 md:space-x-6">
+            <button class="text-[#40484c] hover:bg-[#dfe3e8] p-2 rounded-full transition-colors relative">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10.3 21a1.94 1.94 0 0 0 3.4 0"/></svg>
+                <span class="absolute top-2 right-2 w-2 h-2 bg-[#ba1a1a] rounded-full border-2 border-[#f7f9ff]"></span>
+            </button>
+            <div class="flex items-center space-x-3 pl-2 md:pl-4 border-l border-[#dfe3e8]/20">
+                <img src="https://lh3.googleusercontent.com/aida-public/AB6AXuBFafOhbVAHqdgDoqjZ2wSpa-aywBp0f5BMToA9yAhERKttOnQIjCdeF-PuBC--o3ahZR8RwSFAbrWm0lv2oopc70NHRhEPu2tA2uZntvYWp5vFu_cZ_rbMRbbp4CkTcmDMmeV0bSavf3jPcc517Wt49ZOtMvc_dqnVu3NkkIinheKLT2lYBojsbrTcIbthUfMKCxZz4PP4msHG1kDFPXkZNzDmbLyi48D8S3z5Pu7y-rEPkjiPXpdbsfIk_Eh1JnnSYbdsmzKA6Sc" alt="User" class="w-8 h-8 rounded-full object-cover border border-[#dfe3e8]/30" referrerPolicy="no-referrer">
+                <div class="hidden lg:block">
+                    <p class="text-xs font-bold text-[#003345]">Alex Sterling</p>
+                    <p class="text-[10px] text-[#40484c] font-medium">Principal Architect</p>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-24 pb-12 px-4 md:px-8 lg:ml-64 min-h-screen">
+        <div class="max-w-7xl mx-auto space-y-8 md:space-y-12">
+            <div class="flex flex-col sm:flex-row justify-between sm:items-end gap-6">
+                <div>
+                    <span class="text-[#40484c] text-[10px] font-bold uppercase tracking-widest mb-2 block">Current Period</span>
+                    <h2 class="text-3xl md:text-5xl font-headline font-extrabold text-[#003345] tracking-tighter">Budget Planner</h2>
+                </div>
+                <a href="create-budget.html" class="ledger-gradient text-white px-6 py-3 rounded-2xl font-bold shadow-xl active:scale-95 transition-all flex items-center justify-center gap-2 w-full sm:w-auto">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="M12 5v14"/></svg>
+                    <span>Add New Category</span>
+                </a>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 md:gap-8">
+                <!-- Budget Card -->
+                <div class="bg-[#f1f4fa] p-1 rounded-[2rem]">
+                    <div class="bg-white p-6 md:p-8 rounded-[1.8rem] shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="p-3 bg-[#dfe3e8] rounded-2xl text-[#003345]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-tight text-[#016a60]">On Track</span>
+                        </div>
+                        <h3 class="text-xl font-bold font-headline mb-1">Rent</h3>
+                        <p class="text-[#40484c] text-xs mb-6 flex-1">Residential monthly lease</p>
+                        <div class="mt-auto">
+                            <div class="flex justify-between items-end mb-3">
+                                <div>
+                                    <span class="text-2xl font-bold text-[#181c20]">$2,400</span>
+                                    <span class="text-[#40484c] text-sm"> / $2,400</span>
+                                </div>
+                                <span class="text-[#40484c] text-[10px] font-bold">100% used</span>
+                            </div>
+                            <div class="pulse-meter-track mb-2">
+                                <div class="h-full bg-[#016a60]" style="width: 100%"></div>
+                            </div>
+                            <p class="text-[10px] italic text-[#40484c]">$0 remaining</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="bg-[#f1f4fa] p-1 rounded-[2rem]">
+                    <div class="bg-white p-6 md:p-8 rounded-[1.8rem] shadow-sm hover:shadow-md transition-shadow h-full flex flex-col">
+                        <div class="flex justify-between items-start mb-6">
+                            <div class="p-3 bg-[#dfe3e8] rounded-2xl text-[#003345]">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"/></svg>
+                            </div>
+                            <span class="text-[10px] font-bold uppercase tracking-tight text-[#ba1a1a]">Warning</span>
+                        </div>
+                        <h3 class="text-xl font-bold font-headline mb-1">Entertainment</h3>
+                        <p class="text-[#40484c] text-xs mb-6 flex-1">Dining, movies & events</p>
+                        <div class="mt-auto">
+                            <div class="flex justify-between items-end mb-3">
+                                <div>
+                                    <span class="text-2xl font-bold text-[#ba1a1a]">$315</span>
+                                    <span class="text-[#40484c] text-sm"> / $300</span>
+                                </div>
+                                <span class="text-[#40484c] text-[10px] font-bold">105% used</span>
+                            </div>
+                            <div class="pulse-meter-track mb-2">
+                                <div class="h-full bg-[#ba1a1a]" style="width: 100%"></div>
+                            </div>
+                            <p class="text-[10px] italic text-[#ba1a1a] font-bold">OVER BUDGET BY $15</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+    <script>
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const mobileMenuBtn = document.getElementById('mobile-menu-button');
+        const closeSidebarBtn = document.getElementById('close-sidebar');
+
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        mobileMenuBtn.addEventListener('click', toggleSidebar);
+        closeSidebarBtn.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // Search Logic
+        document.getElementById('search-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const q = document.getElementById('search-input').value;
+            if (q.trim()) {
+                window.location.href = `search-results.html?q=${encodeURIComponent(q)}`;
+            }
+        });
+    </script>
+</body>
+</html>

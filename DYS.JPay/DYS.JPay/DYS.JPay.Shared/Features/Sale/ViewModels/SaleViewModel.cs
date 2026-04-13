@@ -36,13 +36,13 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         [ObservableProperty]
         private List<ProductDto> products = new List<ProductDto>();
         [ObservableProperty]
+        private List<ProductDto> filteredProducts = new List<ProductDto>();
+        [ObservableProperty]
         private List<OrderItemDto> orderItems = new List<OrderItemDto>();
         [ObservableProperty]
         private OrderDto order= new OrderDto();
         [ObservableProperty]
         private string pendingCartId = string.Empty;
-        [ObservableProperty]
-        private double? total;
         [ObservableProperty]
         private SearchDto search = new SearchDto();
 
@@ -54,6 +54,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             if (output is not null)
             {
                 Products = output.Adapt<List<ProductDto>>();
+                FilteredProducts = Products;
             }
             IsBusy = false;
         }
@@ -77,14 +78,17 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             Calculate();
             PendingCartId = $"cart-{id}";
         }
-        public void RemoveOrder(OrderItemDto order)
+        public void OrderChanged(OrderItemDto order)
         {
-            OrderItems?.RemoveAll(query => query.Id == order.Id);
+            if(order.Count == 0)
+                OrderItems?.RemoveAll(query => query.Id == order.Id);
             Calculate();
         }
+
         public void Calculate()
         {
-            Total = OrderItems?.Sum(query => query.Product.Price * query.Count);
+            var total = OrderItems?.Sum(query => query.Product.Price * query.Count);
+            Order.Total = total;
         }
         public async Task ChargeAsync() {
             var total = OrderItems.Sum(query => query.Count * query.Product.Price);
@@ -105,13 +109,14 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                 });
             }
             await _orderService.AddOrderItemsAsync(items);
-            //await _jsRuntime.InvokeVoidAsync("closeReferenceModal");
+            await _jsRuntime.InvokeVoidAsync("closeModal", "charge-modal");
+            await _jsRuntime.InvokeVoidAsync("openModal", "result-modal");
         }
         public void SetDisplay(string display) => AppSetting.Display = display;
 
         public async Task FilterProducstsAsync(string type = "")
         {
-            Products = !string.IsNullOrEmpty(type) ?
+            FilteredProducts = !string.IsNullOrEmpty(type) ?
                      Products.Where(query => query.Type == type).ToList() :
                      Products.ToList();
         }

@@ -1,0 +1,457 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POS - POS & Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            headline: ['Manrope', 'sans-serif'],
+          },
+          colors: {
+            primary: '#6d28d9',
+            'primary-container': '#4c1d95',
+            secondary: '#8b5cf6',
+            background: '#f7f9ff',
+            surface: '#f7f9ff',
+            'surface-container-low': '#f1f4fa',
+            'surface-container-lowest': '#ffffff',
+            'surface-container-highest': '#dfe3e8',
+            'on-surface': '#181c20',
+            'on-surface-variant': '#40484c',
+            'outline-variant': '#c0c7cd',
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.4s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f7f9ff; color: #181c20; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
+    .ledger-gradient { background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%); }
+    .glass-nav { backdrop-filter: blur(16px); background-color: rgba(247, 249, 255, 0.8); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen flex">
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-primary-container border-r border-primary/20 flex flex-col py-6 z-[70] transition-all duration-300 ease-in-out hidden lg:flex">
+    <div id="sidebar-header" class="mb-8 flex justify-between items-center px-6">
+      <div id="sidebar-logo" class="overflow-hidden whitespace-nowrap">
+        <h1 class="text-xl font-black text-white tracking-tight font-headline">Point of Sale</h1>
+        <p class="text-[10px] text-white/70 font-bold uppercase tracking-widest">Store Management</p>
+      </div>
+      <div id="sidebar-icon-logo" class="hidden w-10 h-10 bg-white/10 rounded-xl items-center justify-center text-white font-bold">
+        POS
+      </div>
+    </div>
+
+    <nav class="flex-1 space-y-2 px-4">
+      <a href="pos.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold bg-white text-primary shadow-sm group" title="Point of Sale">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Point of Sale</span>
+      </a>
+      <a href="dashboard.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Dashboard">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+      </a>
+      <a href="reports.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Reports">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Reports</span>
+      </a>
+      <a href="accounts.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Accounts">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Accounts</span>
+      </a>
+      <a href="transactions.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Transactions">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Transactions</span>
+      </a>
+      <a href="users.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Users">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Users</span>
+      </a>
+      <a href="settings.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Settings">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Settings</span>
+      </a>
+    </nav>
+
+    <div class="pt-4 px-4">
+      <button class="nav-link w-full bg-secondary text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all flex items-center justify-center space-x-2" title="Add Transaction">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Add Transaction</span>
+      </button>
+    </div>
+
+    <div class="mt-auto space-y-2 border-t border-white/10 pt-4 px-4">
+      <button class="nav-link w-full flex items-center space-x-3 px-4 py-2 transition-colors font-headline text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 rounded-xl" title="Help">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Help</span>
+      </button>
+      <a href="login.html" class="nav-link w-full flex items-center space-x-3 px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors font-headline text-sm font-medium" title="Logout">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Logout</span>
+      </a>
+    </div>
+
+    <!-- Collapse Toggle (Desktop Only) -->
+    <button onclick="toggleSidebar()" class="hidden lg:flex absolute -right-3 top-8 w-6 h-6 bg-surface-container-lowest border border-outline-variant/20 rounded-full items-center justify-center text-on-surface-variant hover:text-primary shadow-sm z-50 transition-transform">
+      <svg id="collapse-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+    </button>
+  </aside>
+
+  <!-- Main Content -->
+  <div id="main-content" class="flex-1 lg:ml-64 h-screen overflow-hidden flex flex-col lg:flex-row transition-all duration-300">
+    <main class="flex-1 p-4 md:p-8 lg:pr-[26rem] opacity-0 animate-fade-in-up overflow-y-auto no-scrollbar">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div>
+          <h1 class="text-3xl font-headline font-bold text-primary">Point of Sale</h1>
+          <p class="text-on-surface-variant">Select items to add to the current order.</p>
+        </div>
+        <div class="flex items-center gap-2 w-full sm:w-auto">
+          <div class="relative flex-1 sm:w-64">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <input type="text" placeholder="Search products..." class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant/20 rounded-xl text-sm focus:ring-1 focus:ring-primary transition-all" />
+          </div>
+          <button class="p-2 bg-surface-container-lowest border border-outline-variant/20 rounded-xl text-on-surface hover:text-primary transition-colors">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+          </button>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div class="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-4">
+        <button class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-primary text-white shadow-md">All Items</button>
+        <button class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Coffee</button>
+        <button class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Pastries</button>
+        <button class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Merch</button>
+      </div>
+
+      <!-- Products Grid -->
+      <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        <button onclick="addToCart('Espresso', 3.50)" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left flex flex-col h-full group">
+          <div class="w-full aspect-square bg-surface-container-low rounded-xl mb-3 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <span class="text-4xl">☕</span>
+          </div>
+          <h3 class="font-bold text-on-surface leading-tight mb-1">Espresso</h3>
+          <p class="text-primary font-black mt-auto">$3.50</p>
+        </button>
+        <button onclick="addToCart('Latte', 4.50)" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left flex flex-col h-full group">
+          <div class="w-full aspect-square bg-surface-container-low rounded-xl mb-3 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <span class="text-4xl">🥛</span>
+          </div>
+          <h3 class="font-bold text-on-surface leading-tight mb-1">Latte</h3>
+          <p class="text-primary font-black mt-auto">$4.50</p>
+        </button>
+        <button onclick="addToCart('Croissant', 3.00)" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left flex flex-col h-full group">
+          <div class="w-full aspect-square bg-surface-container-low rounded-xl mb-3 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <span class="text-4xl">🥐</span>
+          </div>
+          <h3 class="font-bold text-on-surface leading-tight mb-1">Croissant</h3>
+          <p class="text-primary font-black mt-auto">$3.00</p>
+        </button>
+        <button onclick="addToCart('Cookie', 2.50)" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left flex flex-col h-full group">
+          <div class="w-full aspect-square bg-surface-container-low rounded-xl mb-3 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <span class="text-4xl">🍪</span>
+          </div>
+          <h3 class="font-bold text-on-surface leading-tight mb-1">Cookie</h3>
+          <p class="text-primary font-black mt-auto">$2.50</p>
+        </button>
+      </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div class="w-full lg:fixed lg:right-0 lg:top-0 lg:h-screen lg:w-96 bg-surface-container-lowest lg:rounded-none rounded-3xl border border-outline-variant/10 lg:border-y-0 lg:border-r-0 lg:border-l flex flex-col overflow-hidden shadow-sm lg:shadow-2xl z-40">
+      <div class="p-6 border-b border-outline-variant/10 bg-surface-container-low/50">
+        <h2 class="text-xl font-headline font-bold text-primary flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Current Order
+        </h2>
+      </div>
+      
+      <div id="cart-items" class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-4 scroll-smooth">
+        <!-- Cart Items will be rendered here -->
+      </div>
+      
+      <div class="p-6 border-t border-outline-variant/10 bg-surface-container-low/30">
+        <div class="space-y-2 mb-4">
+          <div class="flex justify-between text-sm text-on-surface-variant">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">$0.00</span>
+          </div>
+          <div class="flex justify-between text-sm text-on-surface-variant">
+            <span>Tax (8%)</span>
+            <span id="cart-tax">$0.00</span>
+          </div>
+          <div class="flex justify-between text-lg font-black text-primary pt-2 border-t border-outline-variant/10">
+            <span>Total</span>
+            <span id="cart-total">$0.00</span>
+          </div>
+        </div>
+        <button id="charge-btn" onclick="openPaymentModal()" class="w-full ledger-gradient text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+          Charge <span id="charge-amount">$0.00</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+  <!-- Modals -->
+  <!-- Payment Modal -->
+  <div id="payment-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300" id="payment-modal-content">
+      <h2 class="text-2xl font-headline font-bold text-primary mb-2">Select Payment Method</h2>
+      <p class="text-on-surface-variant mb-8">Amount due: <span class="font-bold text-primary">$7.56</span></p>
+      
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <button onclick="processPayment('Cash')" class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-outline-variant/20 hover:border-primary hover:bg-primary/5 transition-all group">
+          <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          </div>
+          <span class="font-bold">Cash</span>
+        </button>
+        <button onclick="processPayment('Credit')" class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-outline-variant/20 hover:border-primary hover:bg-primary/5 transition-all group">
+          <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+          </div>
+          <span class="font-bold">Credit</span>
+        </button>
+      </div>
+      
+      <button onclick="closePaymentModal()" class="w-full py-3 rounded-xl font-bold text-on-surface-variant hover:bg-surface-container-low transition-colors">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="success-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center transform scale-95 transition-transform duration-300" id="success-modal-content">
+      <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      </div>
+      <h2 class="text-2xl font-headline font-bold text-on-surface mb-2">Payment Successful</h2>
+      <p class="text-on-surface-variant mb-8">Order has been completed and receipt generated.</p>
+      <button onclick="closeSuccessModal()" class="w-full ledger-gradient text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
+        New Order
+      </button>
+    </div>
+  </div>
+
+  <script>
+    let cart = [];
+
+    function addToCart(name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ name, price, quantity: 1 });
+      }
+      renderCart(name);
+    }
+
+    function updateQuantity(name, delta) {
+      const item = cart.find(item => item.name === name);
+      if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+          cart = cart.filter(i => i.name !== name);
+        }
+      }
+      renderCart();
+    }
+
+    function renderCart(highlightName = null) {
+      const cartItemsContainer = document.getElementById('cart-items');
+      cartItemsContainer.innerHTML = '';
+
+      let subtotal = 0;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-on-surface-variant opacity-50 pt-10">
+            <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <p>Cart is empty</p>
+          </div>
+        `;
+      } else {
+        cart.forEach(item => {
+          subtotal += item.price * item.quantity;
+          const isHighlighted = item.name === highlightName;
+          const highlightClass = isHighlighted ? 'bg-primary/10 ring-1 ring-primary/30 scale-[1.02]' : 'bg-surface-container-low';
+          
+          const itemEl = document.createElement('div');
+          itemEl.id = `cart-item-${item.name.replace(/\s+/g, '-')}`;
+          itemEl.className = `flex justify-between items-center p-3 rounded-xl transition-all duration-500 ${highlightClass}`;
+          itemEl.innerHTML = `
+            <div class="flex-1">
+              <p class="font-bold text-on-surface text-sm">${item.name}</p>
+              <p class="text-primary font-bold text-sm">$${item.price.toFixed(2)}</p>
+            </div>
+            <div class="flex items-center gap-3 bg-surface-container-lowest rounded-lg p-1 border border-outline-variant/10">
+              <button onclick="updateQuantity('${item.name}', -1)" class="w-6 h-6 flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-error/10 rounded-md transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+              </button>
+              <span class="font-bold text-sm w-4 text-center">${item.quantity}</span>
+              <button onclick="updateQuantity('${item.name}', 1)" class="w-6 h-6 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+              </button>
+            </div>
+          `;
+          cartItemsContainer.appendChild(itemEl);
+
+          if (isHighlighted) {
+            setTimeout(() => {
+              itemEl.classList.remove('bg-primary/10', 'ring-1', 'ring-primary/30', 'scale-[1.02]');
+              itemEl.classList.add('bg-surface-container-low');
+            }, 500);
+          }
+        });
+      }
+
+      const tax = subtotal * 0.08;
+      const total = subtotal + tax;
+
+      document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById('cart-tax').innerText = `$${tax.toFixed(2)}`;
+      document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+      document.getElementById('charge-amount').innerText = `$${total.toFixed(2)}`;
+      
+      const chargeBtn = document.getElementById('charge-btn');
+      if (total > 0) {
+        chargeBtn.removeAttribute('disabled');
+      } else {
+        chargeBtn.setAttribute('disabled', 'true');
+      }
+
+      if (highlightName) {
+        const el = document.getElementById(`cart-item-${highlightName.replace(/\s+/g, '-')}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+    }
+
+    // Initialize cart
+    renderCart();
+
+    function openPaymentModal() {
+      const modal = document.getElementById('payment-modal');
+      const content = document.getElementById('payment-modal-content');
+      modal.classList.remove('hidden');
+      // small delay to allow display:block to apply before opacity transition
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        content.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function closePaymentModal() {
+      const modal = document.getElementById('payment-modal');
+      const content = document.getElementById('payment-modal-content');
+      modal.classList.add('opacity-0');
+      content.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    function processPayment(method) {
+      closePaymentModal();
+      setTimeout(() => {
+        openSuccessModal();
+      }, 300);
+    }
+
+    function openSuccessModal() {
+      const modal = document.getElementById('success-modal');
+      const content = document.getElementById('success-modal-content');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        content.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function closeSuccessModal() {
+      const modal = document.getElementById('success-modal');
+      const content = document.getElementById('success-modal-content');
+      modal.classList.add('opacity-0');
+      content.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('main-content');
+      const texts = document.querySelectorAll('.sidebar-text');
+      const logo = document.getElementById('sidebar-logo');
+      const iconLogo = document.getElementById('sidebar-icon-logo');
+      const header = document.getElementById('sidebar-header');
+      const collapseIcon = document.getElementById('collapse-icon');
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      const isCollapsed = sidebar.classList.contains('w-20');
+      
+      if (isCollapsed) {
+        sidebar.classList.remove('w-20');
+        sidebar.classList.add('w-64');
+        mainContent.classList.remove('lg:ml-20');
+        mainContent.classList.add('lg:ml-64');
+        
+        texts.forEach(t => t.classList.remove('hidden'));
+        logo.classList.remove('hidden');
+        iconLogo.classList.add('hidden');
+        iconLogo.classList.remove('flex');
+        header.classList.remove('justify-center');
+        header.classList.add('justify-between');
+        
+        navLinks.forEach(link => {
+          link.classList.remove('justify-center', 'px-0');
+          link.classList.add('space-x-3', 'px-4');
+        });
+        
+        collapseIcon.setAttribute('d', 'M15 19l-7-7 7-7');
+      } else {
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-20');
+        mainContent.classList.remove('lg:ml-64');
+        mainContent.classList.add('lg:ml-20');
+        
+        texts.forEach(t => t.classList.add('hidden'));
+        logo.classList.add('hidden');
+        iconLogo.classList.remove('hidden');
+        iconLogo.classList.add('flex');
+        header.classList.remove('justify-between');
+        header.classList.add('justify-center');
+        
+        navLinks.forEach(link => {
+          link.classList.remove('space-x-3', 'px-4');
+          link.classList.add('justify-center', 'px-0');
+        });
+        
+        collapseIcon.setAttribute('d', 'M9 5l7 7-7 7');
+      }
+    }
+  </script>
+</body>
+</html>

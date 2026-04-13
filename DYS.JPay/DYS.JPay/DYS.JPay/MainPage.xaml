@@ -4,6 +4,9 @@
              xmlns:local="clr-namespace:DYS.JPay"
              xmlns:shared="clr-namespace:DYS.JPay.Shared;assembly=DYS.JPay.Shared"
              x:Class="DYS.JPay.MainPage"
+             xmlns:ios="clr-namespace:Microsoft.Maui.Controls.PlatformConfiguration.iOSSpecific;assembly=Microsoft.Maui.Controls"
+    ios:Page.PrefersStatusBarHidden="True"
+    ios:Page.PreferredStatusBarUpdateAnimation="Fade"
              BackgroundColor="{DynamicResource PageBackgroundColor}">
 
     <BlazorWebView x:Name="blazorWebView" HostPage="wwwroot/index.html">
