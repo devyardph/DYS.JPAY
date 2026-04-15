@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace DYS.JPay.Common.Dtos
+namespace DYS.JPay.Shared.Shared.Dtos
 {
 	public class NotificationDto
 	{

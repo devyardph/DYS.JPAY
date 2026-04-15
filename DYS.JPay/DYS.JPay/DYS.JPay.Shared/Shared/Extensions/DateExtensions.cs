@@ -1,7 +1,7 @@
-﻿using DYS.JPay.Common.Dtos;
+﻿using DYS.JPay.Shared.Shared.Dtos;
 using System.Globalization;
 
-namespace DYS.JPay.Common.Extensions
+namespace DYS.JPay.Shared.Shared.Extensions
 {
 	public static class DateExtensions
     {

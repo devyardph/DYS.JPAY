@@ -15,11 +15,8 @@
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Authorization" Version="10.0.5" />
 	  <PackageReference Include="Microsoft.AspNetCore.Components.Web" Version="10.0.0" />
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
+	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
 	  <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\..\DYS.JPay.App.Shared\DYS.JPay.Common.csproj" />
   </ItemGroup>
 
 </Project>

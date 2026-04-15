@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DYS.JPay.Common.Extensions
+namespace DYS.JPay.Shared.Shared.Extensions
 {
     public static class BooleanExtensions
     {

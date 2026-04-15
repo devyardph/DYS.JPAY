@@ -5,7 +5,7 @@ using System.Collections.Generic;
 using System.ComponentModel;
 
 
-namespace DYS.JPay.Common.Extensions
+namespace DYS.JPay.Shared.Shared.Extensions
 {
 	public static class GenericExtensions
 	{

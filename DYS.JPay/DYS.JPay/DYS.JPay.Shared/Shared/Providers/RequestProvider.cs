@@ -1,5 +1,5 @@
-﻿using DYS.JPay.Common.Dtos;
-using DYS.JPay.Common.Extensions;
+﻿using DYS.JPay.Shared.Shared.Dtos;
+using DYS.JPay.Shared.Shared.Extensions;
 using DYS.JPay.Shared.Shared.Extensions;
 using System;
 using System.Collections.Generic;

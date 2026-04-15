@@ -4,7 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Web;
 
-namespace DYS.JPay.Common.Extensions
+namespace DYS.JPay.Shared.Shared.Extensions
 {
 
 	public static class StringExtensions

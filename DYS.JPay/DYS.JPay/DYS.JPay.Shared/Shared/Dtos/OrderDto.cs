@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace DYS.JPay.Common.Dtos
+namespace DYS.JPay.Shared.Shared.Dtos
 {
     public class OrderDto
     {

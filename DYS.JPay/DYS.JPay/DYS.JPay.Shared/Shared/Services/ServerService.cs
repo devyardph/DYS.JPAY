@@ -1,4 +1,4 @@
-﻿using DYS.JPay.Common.Dtos;
+﻿using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Features.AppSettings.Views;
 using DYS.JPay.Shared.Shared.Providers;
 using Microsoft.AspNetCore.Components;

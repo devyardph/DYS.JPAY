@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DYS.JPay.Common.Dtos;
+using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.ViewModels;

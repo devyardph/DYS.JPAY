@@ -1,4 +1,4 @@
-using DYS.JPay.Common.Dtos;
+using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
 using System.Data.Common;
 using System.Linq.Expressions;
