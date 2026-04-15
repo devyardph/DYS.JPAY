@@ -1,0 +1,27 @@
+﻿@page "/"
+@using DYS.JPay.Shared.Features.Products.ViewModels
+@inject SampleViewModel VM
+
+ 
+ @if (VM?.isBusy == true)
+{
+  <span>Loading...</span>
+}
+else
+{
+    <ul>
+        @foreach (var test in VM?.Testings!)
+        {
+            <li>@test.Title</li>
+            <li>@test.Description</li>
+        }
+    </ul>
+}
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        await VM.GetAllAsync();
+        await base.OnInitializedAsync();
+    }
+}

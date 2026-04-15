@@ -1,4 +1,5 @@
-﻿using DYS.JPay.Services;
+﻿using DYS.JPay.Helpers;
+using DYS.JPay.Services;
 using DYS.JPay.Shared.Shared.Data;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Extensions;
@@ -40,6 +41,7 @@ namespace DYS.JPay
             builder.Services.AddScoped<ICustomerService, CustomerService>();
             builder.Services.AddScoped<IAccountService, AccountService>();
             builder.Services.AddScoped<IAppSettingService, AppSettingService>();
+            builder.Services.AddScoped<IServerService, ServerService>();
             builder.Services.AddSingleton<SessionService>();
 
             builder.Services.AddTransientForViewModels(typeof(BaseViewModel).Assembly);
@@ -49,26 +51,11 @@ namespace DYS.JPay
             builder.Services.AddScoped<IIdentityAuthenticationStateProvider, IdentityAuthenticationStateProvider>();
             MapsterConfig.RegisterMappings();
 
+            var ip = NetworkHelper.GetLocalWifiIp();
+            builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri($"http://{ip}:5000") });
+            builder.Services.AddScoped<IRequestProvider, RequestProvider>();
+
             builder.Services.AddMauiBlazorWebView();
-
-            //builder.ConfigureLifecycleEvents(events =>
-            //{
-            //#if WINDOWS
-            //    events.AddWindows(windows =>
-            //    {
-            //        windows.OnWindowCreated(window =>
-            //        {
-            //            var hwnd = WinRT.Interop.WindowNative.GetWindowHandle(window);
-            //            var id = Microsoft.UI.Win32Interop.GetWindowIdFromWindow(hwnd);
-            //            var appWindow = Microsoft.UI.Windowing.AppWindow.GetFromWindowId(id);
-
-            //            // Use FullScreenPresenter instead of enum
-            //            var presenter = Microsoft.UI.Windowing.FullScreenPresenter.Create();
-            //            appWindow.SetPresenter(presenter);
-            //        });
-            //    });
-            //#endif
-            //});
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

@@ -1,5 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
-using DYS.JPay.Shared.Shared.Dtos;
+using DYS.JPay.Common.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.ViewModels;
@@ -19,17 +19,20 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
 
         public readonly IProductService _productService;
         public readonly IOrderService _orderService;
+        public readonly IServerService _serverService;
         public readonly NavigationManager _navigationManager;
 
         public SaleViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             IAppSettingService appSettingService,
             IProductService productService,
-            IOrderService orderService) : base(navigationManager, jsRuntime, appSettingService)
+            IOrderService orderService,
+            IServerService serverService) : base(navigationManager, jsRuntime, appSettingService)
         {
             _navigationManager = navigationManager;
             _productService = productService;
             _orderService = orderService;
+            _serverService = serverService;
         }
 
         #region PROPERTIES
@@ -97,6 +100,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             await _orderService.PlaceOrderAsync(order);
 
             var items = new List<OrderItem>();
+            var testings = new List<TestingDto>();
             foreach (var item in OrderItems!)
             {
                 items.Add(new OrderItem
@@ -107,7 +111,11 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                     Price = item.Product.Price,
                     Quantity = item.Count
                 });
+                testings.Add(new TestingDto { Title = item.Product.Name, Description = $"{item.Product.Name} @ {item.Product.Price}" });
             }
+
+            await _serverService.SubmitTestOrders(testings);
+
             await _orderService.AddOrderItemsAsync(items);
             await _jsRuntime.InvokeVoidAsync("closeModal", "charge-modal");
             await _jsRuntime.InvokeVoidAsync("showProgessBar");

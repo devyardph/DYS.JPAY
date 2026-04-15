@@ -1,8 +1,19 @@
 <Solution>
-  <Project Path="DYS.JPay/DYS.JPay.Shared/DYS.JPay.Shared.csproj" />
-  <Project Path="DYS.JPay/DYS.JPay.Web.Client/DYS.JPay.Web.Client.csproj" />
-  <Project Path="DYS.JPay/DYS.JPay.Web/DYS.JPay.Web.csproj" />
-  <Project Path="DYS.JPay/DYS.JPay/DYS.JPay.csproj">
-    <Deploy Solution="Debug|*" />
-  </Project>
+  <Folder Name="/client/">
+    <Project Path="DYS.JPay/DYS.JPay.Shared/DYS.JPay.Shared.csproj" />
+    <Project Path="DYS.JPay/DYS.JPay.Web.Client/DYS.JPay.Web.Client.csproj" />
+    <Project Path="DYS.JPay/DYS.JPay.Web/DYS.JPay.Web.csproj" />
+    <Project Path="DYS.JPay/DYS.JPay/DYS.JPay.csproj">
+      <Deploy Solution="Debug|*" />
+    </Project>
+  </Folder>
+  <Folder Name="/server/">
+    <Project Path="DYS.JPay.Server/DYS.JPay.Server.Shared/DYS.JPay.Server.Shared.csproj" Id="13e75738-d622-4e01-9c03-6d0bb09319b9" />
+    <Project Path="DYS.JPay.Server/DYS.JPay.Server.Web.Client/DYS.JPay.Server.Web.Client.csproj" Id="0b836613-ce4b-46e5-92a8-97d46c9eeea5" />
+    <Project Path="DYS.JPay.Server/DYS.JPay.Server.Web/DYS.JPay.Server.Web.csproj" Id="fe99ea49-4e86-442d-b4ba-0f996642de62" />
+    <Project Path="DYS.JPay.Server/DYS.JPay.Server/DYS.JPay.Server.csproj" Id="fa6a00f5-a912-4d8e-93e8-be3f87926854" />
+  </Folder>
+  <Folder Name="/shared/">
+    <Project Path="DYS.JPay.App.Shared/DYS.JPay.Common.csproj" Id="5961f769-2673-49d9-87d6-402a09c08beb" />
+  </Folder>
 </Solution>

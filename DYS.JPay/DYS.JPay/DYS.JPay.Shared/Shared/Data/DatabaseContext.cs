@@ -1,5 +1,5 @@
 ﻿using DYS.JPay.Shared.Features.Products.Views;
-using DYS.JPay.Shared.Shared.Dtos;
+using DYS.JPay.Common.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
 using SQLite;
 using System;

@@ -8,6 +8,11 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Providers
 {
+    public interface IIdentityAuthenticationStateProvider
+    {
+        public Task MarkedAsLoggedIn(User user);
+        public Task MarkedAsLoggedOut();
+    }
     public class IdentityAuthenticationStateProvider: AuthenticationStateProvider, IIdentityAuthenticationStateProvider
     {
         private readonly SessionService _session;
