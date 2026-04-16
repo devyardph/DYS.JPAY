@@ -4,8 +4,9 @@
 @inject IJSRuntime JS
 @inject SaleViewModel VM
 
-
-<div id="main-content" class="flex-1 lg:ml-64 h-full overflow-hidden flex flex-col lg:flex-row transition-all duration-300">
+<PageComponent>
+    <PageContent>
+        <div id="main-content" class="flex-1 lg:ml-64 h-full overflow-hidden flex flex-col lg:flex-row transition-all duration-300">
     <main class="flex-1 p-4 md:p-8 lg:pr-[26rem] opacity-0 animate-fade-in-up overflow-y-auto no-scrollbar">
         <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
             <div>
@@ -20,7 +21,7 @@
 
                 <div class="flex items-center bg-surface-container-low rounded-lg p-1 shrink-0">
                     <!-- Grid View Button -->
-                    <button @onclick="@(() => @VM.SetDisplay("grid"))" class="p-2 rounded-md transition-colors shadow-sm @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "grid", "bg-white text-primary", "text-on-surface-variant hover:text-primary")">
+                    <button @onclick="@(() => @VM.OnDisplayChanged("grid"))" class="p-2 rounded-md transition-colors shadow-sm @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "grid", "bg-white text-primary", "text-on-surface-variant hover:text-primary")">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              width="24" height="24"
                              viewBox="0 0 24 24"
@@ -39,7 +40,7 @@
                     </button>
 
                     <!-- List View Button -->
-                    <button @onclick="@(() => @VM.SetDisplay("list"))" class="p-2 rounded-md transition-colors @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "list", "bg-white text-primary", "text-on-surface-variant hover:text-primary")">
+                    <button @onclick="@(() => @VM.OnDisplayChanged("list"))" class="p-2 rounded-md transition-colors @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "list", "bg-white text-primary", "text-on-surface-variant hover:text-primary")">
                         <svg xmlns="http://www.w3.org/2000/svg"
                              width="24" height="24"
                              viewBox="0 0 24 24"
@@ -63,15 +64,15 @@
         </div>
 
         <!-- Categories -->
-        <div class="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-4">
+        @* <div class="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-4">
             <button @onclick="@(() => VM.FilterProducstsAsync(""))" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-primary text-white shadow-md">All Items</button>
             <button @onclick="@(() => VM.FilterProducstsAsync("Coffee"))" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Coffee</button>
             <button @onclick="@(() => VM.FilterProducstsAsync("Pastries"))" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Pastries</button>
             <button @onclick="@(() => VM.FilterProducstsAsync("Tea"))" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Merch</button>
-        </div>
+        </div> *@
 
         <!-- Products Grid -->
-        <ProductsComponent Display="@VM.AppSetting.Display" Products="@VM.FilteredProducts" AddToOrder="VM.AddOrder" />
+        <ProductsComponent Display="@VM.AppSetting.Display" Products="@VM.Products" AddToOrder="VM.AddOrderAsync" />
         <!-- Products Grid -->
 
     </main>
@@ -83,13 +84,13 @@
             </h2>
         </div>
       
-        <CartComponent OrderItems="@VM.OrderItems" OrderChanged="@VM.OrderChanged" />
+        <CartComponent OrderItems="@VM.Orders" OrderChanged="@VM.OrderChanged" />
       
         <div class="p-6 border-t border-outline-variant/10 bg-surface-container-low/30">
             <div class="space-y-2 mb-4">
                 <div class="flex justify-between text-sm text-on-surface-variant">
                     <span>Subtotal</span>
-                    <span id="cart-subtotal">$@VM.Order.Total?.ToString("N2")</span>
+                    <span id="cart-subtotal">$@VM.Transaction.Total?.ToString("N2")</span>
                 </div>
                 <div class="flex justify-between text-sm text-on-surface-variant">
                     <span>Tax (8%)</span>
@@ -97,21 +98,22 @@
                 </div>
                 <div class="flex justify-between text-lg font-black text-primary pt-2 border-t border-outline-variant/10">
                     <span>Total</span>
-                    <span id="cart-total">$@VM.Order.Total?.ToString("N2")</span>
+                    <span id="cart-total">$@VM.Transaction.Total?.ToString("N2")</span>
                 </div>
             </div>
-            <button id="charge-btn" @onclick="@ProcessOrder" class="w-full ledger-gradient text-white py-5 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95">
-                Charge <span id="charge-amount">$@VM.Order.Total?.ToString("N2")</span>
+            <button id="charge-btn" @onclick="@ProcessOrderAsync" class="w-full ledger-gradient text-white py-5 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed active:scale-95">
+                Charge <span id="charge-amount">$@VM.Transaction.Total?.ToString("N2")</span>
                 <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
             </button>
             <p></p>
         </div>
     </div>
 </div>
-
-<PaymentComponent @bind-Order="@VM.Order"/>
-<ChargeComponent @bind-Order="@VM.Order" PlaceOrder="@VM.ChargeAsync"/>
-<ResultComponent @bind-Order="@VM.Order" @bind-OrderItems="@VM.OrderItems" />
+        <PaymentComponent @bind-Transaction="@VM.Transaction" />
+        <ChargeComponent @bind-Transaction="@VM.Transaction" ProcessPayment="@VM.ProcessPaymentAsync" />
+        <ResultComponent @bind-Transaction="@VM.Transaction" @bind-Orders="@VM.Orders" />
+    </PageContent>
+</PageComponent>
 
 @code {
     @code {
@@ -132,10 +134,7 @@
             }
         }
 
-        public async Task ProcessOrder()
-        {
-            await JS.InvokeVoidAsync("openModal", "payment-modal");
-        }
+        public async Task ProcessOrderAsync() => await JS.InvokeVoidAsync("openModal", "payment-modal");
     }
 
 }

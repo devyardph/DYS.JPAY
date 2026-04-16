@@ -44,17 +44,17 @@
 </div>
 @code {
     [Parameter]
-    public List<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
+    public List<OrderDto> OrderItems { get; set; } = new List<OrderDto>();
     [Parameter]
-    public EventCallback<OrderItemDto> OrderChanged { get; set; }
+    public EventCallback<OrderDto> OrderChanged { get; set; }
 
-    public async Task OnRemoveOrder(OrderItemDto order)
+    public async Task OnRemoveOrder(OrderDto order)
     {
         order.Count = 0;
         await OrderChanged.InvokeAsync(order);
     }
 
-    public async Task IncreaseOrder(OrderItemDto order)
+    public async Task IncreaseOrder(OrderDto order)
     {
         var orderItem = OrderItems?.FirstOrDefault(query => query.Id == order.Id);
         if (orderItem != null) {
@@ -63,7 +63,7 @@
         }
     }
 
-    public async Task DecreaseOrder(OrderItemDto order)
+    public async Task DecreaseOrder(OrderDto order)
     {
         order.Count = order.Count - 1;
         await OrderChanged.InvokeAsync(order);

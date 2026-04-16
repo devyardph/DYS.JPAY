@@ -23,18 +23,18 @@
 @code {
 
     [Parameter]
-    public OrderDto Order { get; set; } = new OrderDto();
+    public TransactionDto Transaction { get; set; } = new TransactionDto();
     [Parameter]
-    public List<OrderItemDto> OrderItems { get; set; } = new List<OrderItemDto>();
+    public List<OrderDto> Orders { get; set; } = new List<OrderDto>();
     [Parameter]
-    public EventCallback<OrderDto> OrderChanged { get; set; }
+    public EventCallback<TransactionDto> TransactionChanged { get; set; }
     [Parameter]
-    public EventCallback<List<OrderItemDto>> OrderItemsChanged { get; set; }
+    public EventCallback<List<OrderDto>> OrdersChanged { get; set; }
 
     public async Task Complete()
     {
         await JS.InvokeVoidAsync("closeModal", "result-modal");
-        await OrderChanged.InvokeAsync(new OrderDto());
-        await OrderItemsChanged.InvokeAsync(new List<OrderItemDto>());
+        await TransactionChanged.InvokeAsync(new TransactionDto());
+        await OrdersChanged.InvokeAsync(new List<OrderDto>());
     }
 }

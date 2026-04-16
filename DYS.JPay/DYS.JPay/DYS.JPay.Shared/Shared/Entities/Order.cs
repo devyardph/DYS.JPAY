@@ -6,13 +6,10 @@ namespace DYS.JPay.Shared.Shared.Entities
 {
     public class Order : BaseEntity
     {
-        public DateTime? Date { get; set; }
-        public string CustomerName { get; set; }
-        public string PaymentMode { get; set; }
-        public string ReferenceNo { get; set; }
-        public double? AmountTendered { get; set; }
-        public double? Total { get; set; }
-        public double? Count { get; set; }
+        public Guid? TransactionId { get; set; }
+        public Guid? ProductId { get; set; }
+        public string Name { get; set; }
+        public int? Quantity { get; set; }
+        public double? Price { get; set; }
     }
-
 }

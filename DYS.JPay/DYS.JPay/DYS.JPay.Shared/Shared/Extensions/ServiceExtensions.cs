@@ -1,4 +1,5 @@
-﻿using DYS.JPay.Shared.Shared.ViewModels;
+﻿using DYS.JPay.Shared.Shared.Services;
+using DYS.JPay.Shared.Shared.ViewModels;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.JSInterop;
 using System.Diagnostics;
@@ -9,43 +10,31 @@ namespace DYS.JPay.Shared.Shared.Extensions
 {
     public static class ServiceExtensions
     {
-        public static void AddScopedForBaseClass<TBase, TInterface>(this IServiceCollection services, Assembly assembly)
+        public static IServiceCollection AddScopedForBaseClasses(this IServiceCollection services, Assembly assembly)
         {
-            var baseClassType = typeof(TBase);
-            var baseInterfaceType = typeof(TInterface);
-
-            // Find all classes that inherit from the base class and implement an interface derived from the base interface
+            // Find all concrete classes that implement IBaseService
             var types = assembly.GetTypes()
-                .Where(type => type.IsClass
-                               && !type.IsAbstract
-                               && baseClassType.IsAssignableFrom(type)
-                               && type.GetInterfaces().Any(i => i != baseInterfaceType && baseInterfaceType.IsAssignableFrom(i)));
+                .Where(t => t.IsClass && !t.IsAbstract && typeof(IBaseService).IsAssignableFrom(t));
 
-            // Register each type with the DI container
-            foreach (var type in types)
+            foreach (var implType in types)
             {
-                var implementedInterface = type.GetInterfaces()
-                    .FirstOrDefault(i => i != baseInterfaceType && baseInterfaceType.IsAssignableFrom(i));
+                // Find the first interface that matches naming convention (e.g. ISaleService for SaleService)
+                var serviceInterface = implType.GetInterfaces()
+                    .FirstOrDefault(i => i.Name == $"I{implType.Name}");
 
-                if (implementedInterface != null)
+                if (serviceInterface != null)
                 {
-                    services.AddScoped(implementedInterface, type);
+                    services.AddScoped(serviceInterface, implType);
+                }
+                else
+                {
+                    // fallback: register the class itself
+                    services.AddScoped(implType);
                 }
             }
+
+            return services;
         }
-
-        public static void AddScopedForBaseClass<TBase>(this IServiceCollection services, Assembly assembly)
-        {
-            var baseType = typeof(TBase);
-          
-            // Find all classes that inherit from the base class
-            var types = assembly.GetTypes()
-                .Where(type => type.IsClass && !type.IsAbstract && baseType.IsAssignableFrom(type));
-
-            // Register each derived type with scoped lifetime
-            foreach (var type in types) services.AddScoped(type);
-        }
-
 
 
         public static IServiceCollection AddTransientForViewModels(this IServiceCollection services, Assembly assembly)

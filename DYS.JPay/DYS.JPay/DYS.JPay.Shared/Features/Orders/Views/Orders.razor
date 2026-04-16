@@ -1,0 +1,29 @@
+﻿@page "/orders"
+@using DYS.JPay.Shared.Features.Products.ViewModels
+@using DYS.JPay.Shared.Shared.Components
+@using DYS.JPay.Shared.Shared.Extensions
+@using Microsoft.AspNetCore.Authorization
+@inject IPeerService PeerService
+@inject OrdersViewModel VM
+
+ 
+<PageComponent>
+    <PageContent>
+       
+    </PageContent>
+</PageComponent>
+
+
+
+@code{
+    protected override async Task OnInitializedAsync()
+    {
+        //RETRIEVE DATA FROM DIFFERENT PEERS
+        PeerService.OrderReceived += async (content) =>
+        {
+           await VM.ReceiveCartsAsync(content);
+           StateHasChanged();
+        };
+        await base.OnInitializedAsync();
+    }
+}

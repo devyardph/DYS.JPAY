@@ -6,12 +6,12 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Services
 {
-    public interface ICustomerService
+    public interface ICustomerService: IBaseService
     {
         Task<int> AddCustomerAsync(Customer customer);
     }
 
-    public class CustomerService : ICustomerService
+    public class CustomerService : BaseService,ICustomerService
     {
         private readonly IRepository<Customer> _customerRepository;
 

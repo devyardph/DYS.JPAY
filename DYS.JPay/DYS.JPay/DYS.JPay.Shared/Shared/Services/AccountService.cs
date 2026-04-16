@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Services
 {
-    public interface IAccountService
+    public interface IAccountService: IBaseService
     {
         Task<int> RegisterUserAsync(string username, string code, string role);
         Task<User> LoginAsync(string username, string code);
@@ -14,7 +14,7 @@ namespace DYS.JPay.Shared.Shared.Services
         Task GetAllAsync();
     }
 
-    public class AccountService : IAccountService
+    public class AccountService : BaseService, IAccountService
     {
         private readonly IRepository<User> _repo;
 

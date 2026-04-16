@@ -6,13 +6,10 @@ namespace DYS.JPay.Shared.Shared.Dtos
 {
     public class OrderDto
     {
-        public string CustomerName { get; set; }
-        public string PaymentMode { get; set; }
-        public string ReferenceNo { get; set; }
-        public double? AmountTendered { get; set; }
-        public double? Total { get; set; }
-        public double? Count { get; set; }
-        public DateTime? Date { get; set; }
-
+        public Guid? Id { get; set; }
+        public Guid? TransactionId { get; set; }
+        public ProductDto Product { get; set; } = new ProductDto();
+        public int Count { get; set; } = 1;
+        public double Total { get; set; }
     }
 }

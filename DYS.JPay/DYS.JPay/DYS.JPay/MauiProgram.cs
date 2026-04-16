@@ -29,26 +29,22 @@ namespace DYS.JPay
 
             // Add device-specific services used by the DYS.JPay.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-7.db");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-8.db");
             var dbContext = new DatabaseContext(dbPath);
 
             Task.Run(async () => await dbContext.InitializeAsync());
 
             builder.Services.AddSingleton(dbContext);
             builder.Services.AddScoped(typeof(IRepository<>), typeof(Repository<>));
-            builder.Services.AddScoped<IProductService, ProductService>();
-            builder.Services.AddScoped<IOrderService, OrderService>();
-            builder.Services.AddScoped<ICustomerService, CustomerService>();
-            builder.Services.AddScoped<IAccountService, AccountService>();
-            builder.Services.AddScoped<IAppSettingService, AppSettingService>();
-            builder.Services.AddScoped<IServerService, ServerService>();
             builder.Services.AddSingleton<SessionService>();
 
             builder.Services.AddTransientForViewModels(typeof(BaseViewModel).Assembly);
+            builder.Services.AddScopedForBaseClasses(typeof(BaseService).Assembly);
 
             builder.Services.AddAuthorizationCore();
             builder.Services.AddScoped<AuthenticationStateProvider, IdentityAuthenticationStateProvider>();
             builder.Services.AddScoped<IIdentityAuthenticationStateProvider, IdentityAuthenticationStateProvider>();
+
             MapsterConfig.RegisterMappings();
 
             var ip = NetworkHelper.GetLocalWifiIp();
@@ -56,6 +52,16 @@ namespace DYS.JPay
             builder.Services.AddScoped<IRequestProvider, RequestProvider>();
 
             builder.Services.AddMauiBlazorWebView();
+
+            //PEER TO PEER
+#if IOS
+                builder.Services.AddSingleton<IPeerService,  DYS.JPay.Platforms.iOS.PeerService>();
+#elif ANDROID
+            builder.Services.AddSingleton<IPeerService, DYS.JPay.Platforms.Android.PeerService>();
+#elif WINDOWS
+                builder.Services.AddSingleton<IPeerService, DYS.JPay.Platforms.Windows.PeerService>();
+#endif
+
 
 #if DEBUG
             builder.Services.AddBlazorWebViewDeveloperTools();

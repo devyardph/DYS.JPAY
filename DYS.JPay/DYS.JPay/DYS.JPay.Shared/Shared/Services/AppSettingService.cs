@@ -7,12 +7,12 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Services
 {
-    public interface IAppSettingService
+    public interface IAppSettingService: IBaseService
     {
         Task<AppSetting> GetSettingAsync();
         Task<int> SaveChangesAsync(AppSetting appSetting);
     }
-    public class AppSettingService : IAppSettingService
+    public class AppSettingService : BaseService,IAppSettingService
     {
         private readonly IRepository<AppSetting> _appSettingRepository;
 

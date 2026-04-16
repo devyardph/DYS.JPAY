@@ -20,8 +20,8 @@ namespace DYS.JPay.Shared.Shared.Data
         public async Task InitializeAsync() {
             // Create tables safely
             await _connection.CreateTableAsync<Product>();
+            await _connection.CreateTableAsync<Transaction>();
             await _connection.CreateTableAsync<Order>();
-            await _connection.CreateTableAsync<OrderItem>();
             await _connection.CreateTableAsync<Customer>();
             await _connection.CreateTableAsync<User>();
             await _connection.CreateTableAsync<AppSetting>();

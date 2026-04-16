@@ -7,12 +7,12 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Services
 {
-    public interface IProductService
+    public interface IProductService: IBaseService
     {
         Task<List<Product>> GetProductsAsync();
         Task<PageDto<Product>> GetProductsAsync(SearchDto search);
     }
-    public class ProductService : IProductService
+    public class ProductService : BaseService,IProductService
     {
         private readonly IRepository<Product> _productRepository;
 

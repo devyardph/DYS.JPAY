@@ -3,20 +3,20 @@
     <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300" id="payment-modal-content">
         
         <div class="grid justify-items-stretch mb-7">
-            <h2 class="text-5xl text-center font-headline font-bold text-primary mb-2">@Order?.Total?.ToString("c2")</h2>
+            <h2 class="text-5xl text-center font-headline font-bold text-primary mb-2">@Transaction?.Total?.ToString("c2")</h2>
             <label class="text-[12px] text-center font-bold uppercase tracking-widest text-[#40484c]">amount due</label>
         </div>
 
            
         <div class="grid grid-cols-2 gap-4 mb-6">
-            <button @onclick="@(() => SetPaymentMethod("cash"))" class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-outline-variant/20 hover:border-primary hover:bg-primary/5 transition-all group @BooleanExtensions.GetConditionalString(Order?.PaymentMode == "cash", "border-primary bg-primary/5", "")">
-                <div class="w-12 h-12 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors @BooleanExtensions.GetConditionalString(Order?.PaymentMode == "cash", "bg-primary text-white", "bg-surface-container-low")">
+            <button @onclick="@(() => SetPaymentMethodAsync("cash"))" class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-outline-variant/20 hover:border-primary hover:bg-primary/5 transition-all group @BooleanExtensions.GetConditionalString(Transaction?.PaymentMode == "cash", "border-primary bg-primary/5", "")">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors @BooleanExtensions.GetConditionalString(Transaction?.PaymentMode == "cash", "bg-primary text-white", "bg-surface-container-low")">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
                 </div>
                 <span class="text-[12px] text-center font-bold uppercase tracking-widest text-[#40484c]">CASH</span>
             </button>
-            <button @onclick="@(() => SetPaymentMethod("card"))" class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-outline-variant/20 hover:border-primary hover:bg-primary/5 transition-all group active:scale-95 @BooleanExtensions.GetConditionalString(Order?.PaymentMode == "card", "border-primary bg-primary/5", "")">
-                <div class="w-12 h-12 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors @BooleanExtensions.GetConditionalString(Order?.PaymentMode == "card", "bg-primary text-white", "bg-surface-container-low")">
+            <button @onclick="@(() => SetPaymentMethodAsync("card"))" class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-outline-variant/20 hover:border-primary hover:bg-primary/5 transition-all group active:scale-95 @BooleanExtensions.GetConditionalString(Transaction?.PaymentMode == "card", "border-primary bg-primary/5", "")">
+                <div class="w-12 h-12 rounded-full flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors @BooleanExtensions.GetConditionalString(Transaction?.PaymentMode == "card", "bg-primary text-white", "bg-surface-container-low")">
                     <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
                 </div>
                 <span class="text-[12px] text-center font-bold uppercase tracking-widest text-[#40484c]">CARD</span>
@@ -32,15 +32,15 @@
 
 @code {
     [Parameter]
-    public OrderDto Order { get; set; } = new OrderDto();
+    public TransactionDto Transaction { get; set; } = new TransactionDto();
     [Parameter]
-    public EventCallback<OrderDto> OrderChanged { get; set; }
+    public EventCallback<TransactionDto> TransactionChanged { get; set; }
 
-    public async Task SetPaymentMethod(string method)
+    public async Task SetPaymentMethodAsync(string method)
     {
-        Order.PaymentMode = method;
+        Transaction.PaymentMode = method;
         await JS.InvokeVoidAsync("closeModal","payment-modal");
         await JS.InvokeVoidAsync("openModal", "charge-modal");
-        await OrderChanged.InvokeAsync(Order);
+        await TransactionChanged.InvokeAsync(Transaction);
     }
 }

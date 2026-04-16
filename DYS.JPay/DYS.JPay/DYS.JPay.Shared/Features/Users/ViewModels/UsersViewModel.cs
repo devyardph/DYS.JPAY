@@ -10,7 +10,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DYS.JPay.Shared.Features.Orders.ViewModels
+namespace DYS.JPay.Shared.Features.Users.ViewModels
 {
     public partial class UsersViewModel : BaseViewModel
     {
@@ -32,7 +32,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
         private SearchDto search = new SearchDto();
 
         [ObservableProperty]
-        private PageDto<OrderDto> orders = new PageDto<OrderDto>() { Results = new List<OrderDto>() };
+        private PageDto<TransactionDto> orders = new PageDto<TransactionDto>() { Results = new List<TransactionDto>() };
         #endregion
 
         #region FUNCTIONS
@@ -43,7 +43,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             if (action == "next") currentPage = Search.NextEnabled ? Search.CurrentPage + 1 : Search.CurrentPage;
             else if (action == "previous") currentPage = Search.PreviousEnabled ? Search.CurrentPage - 1 : Search.CurrentPage;
 
-            Orders = new PageDto<OrderDto>();
+            Orders = new PageDto<TransactionDto>();
             Search.CurrentPage = currentPage;
             Search.PageSize = 10;
 
@@ -51,7 +51,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             if (output is not null)
             {
 
-                Orders = output.Adapt<PageDto<OrderDto>>();
+                Orders = output.Adapt<PageDto<TransactionDto>>();
                 Search.CurrentPage = Orders.PageIndex;
 
                 var display = Orders!.PageIndex * Search!.PageSize;

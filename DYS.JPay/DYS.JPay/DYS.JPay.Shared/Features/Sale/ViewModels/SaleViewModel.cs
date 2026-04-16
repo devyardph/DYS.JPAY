@@ -1,6 +1,7 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
+using DYS.JPay.Shared.Shared.Extensions;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Mapster;
@@ -11,6 +12,7 @@ using System;
 using System.Collections.Generic;
 using System.Data.Common;
 using System.Text;
+using System.Text.Json.Serialization;
 
 namespace DYS.JPay.Shared.Features.Products.ViewModels
 {
@@ -19,118 +21,111 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
 
         public readonly IProductService _productService;
         public readonly IOrderService _orderService;
-        public readonly IServerService _serverService;
-        public readonly NavigationManager _navigationManager;
+        public readonly IPeerService _peerService;
 
         public SaleViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             IAppSettingService appSettingService,
             IProductService productService,
             IOrderService orderService,
-            IServerService serverService) : base(navigationManager, jsRuntime, appSettingService)
+            IPeerService peerService) : base(navigationManager, jsRuntime, appSettingService)
         {
             _navigationManager = navigationManager;
             _productService = productService;
             _orderService = orderService;
-            _serverService = serverService;
+            _peerService = peerService;
         }
 
         #region PROPERTIES
         [ObservableProperty]
         private List<ProductDto> products = new List<ProductDto>();
         [ObservableProperty]
-        private List<ProductDto> filteredProducts = new List<ProductDto>();
+        private List<OrderDto> orders = new List<OrderDto>();
         [ObservableProperty]
-        private List<OrderItemDto> orderItems = new List<OrderItemDto>();
-        [ObservableProperty]
-        private OrderDto order= new OrderDto();
+        private TransactionDto transaction= new TransactionDto();
         [ObservableProperty]
         private string pendingCartId = string.Empty;
         [ObservableProperty]
         private SearchDto search = new SearchDto();
+        #endregion
 
         #region FUNCTIONS
         public async Task GetProductsAsync()
         {
             IsBusy = true;
             var output = await _productService.GetProductsAsync();
-            if (output is not null)
-            {
+            if (output is not null) {
                 Products = output.Adapt<List<ProductDto>>();
-                FilteredProducts = Products;
             }
             IsBusy = false;
         }
-        public async Task AddOrder(ProductDto product)
+        public async Task AddOrderAsync(ProductDto product)
         {
             var count = 1;
             var id = string.Empty;
-            var existingOrder = OrderItems?.FirstOrDefault(query => query.Product.Id == product.Id);
-            if (existingOrder != null)
-            {
+            var existingOrder = Orders?.FirstOrDefault(query => query.Product.Id == product.Id);
+            if (existingOrder != null) {
                 count = existingOrder.Count + 1;
                 existingOrder.Count = count;
                 id = existingOrder.Id.ToString();
             }
-            else
-            {
+            else {
                 var newId = Guid.NewGuid();
-                OrderItems?.Add(new OrderItemDto { Id = newId, Product = product, Count = count });
+                Orders?.Add(new OrderDto { Id = newId, Product = product, Count = count });
                 id = newId.ToString();
             }
-            Calculate();
+            Transaction.Total = Orders?.Sum(query => query.Product.Price * query.Count);
             PendingCartId = $"cart-{id}";
         }
-        public void OrderChanged(OrderItemDto order)
+        public async Task ProcessPaymentAsync()
         {
-            if(order.Count == 0)
-                OrderItems?.RemoveAll(query => query.Id == order.Id);
-            Calculate();
-        }
-
-        public void Calculate()
-        {
-            var total = OrderItems?.Sum(query => query.Product.Price * query.Count);
-            Order.Total = total;
-        }
-        public async Task ChargeAsync() {
-            var total = OrderItems.Sum(query => query.Count * query.Product.Price);
-            var count = OrderItems.Sum(query => query.Count);
-            var order = new Order {  Date = DateTime.UtcNow, CustomerName= Order.CustomerName, ReferenceNo= Order.ReferenceNo, Total= total, Count= count };
+            var total = Orders.Sum(query => query.Count * query.Product.Price);
+            var count = Orders.Sum(query => query.Count);
+            var order = new Transaction { Date = DateTime.UtcNow, 
+                   CustomerName = Transaction.CustomerName, 
+                   PaymentMode = Transaction.PaymentMode,
+                   ReferenceNo =  Transaction.ReferenceNo, 
+                   Total = total, Count = count };
             await _orderService.PlaceOrderAsync(order);
 
-            var items = new List<OrderItem>();
-            var testings = new List<TestingDto>();
-            foreach (var item in OrderItems!)
+            var items = new List<Order>();
+            foreach (var item in Orders!)
             {
-                items.Add(new OrderItem
+                items.Add(new Order
                 {
-                    OrderId = order.Id,
+                    TransactionId = order.Id,
                     ProductId = item.Product.Id,
                     Name = item.Product.Name,
                     Price = item.Product.Price,
                     Quantity = item.Count
                 });
-                testings.Add(new TestingDto { Title = item.Product.Name, Description = $"{item.Product.Name} @ {item.Product.Price}" });
             }
+            //SEND VIA PEER TO PEER
+            var cart = new CartDto
+            {
+                Transaction = Transaction,
+                Orders = Orders
+            };
 
-            await _serverService.SubmitTestOrders(testings);
-
+            _peerService.SendOrder(JsonExtensions.Convert(cart));
             await _orderService.AddOrderItemsAsync(items);
+
             await _jsRuntime.InvokeVoidAsync("closeModal", "charge-modal");
             await _jsRuntime.InvokeVoidAsync("showProgessBar");
-            Order = new OrderDto();
-            OrderItems = new List<OrderItemDto>();
-        }
-        public void SetDisplay(string display) => AppSetting.Display = display;
 
-        public async Task FilterProducstsAsync(string type = "")
+            Transaction = new TransactionDto();
+            Orders = new List<OrderDto>();
+        }      
+        #endregion
+
+        #region EVENTS
+        public void OrderChanged(OrderDto order)
         {
-            FilteredProducts = !string.IsNullOrEmpty(type) ?
-                     Products.Where(query => query.Type == type).ToList() :
-                     Products.ToList();
+            if (order.Count == 0) Orders?.RemoveAll(query => query.Id == order.Id);
+            Transaction.Total = Orders?.Sum(query => query.Product.Price * query.Count);
         }
+        public void OnDisplayChanged(string display) => AppSetting.Display = display;
         #endregion
     }
 }
-    #endregion
+   

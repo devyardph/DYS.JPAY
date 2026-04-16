@@ -9,18 +9,18 @@ using System.Text;
 namespace DYS.JPay.Shared.Shared.Services
 {
 
-    public interface IServerService : IBaseService
+    public interface ITransactionService : IBaseService
     {
 
         #region PATIENTS
         Task<BaseResponseDto> SubmitTestOrders(List<TestingDto> payload);
         #endregion
     }
-    public class ServerService : BaseService, IServerService
+    public class TransactionService : BaseService, ITransactionService
     {
         private readonly IRequestProvider _requestProvider;
         private readonly NavigationManager _navigationManager;
-        public ServerService(IRequestProvider requestProvider,
+        public TransactionService(IRequestProvider requestProvider,
                             NavigationManager navigationManager
             )
         {
