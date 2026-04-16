@@ -18,7 +18,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
 {
     public partial class SaleViewModel : BaseViewModel
     {
-
+        public readonly ICategoryService _categoryService;
         public readonly IProductService _productService;
         public readonly IOrderService _orderService;
         public readonly IPeerService _peerService;
@@ -26,17 +26,21 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         public SaleViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             IAppSettingService appSettingService,
+            ICategoryService categoryService,
             IProductService productService,
             IOrderService orderService,
             IPeerService peerService) : base(navigationManager, jsRuntime, appSettingService)
         {
             _navigationManager = navigationManager;
+            _categoryService = categoryService;
             _productService = productService;
             _orderService = orderService;
             _peerService = peerService;
         }
 
         #region PROPERTIES
+        [ObservableProperty]
+        private List<CategoryDto> categories = new List<CategoryDto>();
         [ObservableProperty]
         private List<ProductDto> products = new List<ProductDto>();
         [ObservableProperty]
@@ -50,12 +54,17 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         #endregion
 
         #region FUNCTIONS
-        public async Task GetProductsAsync()
+        public async Task InitiazeCategoriesAndProductsAsync()
         {
             IsBusy = true;
-            var output = await _productService.GetProductsAsync();
-            if (output is not null) {
-                Products = output.Adapt<List<ProductDto>>();
+            await LoadAppSetting();
+            var categoryOutput = await _categoryService.GetCategoriesAsync();
+            if (categoryOutput is not null) {
+                Categories = categoryOutput.Adapt<List<CategoryDto>>();
+            }
+            var productOutput = await _productService.GetProductsAsync();
+            if (productOutput is not null) {
+                Products = productOutput.Adapt<List<ProductDto>>();
             }
             IsBusy = false;
         }

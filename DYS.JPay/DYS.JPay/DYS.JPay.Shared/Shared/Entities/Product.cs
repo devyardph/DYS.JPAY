@@ -6,6 +6,7 @@ namespace DYS.JPay.Shared.Shared.Entities
 {
     public class Product : BaseEntity
     {
+        public Guid? CategoryId { get; set; }
         public string Name { get; set; }
         public string Type { get; set; }
         public string Description { get; set; }

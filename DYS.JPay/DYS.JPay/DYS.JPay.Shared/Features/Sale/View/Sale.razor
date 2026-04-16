@@ -64,12 +64,11 @@
         </div>
 
         <!-- Categories -->
-        @* <div class="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-4">
-            <button @onclick="@(() => VM.FilterProducstsAsync(""))" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-primary text-white shadow-md">All Items</button>
-            <button @onclick="@(() => VM.FilterProducstsAsync("Coffee"))" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Coffee</button>
-            <button @onclick="@(() => VM.FilterProducstsAsync("Pastries"))" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Pastries</button>
-            <button @onclick="@(() => VM.FilterProducstsAsync("Tea"))" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10">Merch</button>
-        </div> *@
+         <div class="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-4">
+             @foreach (var category in VM.Categories) {
+                 <button class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all bg-primary text-white shadow-md">@category.Name</button>
+             }
+        </div> 
 
         <!-- Products Grid -->
         <ProductsComponent Display="@VM.AppSetting.Display" Products="@VM.Products" AddToOrder="VM.AddOrderAsync" />
@@ -119,8 +118,7 @@
     @code {
         protected override async Task OnInitializedAsync()
         {
-            await VM.LoadAppSetting();
-            await VM.GetProductsAsync();
+            await VM.InitiazeCategoriesAndProductsAsync();
             await base.OnInitializedAsync();
             StateHasChanged();
         }

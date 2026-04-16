@@ -11,6 +11,7 @@ namespace DYS.JPay.Shared.Shared.Settings
     {
         public static void RegisterMappings()
         {
+            TypeAdapterConfig<Category, CategoryDto>.NewConfig();
             TypeAdapterConfig<Product, ProductDto>.NewConfig();
             TypeAdapterConfig<Transaction, TransactionDto>.NewConfig();
             TypeAdapterConfig<Order, OrderDto>.NewConfig();
