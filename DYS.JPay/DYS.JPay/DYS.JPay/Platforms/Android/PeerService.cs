@@ -40,9 +40,9 @@ namespace DYS.JPay.Platforms.Android
             // Example: send via OutputStream of a WifiP2pSocket
         }
 
-        public void UpdateOrderStatus(string orderId, string status)
+        public void UpdateOrder(string content)
         {
-            var statusJson = $"{{\"orderId\":\"{orderId}\",\"status\":\"{status}\"}}";
+            //var statusJson = $"{{\"orderId\":\"{orderId}\",\"status\":\"{status}\"}}";
 
             // Example: send via OutputStream of a connected socket
             //if (_socket != null && _socket.OutputStream != null)

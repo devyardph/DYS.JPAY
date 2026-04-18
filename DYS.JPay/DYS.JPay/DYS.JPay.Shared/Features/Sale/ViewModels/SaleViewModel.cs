@@ -3,6 +3,7 @@ using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Extensions;
 using DYS.JPay.Shared.Shared.Services;
+using DYS.JPay.Shared.Shared.Settings;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Mapster;
 using Microsoft.AspNetCore.Components;
@@ -20,7 +21,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
     {
         public readonly ICategoryService _categoryService;
         public readonly IProductService _productService;
-        public readonly IOrderService _orderService;
+        public readonly ITransactionService _transactionService;
         public readonly IPeerService _peerService;
 
         public SaleViewModel(NavigationManager navigationManager,
@@ -28,13 +29,13 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             IAppSettingService appSettingService,
             ICategoryService categoryService,
             IProductService productService,
-            IOrderService orderService,
+            ITransactionService transactionService,
             IPeerService peerService) : base(navigationManager, jsRuntime, appSettingService)
         {
             _navigationManager = navigationManager;
             _categoryService = categoryService;
             _productService = productService;
-            _orderService = orderService;
+            _transactionService = transactionService;
             _peerService = peerService;
         }
 
@@ -90,34 +91,40 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         {
             var total = Orders.Sum(query => query.Count * query.Product.Price);
             var count = Orders.Sum(query => query.Count);
-            var order = new Transaction { Date = DateTime.UtcNow, 
-                   CustomerName = Transaction.CustomerName, 
-                   PaymentMode = Transaction.PaymentMode,
-                   ReferenceNo =  Transaction.ReferenceNo, 
-                   Total = total, Count = count };
-            await _orderService.PlaceOrderAsync(order);
-
+            var transaction = new Transaction { 
+                Date = DateTime.UtcNow, 
+                CustomerName = Transaction.CustomerName, 
+                PaymentMode = Transaction.PaymentMode,
+                ReferenceNo =  Transaction.ReferenceNo, 
+                Total = total, 
+                Count = count,
+                PaymentStatus = GlobalSettings.PAID,
+                Status = GlobalSettings.NEW,
+            };
             var items = new List<Order>();
             foreach (var item in Orders!)
             {
                 items.Add(new Order
                 {
-                    TransactionId = order.Id,
+                    TransactionId = transaction.Id,
                     ProductId = item.Product.Id,
                     Name = item.Product.Name,
                     Price = item.Product.Price,
                     Quantity = item.Count
                 });
             }
+
             //SEND VIA PEER TO PEER
             var cart = new CartDto
             {
-                Transaction = Transaction,
-                Orders = Orders
+                Transaction = transaction.Adapt<TransactionDto>(),
+                Orders = items
             };
 
+            //SAVE TO CURRENT DEVICE
+            await _transactionService.PlaceTransactionAsync(cart);
+            //PASS TO OTHER MAIN DEVICE
             _peerService.SendOrder(JsonExtensions.Convert(cart));
-            await _orderService.AddOrderItemsAsync(items);
 
             await _jsRuntime.InvokeVoidAsync("closeModal", "charge-modal");
             await _jsRuntime.InvokeVoidAsync("showProgessBar");

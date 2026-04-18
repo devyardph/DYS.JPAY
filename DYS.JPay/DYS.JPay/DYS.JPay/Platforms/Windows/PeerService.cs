@@ -55,15 +55,15 @@ namespace DYS.JPay.Platforms.Windows
             }
         }
 
-        public void UpdateOrderStatus(string orderId, string status)
+        public void UpdateOrder(string content)
         {
-            var statusJson = $"{{\"orderId\":\"{orderId}\",\"status\":\"{status}\"}}";
+            //var statusJson = $"{{\"orderId\":\"{orderId}\",\"status\":\"{status}\"}}";
 
-            foreach (var client in _clients)
-            {
-                var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
-                writer.WriteLine(statusJson);
-            }
+            //foreach (var client in _clients)
+            //{
+            //    var writer = new StreamWriter(client.GetStream()) { AutoFlush = true };
+            //    writer.WriteLine(statusJson);
+            //}
         }
     }
 

@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DYS.JPay.Shared.Shared.Dtos;
+using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Mapster;
@@ -16,40 +17,35 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
     {
 
         public readonly IProductService _productService;
+        public readonly ICategoryService _categoryService;
         public readonly NavigationManager _navigationManager;
 
         public ProductsViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             IAppSettingService appSettingService,
-            IProductService patientService) 
+            IProductService patientService,
+            ICategoryService categoryService) 
             : base(navigationManager, jsRuntime, appSettingService)
         {
             _navigationManager = navigationManager;
             _productService = patientService;
+            _categoryService = categoryService;
         }
 
         #region PROPERTIES
         [ObservableProperty]
         private List<ProductDto> menu = new List<ProductDto>();
-
         [ObservableProperty]
-        private string activeMenu = "";
-
-        #region PROPERTIES
+        private List<CategoryDto> categories = new List<CategoryDto>();
         [ObservableProperty]
         private SearchDto search = new SearchDto();
 
         [ObservableProperty]
         private PageDto<ProductDto> products = new PageDto<ProductDto>() { Results = new List<ProductDto>() };
-        #endregion
+        [ObservableProperty]
+        private ProductDto product = new ProductDto();
         #endregion
 
-        public async Task NavigationToPath(string id, string path)
-        {
-            base.NavigationToPath(path, forceLoad: false);
-            ActiveMenu = id;
-            await _jsRuntime.InvokeVoidAsync("toggleSidebar");
-        }
 
         #region FUNCTIONS
         public async Task SearchProductsWithPagingAsync(string action = "", bool refresh = false)
@@ -61,8 +57,8 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
 
             Products = new PageDto<ProductDto>();
             Search.CurrentPage = currentPage;
-            Search.PageSize = 10;
-
+            Search.PageSize = 20;
+            Search.Columns = new List<string>() { $"Name","Description","Price"};
             var output = await _productService.GetProductsAsync(Search);
             if (output is not null)
             {
@@ -76,7 +72,25 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                 Search.NextEnabled = Products.PageIndex <= Products.TotalCount && show < Products.TotalCount;
                 Search.Summary = $"showing {show} of {Products!.TotalCount.ToString("N0")} patients";
             }
+            if (!Categories.Any())
+            {
+                var categories = await _categoryService.GetCategoriesAsync();
+                if (categories is not null) Categories = categories.Adapt<List<CategoryDto>>();
+            }
             IsBusy = false;
+        }
+
+        public async Task SubmitProductAsync()
+        {
+            IsBusy = true;
+            await _productService.SubmitProductAsync(Product);
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas");
+            IsBusy = false;
+        }
+
+        public async Task OpenProduct(ProductDto? product) {
+            Product = product ?? new ProductDto();
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas");
         }
         #endregion
 

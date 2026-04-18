@@ -13,6 +13,7 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public int CurrentPage { get; set; } = 1;
         public int PageSize { get; set; } = 15;
         public List<string> Columns { get; set; } //columns to search in
+        public string SortColumn { get; set; } = string.Empty;
 
 
         public bool NextEnabled { get; set; } = false;

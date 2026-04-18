@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DYS.JPay.Shared.Shared.Dtos;
+using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Mapster;
@@ -15,16 +16,17 @@ namespace DYS.JPay.Shared.Features.Users.ViewModels
     public partial class UsersViewModel : BaseViewModel
     {
 
-        public readonly IOrderService _orderservice;
+        public readonly IUserService _userService;
         public readonly NavigationManager _navigationManager;
 
         public UsersViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             IAppSettingService appSettingService,
-            IOrderService orderService) : base(navigationManager, jsRuntime, appSettingService)
+            IUserService userService)
+            : base(navigationManager, jsRuntime, appSettingService)
         {
             _navigationManager = navigationManager;
-            _orderservice = orderService;
+            _userService = userService;
         }
 
         #region PROPERTIES
@@ -32,35 +34,52 @@ namespace DYS.JPay.Shared.Features.Users.ViewModels
         private SearchDto search = new SearchDto();
 
         [ObservableProperty]
-        private PageDto<TransactionDto> orders = new PageDto<TransactionDto>() { Results = new List<TransactionDto>() };
+        private PageDto<UserDto> users = new PageDto<UserDto>() { Results = new List<UserDto>() };
+        [ObservableProperty]
+        private UserDto user = new UserDto();
         #endregion
 
+
         #region FUNCTIONS
-        public async Task SearchOrdersWithPagingAsync(string action = "", bool refresh = false)
+        public async Task SearchUsersWithPagingAsync(string action = "", bool refresh = false)
         {
             IsBusy = true;
             var currentPage = refresh || Search.CurrentPage == 0 ? 1 : Search.CurrentPage;
             if (action == "next") currentPage = Search.NextEnabled ? Search.CurrentPage + 1 : Search.CurrentPage;
             else if (action == "previous") currentPage = Search.PreviousEnabled ? Search.CurrentPage - 1 : Search.CurrentPage;
 
-            Orders = new PageDto<TransactionDto>();
+            Users = new PageDto<UserDto>();
             Search.CurrentPage = currentPage;
-            Search.PageSize = 10;
-
-            var output = await _orderservice.GetOrdersAsync(Search);
+            Search.PageSize = 20;
+            Search.Columns = new List<string>() { $"Name", "Description", "Price" };
+            var output = await _userService.GetUsersAsync(Search);
             if (output is not null)
             {
 
-                Orders = output.Adapt<PageDto<TransactionDto>>();
-                Search.CurrentPage = Orders.PageIndex;
+                Users = output.Adapt<PageDto<UserDto>>();
+                Search.CurrentPage = Users.PageIndex;
 
-                var display = Orders!.PageIndex * Search!.PageSize;
-                var show = Orders!.TotalCount >= display ? display : Orders.TotalCount;
-                Search.PreviousEnabled = Orders.PageIndex > 1;
-                Search.NextEnabled = Orders.PageIndex <= Orders.TotalCount && show < Orders.TotalCount;
-                Search.Summary = $"showing {show} of {Orders!.TotalCount.ToString("N0")} patients";
+                var display = Users!.PageIndex * Search!.PageSize;
+                var show = Users!.TotalCount >= display ? display : Users.TotalCount;
+                Search.PreviousEnabled = Users.PageIndex > 1;
+                Search.NextEnabled = Users.PageIndex <= Users.TotalCount && show < Users.TotalCount;
+                Search.Summary = $"showing {show} of {Users!.TotalCount.ToString("N0")} patients";
             }
             IsBusy = false;
+        }
+
+        public async Task SubmitUserAsync()
+        {
+            IsBusy = true;
+            await _userService.SubmitUserAsync(User);
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas");
+            IsBusy = false;
+        }
+
+        public async Task OpenUser(UserDto? user)
+        {
+            User = user ?? new UserDto();
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas");
         }
         #endregion
 

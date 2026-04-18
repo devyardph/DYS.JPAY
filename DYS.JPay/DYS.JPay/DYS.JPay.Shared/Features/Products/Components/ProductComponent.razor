@@ -1,0 +1,84 @@
+﻿@using DYS.JPay.Shared.Shared.Entities
+<div class="flex items-center justify-between p-6 border-b border-outline-variant/10 bg-surface-container-low/30">
+    <div>
+        <h2 id="offcanvas-title" class="text-2xl font-headline font-extrabold text-primary">
+            @BooleanExtensions.GetConditionalString(Product.Id.HasValue,"Edit product","New product")
+        </h2>
+        <p id="offcanvas-subtitle" class="text-sm text-on-surface-variant mt-1">
+            @BooleanExtensions.GetConditionalString(Product.Id.HasValue, "Edit existing product.", "Create new product listing.")
+        </p>
+    </div>
+    <button onclick="closeOffcanvas()" class="p-2 hover:bg-surface-container-highest rounded-full transition-colors text-on-surface-variant">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+</div>
+
+<div class="flex-1 overflow-y-auto p-6 no-scrollbar">
+    <form id="canvass-form" onsubmit="event.preventDefault(); closeOffcanvas();" class="space-y-3">
+        <div class="space-y-1.5">
+            <label class="text-xs text-on-surface-variant uppercase tracking-wider pl-1">Product Name</label>
+            <input id="product-name"@bind-value="@Product.Name" type="text" required placeholder="e.g. add name" class="w-full px-5 py-4 bg-surface-container-low border-none rounded-2xl text-sm focus:ring-2 focus:ring-primary transition-all outline-none" />
+        </div>
+        <div class="space-y-1.5">
+            <label class="text-xs text-on-surface-variant uppercase tracking-wider pl-1">Code</label>
+            <input id="product-code" @bind-value="@Product.Code" type="text" required placeholder="e.g. UODFXDFEE" class="w-full px-5 py-4 bg-surface-container-low border-none rounded-2xl text-sm focus:ring-2 focus:ring-primary transition-all outline-none" />
+        </div>
+
+        <div class="space-y-1.5">
+            <label class="text-xs text-on-surface-variant uppercase tracking-wider pl-1">Category</label>
+            <select @bind="Product.CategoryId"
+                    class="w-full bg-surface-container-low border-none rounded-2xl px-5 py-2 text-sm focus:ring-2 focus:ring-primary transition-all">
+                @foreach (var category in Categories!)
+                {
+                    <option value="@category.Id">@category.Name</option>
+                }
+            </select>
+        </div>
+        <div class="space-y-1.5">
+            <label class="text-xs text-on-surface-variant uppercase tracking-wider pl-1">Price</label>
+            <div class="relative">
+                <span class="absolute left-6 top-1/2 -translate-y-1/2 font-bold text-primary">$</span>
+                <input @bind-value="@Product.Price" type="number" placeholder="0.00" class="w-full bg-surface-container-low border-none rounded-2xl pl-10 pr-6 py-2 text-lg font-headline font-bold focus:ring-2 focus:ring-primary transition-all">
+            </div>
+        </div>
+        <div class="space-y-1.5">
+            <label class="text-xs text-on-surface-variant uppercase tracking-wider pl-1">Description</label>
+            <textarea id="product-description" @bind="@Product.Description" type="text" required placeholder="e.g. add short description" class="w-full px-5 py-4 bg-surface-container-low border-none rounded-2xl text-sm focus:ring-2 focus:ring-primary transition-all outline-none" />
+        </div>
+    </form>
+</div>
+
+<div class="p-6 border-t border-outline-variant/10 bg-surface-container-lowest flex gap-3 mb-5">
+    <button onclick="closeOffcanvas()" class="flex-1 py-2 bg-surface-container-highest text-on-surface rounded-2xl font-bold hover:bg-outline-variant/30 transition-colors">
+        Cancel
+    </button>
+    <button @onclick="@OnSave" id="offcanvas-submit" type="submit" form="user-form" class="flex-1 py-2 bg-primary text-white rounded-2xl font-bold shadow-xl active:scale-95 transition-all">
+        Save product
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public string ActionText { get; set; } = string.Empty;
+    [Parameter]
+    public bool IsBusy { get; set; }
+    [Parameter]
+    public ProductDto Product { get; set; } = new ProductDto();
+    [Parameter]
+    public List<CategoryDto> Categories { get; set; } = new List<CategoryDto>();
+    [Parameter]
+    public EventCallback<ProductDto> ProductChanged { get; set; } 
+    [Parameter]
+    public EventCallback Save { get; set; }
+
+    public void OnSave()
+    {
+        ProductChanged.InvokeAsync(Product);
+        Save.InvokeAsync();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+}

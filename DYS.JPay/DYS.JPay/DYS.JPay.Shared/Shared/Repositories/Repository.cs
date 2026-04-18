@@ -75,7 +75,8 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
             }).ToList();
 
             var totalCount = all.Count;
-            var results = all.Skip(pageIndex * pageSize).Take(pageSize).ToList();
+            var index = pageIndex >0 ? pageIndex - 1 : pageIndex;
+            var results = all.Skip(index).Take(pageSize).ToList();
 
             return new PageDto<T>
             {
@@ -99,6 +100,69 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
             };
         }
 
+    }
+    public async Task<PageDto<T>> GetPagedAsync(
+                int pageIndex,
+                int pageSize,
+                string keyword = "",
+                List<string> columns = null,
+                string sortColumn = null,
+                bool sortDescending = false)
+    {
+        var query = _connection.Table<T>();
+
+        List<T> all;
+
+        if (!string.IsNullOrWhiteSpace(keyword) && columns != null && columns.Any())
+        {
+            // Load all records first
+            all = await query.ToListAsync();
+
+            // Filter in-memory
+            all = all.Where(entity =>
+            {
+                foreach (var col in columns)
+                {
+                    var prop = typeof(T).GetProperty(col);
+                    if (prop != null)
+                    {
+                        var value = prop.GetValue(entity)?.ToString();
+                        if (!string.IsNullOrEmpty(value) &&
+                            value.Contains(keyword, StringComparison.OrdinalIgnoreCase))
+                            return true;
+                    }
+                }
+                return false;
+            }).ToList();
+        }
+        else
+        {
+            all = await query.ToListAsync();
+        }
+
+        // Apply sorting if requested
+        if (!string.IsNullOrEmpty(sortColumn))
+        {
+            var prop = typeof(T).GetProperty(sortColumn);
+            if (prop != null)
+            {
+                all = sortDescending
+                    ? all.OrderByDescending(x => prop.GetValue(x)).ToList()
+                    : all.OrderBy(x => prop.GetValue(x)).ToList();
+            }
+        }
+
+        var totalCount = all.Count;
+        var index = pageIndex > 0 ? pageIndex - 1 : pageIndex;
+        var results = all.Skip(index * pageSize).Take(pageSize).ToList();
+
+        return new PageDto<T>
+        {
+            Results = results,
+            TotalCount = totalCount,
+            PageIndex = pageIndex,
+            PageSize = pageSize
+        };
     }
 
     public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null)

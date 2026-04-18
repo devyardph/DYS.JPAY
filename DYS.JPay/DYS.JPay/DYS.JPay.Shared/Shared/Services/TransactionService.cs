@@ -1,42 +1,83 @@
-﻿using DYS.JPay.Shared.Shared.Dtos;
-using DYS.JPay.Shared.Features.AppSettings.Views;
-using DYS.JPay.Shared.Shared.Providers;
-using Microsoft.AspNetCore.Components;
-using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using DYS.JPay.Shared.Features.Orders.Views;
+using DYS.JPay.Shared.Shared.Dtos;
+using DYS.JPay.Shared.Shared.Entities;
+using DYS.JPay.Shared.Shared.Extensions;
+using DYS.JPay.Shared.Shared.Repositories;
+using Mapster;
 
 namespace DYS.JPay.Shared.Shared.Services
 {
-
     public interface ITransactionService : IBaseService
     {
-
-        #region PATIENTS
-        Task<BaseResponseDto> SubmitTestOrders(List<TestingDto> payload);
-        #endregion
+        Task<Transaction> PlaceTransactionAsync(CartDto cart);
+        Task<Transaction> UpdateTransactionAsync(
+              Guid transactionId,
+              string status,
+              string note);
+        Task<PageDto<Transaction>> GetTransactionsAsync(SearchDto search);
+        Task<List<Order>> GetOrderListAsync(Guid transactionId);
     }
+
     public class TransactionService : BaseService, ITransactionService
     {
-        private readonly IRequestProvider _requestProvider;
-        private readonly NavigationManager _navigationManager;
-        public TransactionService(IRequestProvider requestProvider,
-                            NavigationManager navigationManager
-            )
+        private readonly IRepository<Transaction> _transactionRepository;
+        private readonly IRepository<Order> _orderRepository;
+
+        /// <summary>
+        /// TRANSACTION SERVICE CONSTRUCTOR
+        /// </summary>
+        /// <param name="transactionRepository"></param>
+        /// <param name="orderRepository"></param>
+        public TransactionService(
+            IRepository<Transaction> transactionRepository,
+            IRepository<Order> orderRepository)
         {
-            _navigationManager = navigationManager;
-            _requestProvider = requestProvider;
-            _requestProvider.BaseURI = $"http://192.168.68.60:5000/jpay";
+            _transactionRepository = transactionRepository;
+            _orderRepository = orderRepository;
         }
 
-        #region TESTING
-        public async Task<BaseResponseDto> SubmitTestOrders(List<TestingDto> payload)
-        {
-            var api = $"/process";
-            var response = await _requestProvider.PostAsync<BaseResponseDto>(api, payload);
-            return response;
-        }
-        #endregion
+        public async Task<PageDto<Transaction>> GetTransactionsAsync(SearchDto search) =>
+          await _transactionRepository.GetPagedAsync(search.CurrentPage,
+                 search.PageSize,
+                 search.Keyword,
+                 search.Columns,
+                 search.SortColumn,
+                 sortDescending:true);
 
+        public async Task<Transaction> PlaceTransactionAsync(CartDto cart) {
+
+            var transaction = cart.Transaction.Adapt<Transaction>();
+            transaction.Id = Guid.NewGuid();
+            await _transactionRepository.InsertAsync(transaction);
+            var items = new List<Order>();
+            foreach (var order in cart.Orders)
+            {
+                order.TransactionId = transaction.Id;
+                var item = order.Adapt<Order>();
+                item.Id = Guid.NewGuid();
+                items.Add(item);
+            }
+            await _orderRepository.InsertAsync(items);
+            return transaction;
+        }
+
+        public async Task<List<Order>> GetOrderListAsync(Guid transactionId) {
+            var orders = await _orderRepository.GetAllAsync(query => query.TransactionId == transactionId);
+            return orders;
+        }
+
+        public async Task<Transaction> UpdateTransactionAsync(
+              Guid transactionId, 
+              string status,
+              string note)
+        {
+            var item = await _transactionRepository.GetAsync(query => query.Id == transactionId);
+            item.Status = status;
+            item.Note = note;
+            await _transactionRepository.UpdateAsync(item);
+            return item;
+        }
     }
+
+
 }

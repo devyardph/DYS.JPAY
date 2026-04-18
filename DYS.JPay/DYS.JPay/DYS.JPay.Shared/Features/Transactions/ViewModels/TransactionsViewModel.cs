@@ -1,5 +1,6 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DYS.JPay.Shared.Shared.Dtos;
+using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Mapster;
@@ -15,16 +16,16 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
     public partial class TransactionsViewModel : BaseViewModel
     {
 
-        public readonly IOrderService _orderservice;
+        public readonly ITransactionService _transactionService;
         public readonly NavigationManager _navigationManager;
 
         public TransactionsViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             IAppSettingService appSettingService,
-            IOrderService orderService) : base(navigationManager, jsRuntime, appSettingService)
+            ITransactionService transactionService) : base(navigationManager, jsRuntime, appSettingService)
         {
             _navigationManager = navigationManager;
-            _orderservice = orderService;
+            _transactionService = transactionService;
         }
 
         #region PROPERTIES
@@ -32,35 +33,55 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
         private SearchDto search = new SearchDto();
 
         [ObservableProperty]
-        private PageDto<TransactionDto> orders = new PageDto<TransactionDto>() { Results = new List<TransactionDto>() };
+        private PageDto<TransactionDto> transactions = new PageDto<TransactionDto>() { Results = new List<TransactionDto>() };
+        [ObservableProperty]
+        private TransactionDto transaction = new TransactionDto();
+        [ObservableProperty]
+        private List<Order> orders = new List<Order>();
         #endregion
 
         #region FUNCTIONS
-        public async Task SearchOrdersWithPagingAsync(string action = "", bool refresh = false)
+        public async Task SearchTransactionsWithPagingAsync(string action = "", bool refresh = false)
         {
             IsBusy = true;
             var currentPage = refresh || Search.CurrentPage == 0 ? 1 : Search.CurrentPage;
             if (action == "next") currentPage = Search.NextEnabled ? Search.CurrentPage + 1 : Search.CurrentPage;
             else if (action == "previous") currentPage = Search.PreviousEnabled ? Search.CurrentPage - 1 : Search.CurrentPage;
 
-            Orders = new PageDto<TransactionDto>();
+            Transactions = new PageDto<TransactionDto>();
             Search.CurrentPage = currentPage;
             Search.PageSize = 10;
+            Search.SortColumn = "Date";
 
-            var output = await _orderservice.GetOrdersAsync(Search);
+            var output = await _transactionService.GetTransactionsAsync(Search);
             if (output is not null)
             {
 
-                Orders = output.Adapt<PageDto<TransactionDto>>();
-                Search.CurrentPage = Orders.PageIndex;
+                Transactions = output.Adapt<PageDto<TransactionDto>>();
+                Search.CurrentPage = Transactions.PageIndex;
 
-                var display = Orders!.PageIndex * Search!.PageSize;
-                var show = Orders!.TotalCount >= display ? display : Orders.TotalCount;
-                Search.PreviousEnabled = Orders.PageIndex > 1;
-                Search.NextEnabled = Orders.PageIndex <= Orders.TotalCount && show < Orders.TotalCount;
-                Search.Summary = $"showing {show} of {Orders!.TotalCount.ToString("N0")} patients";
+                var display = Transactions!.PageIndex * Search!.PageSize;
+                var show = Transactions!.TotalCount >= display ? display : Transactions.TotalCount;
+                Search.PreviousEnabled = Transactions.PageIndex > 1;
+                Search.NextEnabled = Transactions.PageIndex <= Transactions.TotalCount && show < Transactions.TotalCount;
+                Search.Summary = $"showing {show} of {Transactions!.TotalCount.ToString("N0")} patients";
             }
             IsBusy = false;
+        }
+
+        public async Task OpenTransaction(TransactionDto? transaction)
+        {
+            Transaction = transaction ?? new TransactionDto();
+            var orders = await _transactionService.GetOrderListAsync(Transaction.Id ?? Guid.Empty);
+            Orders = orders;
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas");
+        }
+
+        public async Task UpdateTransaction(string status)
+        {
+            await _transactionService.UpdateTransactionAsync(Transaction?.Id ?? Guid.Empty,status, "" );
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas");
+            await SearchTransactionsWithPagingAsync();
         }
         #endregion
 

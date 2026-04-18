@@ -15,17 +15,27 @@
                         headline: ['Manrope', 'sans-serif'],
                     },
                     colors: {
-                        primary: '#6d28d9',
-                        'primary-container': '#4c1d95',
-                        secondary: '#8b5cf6',
-                        background: '#f7f9ff',
-                        surface: '#f7f9ff',
-                        'surface-container-low': '#f1f4fa',
+                        primary: '#4A154B',
+                        'primary-container': '#611f69',
+                        secondary: '#36C5F0',
+                        'secondary-container': '#e8f5fa',
+                        tertiary: '#2EB67D',
+                        'tertiary-fixed-dim': '#7fda91',
+                        warning: '#ECB22E',
+                        error: '#E01E5A',
+                        'error-container': '#fbe9ef',
+                        background: '#ffffff',
+                        surface: '#ffffff',
+                        'surface-container-low': '#f8f8f8',
                         'surface-container-lowest': '#ffffff',
-                        'surface-container-highest': '#dfe3e8',
-                        'on-surface': '#181c20',
-                        'on-surface-variant': '#40484c',
-                        'outline-variant': '#c0c7cd',
+                        'surface-container-highest': '#dddddd',
+                        'on-surface': '#1d1c1d',
+                        'on-surface-variant': '#616061',
+                        'outline-variant': '#dddddd',
+                        'on-primary': '#ffffff',
+                        'on-primary-container': '#ffffff',
+                        'on-secondary-container': '#1264a3',
+                        'on-tertiary-fixed-variant': '#005323',
                     },
                     animation: {
                         'fade-in-up': 'fadeInUp 0.4s ease-out forwards',
@@ -228,6 +238,26 @@
                 modal.classList.add("opacity-0");
                 setTimeout(() => modal.classList.add("hidden"), 300);
             }, 2000);
+        }
+        function openOffcanvas() {
+            const overlay = document.getElementById('offcanvas-overlay');
+            const offcanvas = document.getElementById('offcanvas');
+            const form = document.getElementById('canvass-form');
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                offcanvas.classList.remove('translate-x-full');
+            }, 10);
+        }
+        function closeOffcanvas() {
+            const overlay = document.getElementById('offcanvas-overlay');
+            const offcanvas = document.getElementById('offcanvas');
+            overlay.classList.add('opacity-0');
+            offcanvas.classList.add('translate-x-full');
+
+            setTimeout(() => {
+                overlay.classList.add('hidden');
+            }, 300);
         }
     </script>
 </body>

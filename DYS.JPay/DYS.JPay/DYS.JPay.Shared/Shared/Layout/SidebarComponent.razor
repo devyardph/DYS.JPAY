@@ -70,6 +70,7 @@
     public async Task NavigationToPath1(string id, string path)
     {
         NavigationManager.NavigateTo(path, forceLoad: false);
+        VM.ActiveMenu = id;
         StateHasChanged();
         await JS.InvokeVoidAsync("toggleMainbar");
     }

@@ -1,0 +1,79 @@
+﻿@using DYS.JPay.Shared.Shared.Entities
+@using DYS.JPay.Shared.Shared.Settings
+
+<div class="flex items-center justify-between p-6 border-b border-outline-variant/10 bg-surface-container-low/30">
+    <div>
+        <h2 id="offcanvas-title" class="text-2xl font-headline font-extrabold text-primary">
+           @Transaction.CustomerName
+        </h2>
+        <h2 id="offcanvas-title" class="text-1xl font-headline font-extrabold text-primary">
+            @Transaction.Status - @Transaction.Date.FormatDate("dd MMM yyyh hh:mmtt")
+        </h2>
+    </div>
+    <button onclick="closeOffcanvas()" class="p-2 hover:bg-surface-container-highest rounded-full transition-colors text-on-surface-variant">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+</div>
+
+<div class="flex-1 overflow-y-auto p-2 no-scrollbar">
+    <div id="cart-items" class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-1 scroll-smooth">
+        @if (Orders.Any())
+        {
+            @foreach (var order in Orders)
+            {
+                <div class="flex items-center justify-between gap-0 p-2 rounded-xl transition-all duration-500" id="cart-@order.Id">
+                    <!-- Item Info -->
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-on-surface">@order.Name</h4>
+                        <p class="text-xs text-on-surface-variant">$@order.Price</p>
+                    </div>
+                    <!-- Price -->
+                    <div class="text-right w-16">
+                        <p class="text-lg font-bold">@order.Quantity</p>
+                    </div>
+                </div>
+                <hr/>
+            }
+        }
+    </div>
+</div>
+
+<div class="p-6 border-t border-outline-variant/10 bg-surface-container-lowest flex gap-3 mb-5">
+    <button @onclick="@(() => @OnUpdateStatus(GlobalSettings.PREPARING))" class="flex-1 py-2 bg-surface-container-highest text-on-surface rounded-2xl font-bold hover:bg-outline-variant/30 transition-colors">
+        PREPARING
+    </button>
+    <button @onclick="@(() => @OnUpdateStatus(GlobalSettings.COMPLETED))" id="offcanvas-submit" type="submit" form="user-form" class="flex-1 py-2 bg-primary text-white rounded-2xl font-bold shadow-xl active:scale-95 transition-all">
+        COMPLETED
+    </button>
+</div>
+
+@code {
+    [Parameter]
+    public bool IsBusy { get; set; }
+    [Parameter]
+    public TransactionDto Transaction { get; set; } = new TransactionDto();
+    [Parameter]
+    public EventCallback<TransactionDto> TransactionChanged { get; set; }
+    [Parameter]
+    public EventCallback Save { get; set; }
+    [Parameter]
+    public List<Order> Orders { get; set; } = new List<Order>();
+    [Parameter]
+    public EventCallback<string> UpdateStatus { get; set; }
+
+    public void OnSave()
+    {
+        TransactionChanged.InvokeAsync(Transaction);
+        Save.InvokeAsync();
+    }
+
+    public void OnUpdateStatus(string status)
+    {
+        UpdateStatus.InvokeAsync(status);
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+    }
+}

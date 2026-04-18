@@ -43,11 +43,12 @@ namespace DYS.JPay.Platforms.iOS
             PeerNamesUpdated?.Invoke(names);
         }
 
-        public void SendOrder(string orderJson)
+        //TRIGGED BY USERS IN THE TABLE, DATA PASSED FROM THE MAIN DEVICE TO THE PEERS DEVICES
+        public void SendOrder(string content)
         {
             if (_session.ConnectedPeers.Length == 0) return;
 
-            var data = NSData.FromString(orderJson, NSStringEncoding.UTF8);
+            var data = NSData.FromString(content, NSStringEncoding.UTF8);
             NSError error;
             _session.SendData(data, _session.ConnectedPeers, MCSessionSendDataMode.Reliable, out error);
 
@@ -58,6 +59,21 @@ namespace DYS.JPay.Platforms.iOS
 
         }
 
+        //TRIGGED BY  MAIN DEVICE TO UPDATE THE STATUS OF THE ORDER IN THE PEERS DEVICES
+        public void UpdateOrder(string content)
+        {
+            if (_session.ConnectedPeers.Length == 0) return;
+
+            var data = NSData.FromString(content, NSStringEncoding.UTF8);
+            NSError error;
+            _session.SendData(data, _session.ConnectedPeers, MCSessionSendDataMode.Reliable, out error);
+
+            if (error != null)
+                Console.WriteLine($"Status send error: {error.LocalizedDescription}");
+            else
+                Console.WriteLine($"Order updated to status");
+        }
+
         // Data received
         [Export("session:didReceiveData:fromPeer:")]
         public void DidReceiveData(MCSession session, NSData data, MCPeerID peerID)
@@ -65,9 +81,8 @@ namespace DYS.JPay.Platforms.iOS
             var message = NSString.FromData(data, NSStringEncoding.UTF8);
             Console.WriteLine($"Order received from {peerID.DisplayName}: {message}");
 
-            // Notify Blazor UI
+            //PASS DATA TO MAIN DEVICE
             OrderReceived?.Invoke(message);
-
 
             // ✅ Send ACK back to sender
             var order = JsonSerializer.Deserialize<TransactionDto>(message);
@@ -93,20 +108,7 @@ namespace DYS.JPay.Platforms.iOS
         }
 
 
-        public void UpdateOrderStatus(string orderId, string status)
-        {
-            if (_session.ConnectedPeers.Length == 0) return;
-
-            var statusJson = $"{{\"orderId\":\"{orderId}\",\"status\":\"{status}\"}}";
-            var data = NSData.FromString(statusJson, NSStringEncoding.UTF8);
-            NSError error;
-            _session.SendData(data, _session.ConnectedPeers, MCSessionSendDataMode.Reliable, out error);
-
-            if (error != null)
-                Console.WriteLine($"Status send error: {error.LocalizedDescription}");
-            else
-                Console.WriteLine($"Order {orderId} updated to {status}");
-        }
+     
 
 
 
