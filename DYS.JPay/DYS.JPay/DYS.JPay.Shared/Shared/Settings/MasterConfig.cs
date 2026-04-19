@@ -17,6 +17,9 @@ namespace DYS.JPay.Shared.Shared.Settings
             TypeAdapterConfig<Product, ProductDto>.NewConfig();
             TypeAdapterConfig<ProductDto, Product>.NewConfig();
 
+            TypeAdapterConfig<Variant, VariantDto>.NewConfig();
+            TypeAdapterConfig<VariantDto, Variant>.NewConfig();
+
             TypeAdapterConfig<Order, OrderDto>.NewConfig();
             TypeAdapterConfig<OrderDto, Order>.NewConfig();
 

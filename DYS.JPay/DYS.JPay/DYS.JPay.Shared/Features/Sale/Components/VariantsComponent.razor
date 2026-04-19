@@ -1,0 +1,45 @@
+﻿
+<div class="flex flex-col gap-3">
+    @foreach (var variant in Variants)
+    {
+        <button @onclick="@(() => OnAddToOrder(variant))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10
+            hover:border-primary/30 hover:shadow-md transition-all text-left
+            flex items-center gap-4 group">
+
+            <!-- Product Info -->
+            <div class="flex-1">
+                <h3 class="font-bold text-on-surface mb-1">@variant.Name</h3>
+                <p class="text-xs text-on-surface-variant uppercase tracking-wider">@variant.Name</p>
+            </div>
+
+            <!-- Price -->
+            <p class="text-primary font-headline font-bold text-lg">@Currency@variant.Price?.ToString("N2")</p>
+
+            <!-- Add Button -->
+            <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center
+                group-hover:bg-primary group-hover:text-white transition-colors ml-2">
+                <svg xmlns="http://www.w3.org/2000/svg"
+                     width="24" height="24" viewBox="0 0 24 24"
+                     fill="none" stroke="currentColor" stroke-width="2"
+                     stroke-linecap="round" stroke-linejoin="round"
+                     class="lucide lucide-plus w-5 h-5" aria-hidden="true">
+                    <path d="M5 12h14"></path>
+                    <path d="M12 5v14"></path>
+                </svg>
+            </div>
+        </button>
+    }
+</div>
+}
+
+@code {
+    [Parameter]
+    public string Currency { get; set; } = string.Empty;
+    [Parameter]
+    public List<VariantDto> Variants { get; set; } = new List<VariantDto>();
+
+    public void OnAddToOrder(VariantDto variant)
+    {
+        
+    }
+}

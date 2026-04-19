@@ -12,7 +12,7 @@ namespace DYS.JPay.Shared.Shared.Services
     {
         Task<List<Product>> GetProductsAsync();
         Task<Product> GetProductByIdAsync(Guid id);
-        Task<(Product, List<Variant>)> GetProductWithVariantsByIdAsync(Guid id);
+        Task<(Product product, List<Variant> variants)> GetProductWithVariantsByIdAsync(Guid id);
         Task<PageDto<Product>> GetProductsAsync(SearchDto search);
         Task<Product> SubmitProductAsync(ProductDto product);
         Task<Product> SubmitProductWithVariantsAsync(ProductDto product, List<VariantDto> variants);
@@ -21,7 +21,9 @@ namespace DYS.JPay.Shared.Shared.Services
     {
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Variant> _variantRepository;
-        public ProductService(IRepository<Product> productRepository, IRepository<Variant> variantRepository)
+        public ProductService(
+            IRepository<Product> productRepository, 
+            IRepository<Variant> variantRepository)
         {
             _productRepository = productRepository;
             _variantRepository = variantRepository;
@@ -29,7 +31,7 @@ namespace DYS.JPay.Shared.Shared.Services
 
         public async Task<List<Product>> GetProductsAsync() => await _productRepository.GetAllAsync();
         public async Task<Product> GetProductByIdAsync(Guid id) => await _productRepository.GetAsync(query => query.Id == id);
-        public async Task<(Product, List<Variant>)> GetProductWithVariantsByIdAsync(Guid id) {
+        public async Task<(Product product, List<Variant> variants)> GetProductWithVariantsByIdAsync(Guid id) {
             var product = await _productRepository.GetAsync(query => query.Id == id);
             var variants = await _variantRepository.GetAllAsync(query => query.ProductId == id);
             return (product, variants);
@@ -39,7 +41,6 @@ namespace DYS.JPay.Shared.Shared.Services
                  search.PageSize, 
                  search.Keyword, 
                  search.Columns);
-
         public async Task<Product> SubmitProductAsync(ProductDto product)
         {
             try
@@ -84,7 +85,6 @@ namespace DYS.JPay.Shared.Shared.Services
             }
             else
             {
-                await _productRepository.UpdateAsync(item);
                 var existingVariants = await _variantRepository.GetAllAsync(query => query.ProductId == item.Id);
                 foreach (var variant in variants)
                 {

@@ -1,5 +1,6 @@
 ﻿using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
+using DYS.JPay.Shared.Shared.Settings;
 using SQLite;
 using System;
 using System.Collections.Generic;
@@ -47,7 +48,7 @@ namespace DYS.JPay.Shared.Shared.Data
                 {
                     Username = "admin",
                     Code = "123456",   // default 6-digit login code
-                    Role = "Admin",
+                    Role = GlobalSettings.ADMIN,
                     CreatedAt = DateTime.UtcNow
                 };
 
@@ -94,6 +95,7 @@ namespace DYS.JPay.Shared.Shared.Data
                 ImageUrl = "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&q=80&w=200&h=200",
                 Featured = false
             });
+
             products.Add(new Product
             {
                 Id = Guid.NewGuid(),

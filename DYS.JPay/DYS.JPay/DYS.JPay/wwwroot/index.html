@@ -239,19 +239,22 @@
                 setTimeout(() => modal.classList.add("hidden"), 300);
             }, 2000);
         }
-        function openOffcanvas() {
-            const overlay = document.getElementById('offcanvas-overlay');
-            const offcanvas = document.getElementById('offcanvas');
+        function openOffcanvas(overlayId, elementId) {
+            const overlay = document.getElementById(overlayId);
+            const offcanvas = document.getElementById(elementId);
             const form = document.getElementById('canvass-form');
+
             overlay.classList.remove('hidden');
             setTimeout(() => {
                 overlay.classList.remove('opacity-0');
                 offcanvas.classList.remove('translate-x-full');
             }, 10);
         }
-        function closeOffcanvas() {
-            const overlay = document.getElementById('offcanvas-overlay');
-            const offcanvas = document.getElementById('offcanvas');
+
+        function closeOffcanvas(overlayId, elementId) {
+            const overlay = document.getElementById(overlayId);
+            const offcanvas = document.getElementById(elementId);
+
             overlay.classList.add('opacity-0');
             offcanvas.classList.add('translate-x-full');
 
@@ -259,6 +262,7 @@
                 overlay.classList.add('hidden');
             }, 300);
         }
+
     </script>
 </body>
 </html>

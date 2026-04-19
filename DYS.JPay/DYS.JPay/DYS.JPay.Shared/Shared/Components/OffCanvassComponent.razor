@@ -1,12 +1,16 @@
 ﻿<!-- Offcanvas Overlay -->
-<div id="offcanvas-overlay" onclick="closeOffcanvas()" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
+<div id="@Overlay" onclick="closeOffcanvas(@Overlay,@Id)" class="fixed inset-0 bg-black/40 backdrop-blur-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
 
 <!-- Offcanvas Sidebar -->
-<div id="offcanvas" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-50 flex flex-col border-l border-outline-variant/20 transform translate-x-full transition-transform duration-300">
+<div id="@Id" class="fixed inset-y-0 right-0 w-full max-w-md bg-white shadow-2xl z-50 flex flex-col border-l border-outline-variant/20 transform translate-x-full transition-transform duration-300">
    @Content
 </div>
 
 @code {
+    [Parameter]
+    public string Overlay { get; set; } = "offcanvas-overlay";
+    [Parameter]
+    public string Id { get; set; } = "offcanvas";
     [Parameter]
     public RenderFragment Content { get; set; } 
 

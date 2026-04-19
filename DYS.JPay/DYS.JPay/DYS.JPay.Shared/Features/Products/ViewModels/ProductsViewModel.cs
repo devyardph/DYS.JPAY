@@ -1,4 +1,5 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using DYS.JPay.Shared.Features.Products.Components;
 using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Services;
@@ -35,12 +36,16 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         [ObservableProperty]
         private List<CategoryDto> categories = new List<CategoryDto>();
         [ObservableProperty]
+        private List<VariantDto> variants = new List<VariantDto>();
+        [ObservableProperty]
         private SearchDto search = new SearchDto();
 
         [ObservableProperty]
         private PageDto<ProductDto> products = new PageDto<ProductDto>() { Results = new List<ProductDto>() };
         [ObservableProperty]
         private ProductDto product = new ProductDto();
+
+        public VariantComponent VariantComponent { get; set; } = new VariantComponent();
         #endregion
 
 
@@ -81,13 +86,29 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         {
             IsBusy = true;
             await _productService.SubmitProductAsync(Product);
-            await _jsRuntime.InvokeVoidAsync("closeOffcanvas");
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "product-overlay", "product-component");
+            IsBusy = false;
+        }
+        public async Task SubmitVariantsAsync()
+        {
+            IsBusy = true;
+            await _productService.SubmitProductWithVariantsAsync(Product, Variants);
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "variant-overlay", "variant-component");
             IsBusy = false;
         }
 
         public async Task OpenProduct(ProductDto? product) {
             Product = product ?? new ProductDto();
-            await _jsRuntime.InvokeVoidAsync("openOffcanvas");
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas","product-overlay","product-component");
+        }
+
+        public async Task OpenVariant(ProductDto? product)
+        {
+            var variants = await _productService.GetProductWithVariantsByIdAsync(product!.Id ?? Guid.Empty);
+            Product = variants.product.Adapt<ProductDto>();
+            Variants = variants.variants.Adapt<List<VariantDto>>();
+            VariantComponent.InitializeContents(Product, Variants);
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas", "variant-overlay", "variant-component");
         }
         #endregion
 
