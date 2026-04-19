@@ -45,8 +45,9 @@
                         <table class="w-full text-left border-collapse min-w-[600px] table-hover">
                             <thead>
                                 <tr class="bg-[#f1f4fa]">
-                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">User name</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Name</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Role</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Email</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Date created</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c] text-right">Action</th>
                                 </tr>
@@ -93,18 +94,20 @@
                                             <td class="px-3 py-2">
                                                 <div class="flex items-center gap-3">
                                                     <div class="w-10 h-10 rounded-full bg-primary/10 text-primary flex items-center justify-center font-bold text-sm">
-                                                        @user.Username.FirstLetter()
+                                                        @user.Name.FirstLetter()
                                                     </div>
                                                     <div>
-                                                        <p class="text-sm font-bold text-gray-900">@user.Username</p>
-                                                        <p class="text-xs text-gray-500">@user.Role</p>
+                                                        <p class="text-sm font-bold text-gray-900">@user.Name</p>
+                                                        <p class="text-xs text-gray-500">@user.Username</p>
                                                     </div>
                                                 </div>
                                             </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
                                                 @user.Role
                                             </td>
-                                      
+                                            <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
+                                                @user.Email
+                                            </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
                                                 @user.CreatedAt.FormatDate("dd MMM yyy")
                                             </td>

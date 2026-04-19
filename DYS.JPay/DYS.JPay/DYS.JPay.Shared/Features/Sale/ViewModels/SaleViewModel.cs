@@ -30,13 +30,13 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             ICategoryService categoryService,
             IProductService productService,
             ITransactionService transactionService,
-            IPeerService peerService) : base(navigationManager, jsRuntime, appSettingService)
+            IPeerService peerService,
+            SessionService sessionService) : base(navigationManager, jsRuntime, sessionService)
         {
-            _navigationManager = navigationManager;
             _categoryService = categoryService;
             _productService = productService;
             _transactionService = transactionService;
-            _peerService = peerService;
+            _peerService = peerService;;
         }
 
         #region PROPERTIES
@@ -58,7 +58,6 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         public async Task InitiazeCategoriesAndProductsAsync()
         {
             IsBusy = true;
-            await LoadAppSetting();
             var categoryOutput = await _categoryService.GetCategoriesAsync();
             if (categoryOutput is not null) {
                 Categories = categoryOutput.Adapt<List<CategoryDto>>();
@@ -140,7 +139,11 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             if (order.Count == 0) Orders?.RemoveAll(query => query.Id == order.Id);
             Transaction.Total = Orders?.Sum(query => query.Product.Price * query.Count);
         }
-        public void OnDisplayChanged(string display) => AppSetting.Display = display;
+        public void OnDisplayChanged(string display) {
+            var settings = Session.AppSettings;
+            settings.Display = display;
+            _sessionService.SetAppSettings(settings);
+        }
         #endregion
     }
 }

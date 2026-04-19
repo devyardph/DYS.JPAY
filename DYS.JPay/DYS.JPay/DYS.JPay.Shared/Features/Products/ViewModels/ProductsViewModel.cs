@@ -18,16 +18,13 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
 
         public readonly IProductService _productService;
         public readonly ICategoryService _categoryService;
-        public readonly NavigationManager _navigationManager;
-
         public ProductsViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
-            IAppSettingService appSettingService,
+            SessionService sessionService,
             IProductService patientService,
             ICategoryService categoryService) 
-            : base(navigationManager, jsRuntime, appSettingService)
+            : base(navigationManager, jsRuntime, sessionService)
         {
-            _navigationManager = navigationManager;
             _productService = patientService;
             _categoryService = categoryService;
         }

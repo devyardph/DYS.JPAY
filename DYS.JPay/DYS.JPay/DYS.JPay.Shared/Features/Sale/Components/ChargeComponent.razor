@@ -23,7 +23,7 @@
                 <!-- Centered amount -->
                 <div class="text-center mb-3 p-2 rounded-xl">
                     <h2 class="text-5xl font-headline font-bold text-primary mb-2">
-                        @Transaction?.Total?.ToString("c2")
+                        @Currency@Transaction?.Total?.ToString("N2")
                     </h2>
                     <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">
                         amount due
@@ -53,15 +53,15 @@
                     <div class="space-y-2">
                         <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Amount tender</label>
                         <div class="relative">
-                            <span class="absolute left-6 top-1/2 -translate-y-1/2 font-bold text-[#003345]">$</span>
-                            <input type="number" placeholder="0.00" class="w-full bg-[#f1f4fa] border-none rounded-2xl pl-10 pr-6 py-4 text-base font-headline font-bold focus:ring-2 focus:ring-[#003345] transition-all">
+                            <span class="absolute left-6 top-1/2 -translate-y-1/2 font-bold text-[#003345]">@Currency</span>
+                            <input @oninput="@OnAmountTenderChanged" type="number" placeholder="0.00" class="w-full bg-[#f1f4fa] border-none rounded-2xl pl-10 pr-6 py-4 text-base font-headline font-bold focus:ring-2 focus:ring-[#003345] transition-all">
                         </div>
                     </div>
                     <div class="space-y-2 text-right">
                         <label class="text-[10px] font-bold  uppercase tracking-widest text-[#40484c]">Change</label>
                         <div class="relative">
-                            <span class="absolute left-6 top-1/2 -translate-y-1/2 font-bold text-[#003345]">$</span>
-                            <input disabled type="number" placeholder="0.00" class="w-full bg-[#f1f4fa] border-none rounded-2xl pl-10 pr-6 py-4 text-base font-headline font-bold focus:ring-2 focus:ring-[#003345] transition-all">
+                            <span class="absolute left-6 top-1/2 -translate-y-1/2 font-bold text-[#003345]">@Currency</span>
+                            <input disabled type="number" @bind-value="@Change" placeholder="0.00" class="w-full bg-[#f1f4fa] border-none rounded-2xl pl-10 pr-6 py-4 text-base font-headline font-bold focus:ring-2 focus:ring-[#003345] transition-all">
                         </div>
                     </div>
                 </div>
@@ -89,11 +89,15 @@
 
 @code {
     [Parameter]
+    public string Currency { get; set; } = string.Empty;
+    [Parameter]
     public TransactionDto Transaction { get; set; } = new TransactionDto();
     [Parameter]
     public EventCallback<TransactionDto> TransactionChanged { get; set; }
     [Parameter]
     public EventCallback ProcessPayment { get; set; }
+    [Parameter]
+    public double? Change { get; set; }
 
     public async Task OnProcessPayment() => await ProcessPayment.InvokeAsync();
 
@@ -114,4 +118,14 @@
         return base.OnAfterRenderAsync(firstRender);
     }
 
+    private void OnAmountTenderChanged(ChangeEventArgs e)
+    {
+        if (double.TryParse(e.Value?.ToString(), out var amount))
+        {
+            Transaction.AmountTendered = amount;
+            var change = Transaction.AmountTendered - Transaction.Total;
+            Change = Math.Round(change ?? 0, 2);
+            StateHasChanged();
+        }
+    }
 }

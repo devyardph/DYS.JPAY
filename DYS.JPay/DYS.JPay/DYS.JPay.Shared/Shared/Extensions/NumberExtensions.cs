@@ -344,5 +344,10 @@ namespace DYS.JPay.Shared.Shared.Extensions
             var total = input.Value * percentage;
             return total;
         }
+
+        public static string ToCurrency(this double? value, string currency, int point = 2)
+        {
+            return $"{currency}{value!.Value.ToString($"N{point}")}";
+        }
     }
 }

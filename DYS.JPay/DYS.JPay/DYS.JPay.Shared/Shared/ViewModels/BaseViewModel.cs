@@ -10,9 +10,9 @@ namespace DYS.JPay.Shared.Shared.ViewModels
 {
     public partial class BaseViewModel : ObservableObject
     {
-        public NavigationManager _navigationManager;
-        public IAppSettingService _appSettingService;
-        public IJSRuntime _jsRuntime;
+        public readonly NavigationManager _navigationManager;
+        public readonly SessionService _sessionService;
+        public readonly IJSRuntime _jsRuntime;
 
         #region PROPERTIES
         [ObservableProperty]
@@ -25,20 +25,19 @@ namespace DYS.JPay.Shared.Shared.ViewModels
 
         [ObservableProperty]
         public bool isReadOnly = false;
+
+        [ObservableProperty]
+        public SessionService session = new SessionService();
         #endregion
 
         public BaseViewModel(NavigationManager navigationManager,
-                            IJSRuntime jsRuntime, 
-                            IAppSettingService appSettingService)
+                            IJSRuntime jsRuntime,
+                            SessionService sessionService)
         {
             _jsRuntime = jsRuntime;
             _navigationManager = navigationManager;
-            _appSettingService = appSettingService;
-        }
-
-        public async Task LoadAppSetting()  {
-            if(string.IsNullOrEmpty(AppSetting.StoreName))
-                AppSetting = await _appSettingService.GetSettingAsync();
+            _sessionService = sessionService;
+            session = _sessionService;
         }
 
         public virtual void NavigationToPath(string path, bool forceLoad)

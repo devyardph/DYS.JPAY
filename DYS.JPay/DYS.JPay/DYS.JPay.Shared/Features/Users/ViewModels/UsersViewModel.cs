@@ -17,15 +17,13 @@ namespace DYS.JPay.Shared.Features.Users.ViewModels
     {
 
         public readonly IUserService _userService;
-        public readonly NavigationManager _navigationManager;
 
         public UsersViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
-            IAppSettingService appSettingService,
+            SessionService sessionService,
             IUserService userService)
-            : base(navigationManager, jsRuntime, appSettingService)
+            : base(navigationManager, jsRuntime, sessionService)
         {
-            _navigationManager = navigationManager;
             _userService = userService;
         }
 
@@ -72,6 +70,7 @@ namespace DYS.JPay.Shared.Features.Users.ViewModels
         {
             IsBusy = true;
             await _userService.SubmitUserAsync(User);
+            await SearchUsersWithPagingAsync();
             await _jsRuntime.InvokeVoidAsync("closeOffcanvas");
             IsBusy = false;
         }

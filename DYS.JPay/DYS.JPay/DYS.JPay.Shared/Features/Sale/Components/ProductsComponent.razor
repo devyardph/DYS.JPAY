@@ -11,7 +11,7 @@
                          src="@product.ImageUrl">
                 </div>
                 <h3 class="font-bold text-on-surface text-center mb-1">@product.Name</h3>
-                <p class="text-primary font-headline font-bold">$@product.Price?.ToString("N2")</p>
+                <p class="text-primary font-headline font-bold">@Currency@product.Price?.ToString("N2")</p>
             </button>
         }
     </div>
@@ -40,7 +40,7 @@ else if(Display == "list")
                 </div>
 
                 <!-- Price -->
-                <p class="text-primary font-headline font-bold text-lg">$@product.Price</p>
+                <p class="text-primary font-headline font-bold text-lg">@Currency@product.Price.ToCurrency(Currency, 2)</p>
 
                 <!-- Add Button -->
                 <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center
@@ -62,6 +62,8 @@ else if(Display == "list")
 @code {
     [Parameter]
     public string Display { get; set; } = "grid";
+    [Parameter]
+    public string Currency { get; set; } 
     [Parameter]
     public List<ProductDto> Products { get; set; } = new List<ProductDto>();
     [Parameter]

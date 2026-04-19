@@ -1,8 +1,10 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
 using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
+using DYS.JPay.Shared.Shared.Extensions;
 using DYS.JPay.Shared.Shared.Repositories;
 using DYS.JPay.Shared.Shared.Services;
+using DYS.JPay.Shared.Shared.Settings;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
@@ -16,7 +18,7 @@ namespace DYS.JPay.Shared.Features.Accounts.ViewModels
     public partial class LoginViewModel : BaseViewModel
     {
         private readonly IAccountService _accountService;
-        private readonly SessionService _sessionService;
+        private readonly IAppSettingService _appSettingService;
 
         #region PROPERTIES
         [ObservableProperty]
@@ -28,10 +30,10 @@ namespace DYS.JPay.Shared.Features.Accounts.ViewModels
           IAppSettingService appSettingService,
           IAccountService accountService,
           SessionService sessionService)
-         : base(navigationManager, jsRuntime, appSettingService)
+         : base(navigationManager, jsRuntime, sessionService)
         {
             _accountService = accountService;
-            _sessionService = sessionService;
+            _appSettingService = appSettingService;
         }
 
         public async Task BasicLogin()
@@ -42,6 +44,10 @@ namespace DYS.JPay.Shared.Features.Accounts.ViewModels
             if (result != null)
             {
                 _sessionService.SetUser(result);
+
+                //INITIALIZE SETTINGS
+                var settings = await _appSettingService.GetSettingAsync();
+                _sessionService.SetAppSettings(settings);
                 NavigationToPath("/", forceLoad: true);
             }
             else

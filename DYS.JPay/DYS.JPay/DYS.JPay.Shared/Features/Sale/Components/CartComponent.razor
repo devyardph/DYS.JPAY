@@ -9,7 +9,7 @@
                 <!-- Item Info -->
                 <div class="flex-1">
                     <h4 class="font-bold text-sm text-on-surface">@orderItem.Product.Name</h4>
-                    <p class="text-xs text-on-surface-variant">$@orderItem.Product.Price</p>
+                    <p class="text-xs text-on-surface-variant">@Currency@orderItem.Product.Price</p>
                 </div>
                 <!-- Quantity Controls -->
                 <div class="flex items-center gap-3 bg-surface-container-low rounded-lg p-1">
@@ -19,7 +19,7 @@
                 </div>
                 <!-- Price -->
                 <div class="text-right w-16">
-                    <p class="font-bold text-sm">$@((orderItem.Product.Price * @orderItem.Count)?.ToString("N2"))</p>
+                    <p class="font-bold text-sm">@Currency@((orderItem.Product.Price * @orderItem.Count)?.ToString("N2"))</p>
                 </div>
                 <!-- Remove Button -->
                 <button class="text-error/70 hover:text-error p-1" @onclick="@(() => OnRemoveOrder(orderItem))">
@@ -43,6 +43,8 @@
     }
 </div>
 @code {
+    [Parameter]
+    public string Currency { get; set; } = string.Empty;
     [Parameter]
     public List<OrderDto> OrderItems { get; set; } = new List<OrderDto>();
     [Parameter]

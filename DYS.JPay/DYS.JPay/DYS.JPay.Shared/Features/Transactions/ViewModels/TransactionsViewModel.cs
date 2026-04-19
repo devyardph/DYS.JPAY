@@ -17,14 +17,12 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
     {
 
         public readonly ITransactionService _transactionService;
-        public readonly NavigationManager _navigationManager;
 
         public TransactionsViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
-            IAppSettingService appSettingService,
-            ITransactionService transactionService) : base(navigationManager, jsRuntime, appSettingService)
+            SessionService sessionService,
+            ITransactionService transactionService) : base(navigationManager, jsRuntime, sessionService)
         {
-            _navigationManager = navigationManager;
             _transactionService = transactionService;
         }
 

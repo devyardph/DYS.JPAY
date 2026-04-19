@@ -13,18 +13,16 @@ namespace DYS.JPay.Shared.Shared.ViewModels
     {
 
         public readonly IConfiguration _configuration;
-        public readonly NavigationManager _navigationManager;
         public readonly IIdentityAuthenticationStateProvider _identityAuthenticationStateProvider;
 
         public MenuViewModel(NavigationManager navigationManager, 
             IJSRuntime jsRuntime,
-            IAppSettingService appSettingService,
+            SessionService sessionService,
             IConfiguration configuration,
             IIdentityAuthenticationStateProvider identityAuthenticationStateProvider
-            ) :base(navigationManager, jsRuntime, appSettingService)
+            ) :base(navigationManager, jsRuntime, sessionService)
         {
             _configuration = configuration;
-            _navigationManager = navigationManager;
             _identityAuthenticationStateProvider = identityAuthenticationStateProvider;
         }
 

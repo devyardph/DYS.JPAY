@@ -3,7 +3,7 @@
     <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300" id="payment-modal-content">
         
         <div class="grid justify-items-stretch mb-7">
-            <h2 class="text-5xl text-center font-headline font-bold text-primary mb-2">@Transaction?.Total?.ToString("c2")</h2>
+            <h2 class="text-5xl text-center font-headline font-bold text-primary mb-2">@Currency@Transaction?.Total?.ToString("N2")</h2>
             <label class="text-[12px] text-center font-bold uppercase tracking-widest text-[#40484c]">amount due</label>
         </div>
 
@@ -31,6 +31,8 @@
 
 
 @code {
+    [Parameter]
+    public string Currency { get; set; } = string.Empty;
     [Parameter]
     public TransactionDto Transaction { get; set; } = new TransactionDto();
     [Parameter]

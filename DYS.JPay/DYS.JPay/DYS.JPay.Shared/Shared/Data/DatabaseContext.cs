@@ -471,9 +471,9 @@ namespace DYS.JPay.Shared.Shared.Data
                 {
                    StoreName = "Lacasetta de Brit",
                    StoreDescription = "Italian restaurant",
-                   Currency="PHP",
+                   Currency="USD",
                    Display = "grid",
-                   Default= true
+                   Default= true,
                 };
 
                 await _connection.InsertAsync(settings);

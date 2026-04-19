@@ -16,15 +16,13 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
     {
 
         public readonly IPeerService _peerService_;
-        public readonly NavigationManager _navigationManager;
 
         public OrdersViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
-            IAppSettingService appSettingService,
+            SessionService sessionService,
             IPeerService peerService) 
-            : base(navigationManager, jsRuntime, appSettingService)
+            : base(navigationManager, jsRuntime, sessionService)
         {
-            _navigationManager = navigationManager;
             _peerService_ = peerService;
         }
 

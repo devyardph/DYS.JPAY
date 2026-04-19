@@ -14,6 +14,9 @@ namespace DYS.JPay.Shared.Shared.Services
 
         public bool IsLoggedIn => CurrentUser != null;
         public bool IsInRole(string role) => CurrentUser?.Role == role;
+
+        public AppSetting AppSettings { get; private set; }
+        public void SetAppSettings(AppSetting settings) => AppSettings = settings;
     }
 
 }
