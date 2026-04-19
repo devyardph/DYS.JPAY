@@ -20,6 +20,7 @@ namespace DYS.JPay.Shared.Shared.Data
             // Create tables safely
             await _connection.CreateTableAsync<Category>();
             await _connection.CreateTableAsync<Product>();
+            await _connection.CreateTableAsync<Variant>();
             await _connection.CreateTableAsync<Transaction>();
             await _connection.CreateTableAsync<Order>();
             await _connection.CreateTableAsync<Customer>();
