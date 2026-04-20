@@ -7,6 +7,7 @@ using DYS.JPay.Shared.Shared.Settings;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Mapster;
 using Microsoft.AspNetCore.Components;
+using Microsoft.AspNetCore.Components.Routing;
 using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
 using System;
@@ -45,6 +46,10 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         [ObservableProperty]
         private List<ProductDto> products = new List<ProductDto>();
         [ObservableProperty]
+        private ProductDto product = new ProductDto();
+        [ObservableProperty]
+        private List<VariantDto> variants = new List<VariantDto>();
+        [ObservableProperty]
         private List<OrderDto> orders = new List<OrderDto>();
         [ObservableProperty]
         private TransactionDto transaction= new TransactionDto();
@@ -70,25 +75,71 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         }
         public async Task AddOrderAsync(ProductDto product)
         {
+            //CHECK IF THERE ARE VARIANTS
+            var items = await _productService.GetProductWithVariantsByIdAsync(product.Id ?? Guid.Empty);
+            if (items.variants.Any())
+            {
+                Variants = items.variants.Adapt<List<VariantDto>>();
+                Product = product;
+                await _jsRuntime.InvokeVoidAsync("openModal", "variants-modal");
+            }
+            else
+            {
+                var count = 1;
+                var id = string.Empty;
+                var existingOrder = Orders?.FirstOrDefault(query => query.Product.Id == product.Id);
+                if (existingOrder != null)
+                {
+                    count = existingOrder.Count + 1;
+                    existingOrder.Count = count;
+                    id = existingOrder.Id.ToString();
+                }
+                else
+                {
+                    var newId = Guid.NewGuid();
+                    Orders?.Add(new OrderDto { 
+                        Id = newId,
+                        Title= Product.Name,
+                        Price = Product.Price,
+                        Product = product, 
+                        Count = count
+                    });
+                    id = newId.ToString();
+                }
+                Transaction.Total = Orders?.Sum(query => query.Price * query.Count);
+                PendingCartId = $"cart-{id}";
+            }
+        }
+        public async Task AddOrderAsync(VariantDto variant)
+        {
             var count = 1;
             var id = string.Empty;
-            var existingOrder = Orders?.FirstOrDefault(query => query.Product.Id == product.Id);
-            if (existingOrder != null) {
+            var existingOrder = Orders?.FirstOrDefault(query => query.Variant?.Id == variant.Id);
+            if (existingOrder != null)
+            {
                 count = existingOrder.Count + 1;
                 existingOrder.Count = count;
                 id = existingOrder.Id.ToString();
             }
-            else {
+            else
+            {
                 var newId = Guid.NewGuid();
-                Orders?.Add(new OrderDto { Id = newId, Product = product, Count = count });
+                Orders?.Add(new OrderDto { 
+                    Id = newId, 
+                    Product= Product,
+                    Variant= variant, 
+                    Title =$"{Product.Name}-{variant.Name}",
+                    Price = variant.Price,
+                    Count = count });
                 id = newId.ToString();
             }
-            Transaction.Total = Orders?.Sum(query => query.Product.Price * query.Count);
+            Transaction.Total = Orders?.Sum(query => query.Price * query.Count);
             PendingCartId = $"cart-{id}";
+            await _jsRuntime.InvokeVoidAsync("closeModal", "variants-modal");
         }
         public async Task ProcessPaymentAsync()
         {
-            var total = Orders.Sum(query => query.Count * query.Product.Price);
+            var total = Orders.Sum(query => query.Count * query.Price);
             var count = Orders.Sum(query => query.Count);
             var transaction = new Transaction { 
                 Date = DateTime.UtcNow, 
@@ -107,8 +158,9 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                 {
                     TransactionId = transaction.Id,
                     ProductId = item.Product.Id,
-                    Name = item.Product.Name,
-                    Price = item.Product.Price,
+                    VariantId = item.Variant.Id,
+                    Name = item.Title,
+                    Price = item.Price,
                     Quantity = item.Count
                 });
             }

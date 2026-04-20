@@ -1,45 +1,83 @@
-﻿
-<div class="flex flex-col gap-3">
-    @foreach (var variant in Variants)
-    {
-        <button @onclick="@(() => OnAddToOrder(variant))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10
-            hover:border-primary/30 hover:shadow-md transition-all text-left
-            flex items-center gap-4 group">
+﻿@inject IJSRuntime JS
 
-            <!-- Product Info -->
-            <div class="flex-1">
-                <h3 class="font-bold text-on-surface mb-1">@variant.Name</h3>
-                <p class="text-xs text-on-surface-variant uppercase tracking-wider">@variant.Name</p>
+<div id="variants-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 ease-in-out">
+    <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300" id="variants-modal-content">
+        
+        <div class="flex items-center justify-center relative mb-1">
+                <!-- Left button -->
+                <div class="absolute left-0">
+                <button @onclick="@CloseVariants" class="p-2 hover:bg-surface-container-highest rounded-full transition-colors">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-arrow-right w-5 h-5 rotate-180"
+                             aria-hidden="true">
+                            <path d="M5 12h14"></path>
+                            <path d="m12 5 7 7-7 7"></path>
+                        </svg>
+                    </button>
+                </div>
+
+                <!-- Centered amount -->
+                <div class="text-center mb-3 p-2 rounded-xl">
+                    <h2 class="text-3xl text-center font-headline font-extrabold text-primary mb-2">@Product.Name Variants</h2>
+                    <label class="text-[14px] text-center uppercase tracking-widest text-[#40484c]">Base price : @Currency@Product.Price</label>
+                </div>
             </div>
 
-            <!-- Price -->
-            <p class="text-primary font-headline font-bold text-lg">@Currency@variant.Price?.ToString("N2")</p>
+        <div class="flex flex-col gap-3">
+            @foreach (var variant in Variants!)
+            {
+                <button @onclick="@(() => OnAddToOrder(variant))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10
+                    hover:border-primary/30 hover:shadow-md transition-all text-left
+                    flex items-center gap-4 group">
 
-            <!-- Add Button -->
-            <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center
-                group-hover:bg-primary group-hover:text-white transition-colors ml-2">
-                <svg xmlns="http://www.w3.org/2000/svg"
-                     width="24" height="24" viewBox="0 0 24 24"
-                     fill="none" stroke="currentColor" stroke-width="2"
-                     stroke-linecap="round" stroke-linejoin="round"
-                     class="lucide lucide-plus w-5 h-5" aria-hidden="true">
-                    <path d="M5 12h14"></path>
-                    <path d="M12 5v14"></path>
-                </svg>
-            </div>
-        </button>
-    }
+                    <!-- Product Info -->
+                    <div class="flex-1">
+                        <h3 class="font-bold text-on-surface mb-1">@variant.Name</h3>
+                        <p class="text-xs text-on-surface-variant uppercase tracking-wider">@variant.Name</p>
+                    </div>
+
+                    <!-- Price -->
+                    <p class="text-primary font-headline font-bold text-lg">@Currency@variant.Price?.ToString("N2")</p>
+
+                    <!-- Add Button -->
+                    <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center
+                        group-hover:bg-primary group-hover:text-white transition-colors ml-2">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-plus w-5 h-5" aria-hidden="true">
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5v14"></path>
+                        </svg>
+                    </div>
+                </button>
+            }
+   
+        </div>
+    </div>
 </div>
-}
 
 @code {
     [Parameter]
     public string Currency { get; set; } = string.Empty;
     [Parameter]
+    public ProductDto Product { get; set; } = new ProductDto();
+    [Parameter]
     public List<VariantDto> Variants { get; set; } = new List<VariantDto>();
+    [Parameter]
+    public EventCallback<VariantDto> AddToOrder { get; set; }
 
     public void OnAddToOrder(VariantDto variant)
     {
-        
+        AddToOrder.InvokeAsync(variant);
+    }
+
+    public async Task CloseVariants()
+    {
+        await JS.InvokeVoidAsync("closeModal", "variants-modal");
     }
 }

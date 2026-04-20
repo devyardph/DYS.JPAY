@@ -8,6 +8,7 @@ namespace DYS.JPay.Shared.Shared.Entities
     {
         public Guid? TransactionId { get; set; }
         public Guid? ProductId { get; set; }
+        public Guid? VariantId { get; set; }
         public string Name { get; set; }
         public int? Quantity { get; set; }
         public double? Price { get; set; }

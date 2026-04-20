@@ -72,7 +72,9 @@
                 </div>
 
                 <!-- Products Grid -->
-                <ProductsComponent Display="@VM.Session.AppSettings.Display" Products="@VM.Products" AddToOrder="VM.AddOrderAsync"
+                <ProductsComponent Display="@VM.Session.AppSettings.Display" 
+                                   Products="@VM.Products" 
+                                   AddToOrder="VM.AddOrderAsync"
                                    Currency="@VM.Session.AppSettings.Currency" />
                 <!-- Products Grid -->
 
@@ -113,6 +115,7 @@
         <PaymentComponent @bind-Transaction="@VM.Transaction" Currency="@VM.Session.AppSettings.Currency" />
         <ChargeComponent @bind-Transaction="@VM.Transaction" ProcessPayment="@VM.ProcessPaymentAsync" Currency="@VM.Session.AppSettings.Currency" />
         <ResultComponent @bind-Transaction="@VM.Transaction" @bind-Orders="@VM.Orders" />
+        <VariantsComponent Variants="@VM.Variants" Product="@VM.Product" Currency="@VM.Session.AppSettings.Currency" AddToOrder="VM.AddOrderAsync" />
     </PageContent>
 </PageComponent>
 

@@ -72,13 +72,13 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             Transaction = transaction ?? new TransactionDto();
             var orders = await _transactionService.GetOrderListAsync(Transaction.Id ?? Guid.Empty);
             Orders = orders;
-            await _jsRuntime.InvokeVoidAsync("openOffcanvas");
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas", "transaction-overlay", "transaction-component");
         }
 
         public async Task UpdateTransaction(string status)
         {
             await _transactionService.UpdateTransactionAsync(Transaction?.Id ?? Guid.Empty,status, "" );
-            await _jsRuntime.InvokeVoidAsync("closeOffcanvas");
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "transaction-overlay", "transaction-component");
             await SearchTransactionsWithPagingAsync();
         }
         #endregion
