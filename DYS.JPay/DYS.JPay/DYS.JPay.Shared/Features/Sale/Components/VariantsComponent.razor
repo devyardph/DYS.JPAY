@@ -29,7 +29,7 @@
         <div class="flex flex-col gap-3">
             @foreach (var variant in Variants!)
             {
-                <button @onclick="@(() => OnAddToOrder(variant))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10
+                <button @onclick="@(() => OnAddToOrder(Product, variant))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10
                     hover:border-primary/30 hover:shadow-md transition-all text-left
                     flex items-center gap-4 group">
 
@@ -69,11 +69,14 @@
     [Parameter]
     public List<VariantDto> Variants { get; set; } = new List<VariantDto>();
     [Parameter]
-    public EventCallback<VariantDto> AddToOrder { get; set; }
+    public EventCallback<ProductVariantDto> AddToOrder { get; set; }
 
-    public void OnAddToOrder(VariantDto variant)
+    public void OnAddToOrder(ProductDto product, VariantDto variant)
     {
-        AddToOrder.InvokeAsync(variant);
+        var productVariant = new ProductVariantDto();
+        productVariant.Product = product;
+        productVariant.Variant = variant;
+        AddToOrder.InvokeAsync(productVariant);
     }
 
     public async Task CloseVariants()

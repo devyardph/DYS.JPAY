@@ -64,13 +64,13 @@ namespace DYS.JPay.Shared.Features.Categories.ViewModels
         {
             IsBusy = true;
             await _categoryService.SubmitCategoryAsync(Category);
-            await _jsRuntime.InvokeVoidAsync("closeOffcanvas");
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "category-overlay", "category-component");
             IsBusy = false;
         }
 
         public async Task OpenCategory(CategoryDto? category) {
             Category = category ?? new CategoryDto();
-            await _jsRuntime.InvokeVoidAsync("openOffcanvas");
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas","category-overlay", "category-component");
         }
         #endregion
 

@@ -42,7 +42,11 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
 
         #region PROPERTIES
         [ObservableProperty]
-        private List<CategoryDto> categories = new List<CategoryDto>();
+        private List<SelectDto> categories = new List<SelectDto>();
+        [ObservableProperty]
+        private SelectDto category = new SelectDto() { Id=""};
+        [ObservableProperty]
+        private List<ProductDto> menuProducts = new List<ProductDto>();
         [ObservableProperty]
         private List<ProductDto> products = new List<ProductDto>();
         [ObservableProperty]
@@ -65,11 +69,12 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             IsBusy = true;
             var categoryOutput = await _categoryService.GetCategoriesAsync();
             if (categoryOutput is not null) {
-                Categories = categoryOutput.Adapt<List<CategoryDto>>();
+                Categories = categoryOutput.Select(query => new SelectDto() { Id = query.Id.ToString(), Name = query.Name }).ToList();
             }
             var productOutput = await _productService.GetProductsAsync();
             if (productOutput is not null) {
                 Products = productOutput.Adapt<List<ProductDto>>();
+                MenuProducts = Products;
             }
             IsBusy = false;
         }
@@ -99,8 +104,8 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                     var newId = Guid.NewGuid();
                     Orders?.Add(new OrderDto { 
                         Id = newId,
-                        Title= Product.Name,
-                        Price = Product.Price,
+                        Title= product.Name,
+                        Price = product.Price,
                         Product = product, 
                         Count = count
                     });
@@ -110,11 +115,11 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                 PendingCartId = $"cart-{id}";
             }
         }
-        public async Task AddOrderAsync(VariantDto variant)
+        public async Task AddOrderAsync(ProductVariantDto item)
         {
             var count = 1;
             var id = string.Empty;
-            var existingOrder = Orders?.FirstOrDefault(query => query.Variant?.Id == variant.Id);
+            var existingOrder = Orders?.FirstOrDefault(query => query.Variant?.Id == item.Variant.Id);
             if (existingOrder != null)
             {
                 count = existingOrder.Count + 1;
@@ -127,9 +132,9 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                 Orders?.Add(new OrderDto { 
                     Id = newId, 
                     Product= Product,
-                    Variant= variant, 
-                    Title =$"{Product.Name}-{variant.Name}",
-                    Price = variant.Price,
+                    Variant= item.Variant, 
+                    Title =$"{item.Product.Name}-{item.Variant.Name}",
+                    Price = item.Variant.Price,
                     Count = count });
                 id = newId.ToString();
             }
@@ -195,6 +200,19 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             var settings = Session.AppSettings;
             settings.Display = display;
             _sessionService.SetAppSettings(settings);
+        }
+        public void SelectCategory(SelectDto category)
+        {
+            category.Selected = true;
+            Category = category;
+            MenuProducts = string.IsNullOrEmpty(category.Id) ? Products :
+                           Products.Where(p => p.CategoryId == new Guid(Category.Id)).ToList();
+        }
+
+        public void SearchProducts()
+        {
+            MenuProducts = string.IsNullOrEmpty(Search.Keyword) ? Products :
+                           Products.Where(p => p.Name.Contains(Search.Keyword,StringComparison.OrdinalIgnoreCase)).ToList();
         }
         #endregion
     }

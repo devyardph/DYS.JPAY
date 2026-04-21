@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <!-- Removed maximum-scale and user-scalable so content scales naturally on all devices -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JPay</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        headline: ['Manrope', 'sans-serif'],
+                    },
+                    colors: {
+                        primary: '#4A154B',
+                        'primary-container': '#611f69',
+                        secondary: '#36C5F0',
+                        'secondary-container': '#e8f5fa',
+                        tertiary: '#2EB67D',
+                        'tertiary-fixed-dim': '#7fda91',
+                        warning: '#ECB22E',
+                        error: '#E01E5A',
+                        'error-container': '#fbe9ef',
+                        background: '#ffffff',
+                        surface: '#ffffff',
+                        'surface-container-low': '#f8f8f8',
+                        'surface-container-lowest': '#ffffff',
+                        'surface-container-highest': '#dddddd',
+                        'on-surface': '#1d1c1d',
+                        'on-surface-variant': '#616061',
+                        'outline-variant': '#dddddd',
+                        'on-primary': '#ffffff',
+                        'on-primary-container': '#ffffff',
+                        'on-secondary-container': '#1264a3',
+                        'on-tertiary-fixed-variant': '#005323',
+                    },
+                    animation: {
+                        'fade-in-up': 'fadeInUp 0.4s ease-out forwards',
+                    },
+                    keyframes: {
+                        fadeInUp: {
+                            '0%': { opacity: '0', transform: 'translateY(20px)' },
+                            '100%': { opacity: '1', transform: 'translateY(0)' },
+                        }
+                    },
+                    /* Safe-area padding tokens usable as pt-safe-top etc. */
+                    padding: {
+                        'safe-top': 'env(safe-area-inset-top)',
+                        'safe-bottom': 'env(safe-area-inset-bottom)',
+                        'safe-left': 'env(safe-area-inset-left)',
+                        'safe-right': 'env(safe-area-inset-right)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* ── Base reset ───────────────────────────────────────────── */
+        html, body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f7f9ff;
+            color: #181c20;
+            height: 100%;
+            margin: 0;
+            padding: 0;
+            /* Prevent rubber-band / horizontal scroll on all devices */
+            overscroll-behavior: none;
+            overflow-x: hidden;
+            -webkit-overflow-scrolling: touch;
+        }
+
+        /* ── Safe-area insets applied to the root app container ──── */
+        #app {
+            /* Honour notch / home-indicator on iOS & Android */
+            padding-top: env(safe-area-inset-top);
+            padding-bottom: env(safe-area-inset-bottom);
+            padding-left: env(safe-area-inset-left);
+            padding-right: env(safe-area-inset-right);
+            /* Prevent content from overflowing sideways */
+            min-width: 0;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Manrope', sans-serif;
+        }
+
+        .ledger-gradient {
+            background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%);
+        }
+
+        .glass-nav {
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px); /* Safari */
+            background-color: rgba(247, 249, 255, 0.85);
+        }
+
+        /* ── Scrollbar suppression ───────────────────────────────── */
+        .no-scrollbar::-webkit-scrollbar { display: none; }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+
+        /* ── Sidebar transition ──────────────────────────────────── */
+        #sidebar {
+            transition: width 0.25s ease, transform 0.25s ease;
+        }
+
+        /* On mobile/tablet: sidebar is an off-canvas drawer */
+        @media (max-width: 1023px) {
+            #sidebar {
+                position: fixed;
+                top: 0;
+                left: 0;
+                height: 100%;
+                z-index: 40;
+                transform: translateX(-100%);
+                width: 16rem !important; /* Always full-width drawer on small screens */
+            }
+            #sidebar.sidebar-open {
+                transform: translateX(0);
+            }
+            /* Mobile overlay behind drawer */
+            #sidebar-overlay {
+                display: none;
+                position: fixed;
+                inset: 0;
+                background: rgba(0, 0, 0, 0.4);
+                z-index: 39;
+                transition: opacity 0.25s ease;
+            }
+            #sidebar-overlay.overlay-visible {
+                display: block;
+            }
+            /* Main content never shifts on small screens */
+            #main-content {
+                margin-left: 0 !important;
+            }
+        }
+
+        /* On desktop: sidebar is always visible, inline */
+        @media (min-width: 1024px) {
+            #sidebar {
+                position: relative;
+                transform: translateX(0) !important;
+                height: 100vh;
+            }
+            #sidebar-overlay {
+                display: none !important;
+            }
+        }
+
+        /* ── Fluid typography scale ──────────────────────────────── */
+        html {
+            font-size: clamp(14px, 1vw + 0.5rem, 16px);
+        }
+
+        /* ── Touch target minimum size ───────────────────────────── */
+        button, a, [role="button"] {
+            min-height: 44px;
+            min-width: 44px;
+        }
+    </style>
+</head>
+
+<!-- Safe-area padding baked into the body itself as a fallback for older WebViews -->
+<body id="app" class="h-full">
+
+  
+
+    <script src="_framework/blazor.webview.js" autostart="false"></script>
+
+    <script>
+        /* ═══════════════════════════════════════════════════════════
+           MODAL HELPERS
+        ═══════════════════════════════════════════════════════════ */
+        function openModal(id) {
+            const modal   = document.getElementById(id);
+            const content = document.getElementById(id + '-content');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.remove('opacity-0');
+                content && content.classList.remove('scale-95');
+            }, 10);
+        }
+
+        function closeModal(id) {
+            const modal   = document.getElementById(id);
+            const content = document.getElementById(id + '-content');
+            modal.classList.add('opacity-0');
+            content && content.classList.add('scale-95');
+            setTimeout(() => modal.classList.add('hidden'), 300);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           SIDEBAR — works across all breakpoints
+        ═══════════════════════════════════════════════════════════ */
+        function isMobile() {
+            return window.innerWidth < 1024;
+        }
+
+        /** Open sidebar as a drawer on mobile/tablet */
+        function openMobileSidebar() {
+            const sidebar  = document.getElementById('sidebar');
+            const overlay  = document.getElementById('sidebar-overlay');
+            sidebar.classList.add('sidebar-open');
+            overlay.classList.add('overlay-visible');
+            // Ensure text labels visible inside drawer
+            _showSidebarText();
+        }
+
+        /** Close drawer on mobile/tablet */
+        function closeMobileSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.remove('sidebar-open');
+            overlay.classList.remove('overlay-visible');
+        }
+
+        /** Desktop: collapse/expand inline sidebar */
+        function collapseDesktopSidebar(collapse) {
+            const sidebar     = document.getElementById('sidebar');
+            const mainContent = document.getElementById('main-content');
+            const collapseIcon = document.getElementById('collapse-icon');
+
+            if (collapse) {
+                sidebar.classList.remove('w-64');
+                sidebar.classList.add('w-20');
+                mainContent && mainContent.classList.replace('ml-64', 'ml-20');
+                _hideSidebarText();
+                collapseIcon && collapseIcon.setAttribute('d', 'M9 5l7 7-7 7');
+            } else {
+                sidebar.classList.remove('w-20');
+                sidebar.classList.add('w-64');
+                mainContent && mainContent.classList.replace('ml-20', 'ml-64');
+                _showSidebarText();
+                collapseIcon && collapseIcon.setAttribute('d', 'M15 19l-7-7 7-7');
+            }
+        }
+
+        /** Public toggle — smart based on screen size */
+        function toggleSidebar() {
+            if (isMobile()) {
+                const sidebar = document.getElementById('sidebar');
+                sidebar.classList.contains('sidebar-open')
+                    ? closeMobileSidebar()
+                    : openMobileSidebar();
+            } else {
+                const sidebar = document.getElementById('sidebar');
+                collapseDesktopSidebar(!sidebar.classList.contains('w-20'));
+            }
+        }
+
+        /**
+         * Legacy helper used by some Blazor components:
+         * if sidebar is collapsed on desktop, expand it.
+         */
+        function toggleMainbar() {
+            if (!isMobile()) {
+                const sidebar = document.getElementById('sidebar');
+                if (sidebar.classList.contains('w-20')) collapseDesktopSidebar(false);
+            }
+        }
+
+        /* Internal label/icon helpers */
+        function _showSidebarText() {
+            document.querySelectorAll('.sidebar-text').forEach(t => t.classList.remove('hidden'));
+            const logo     = document.getElementById('sidebar-logo');
+            const iconLogo = document.getElementById('sidebar-icon-logo');
+            const header   = document.getElementById('sidebar-header');
+            logo     && logo.classList.remove('hidden');
+            iconLogo && (iconLogo.classList.add('hidden'), iconLogo.classList.remove('flex'));
+            header   && (header.classList.remove('justify-center'), header.classList.add('justify-between'));
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('justify-center', 'px-0');
+                link.classList.add('space-x-3', 'px-4');
+            });
+        }
+
+        function _hideSidebarText() {
+            document.querySelectorAll('.sidebar-text').forEach(t => t.classList.add('hidden'));
+            const logo     = document.getElementById('sidebar-logo');
+            const iconLogo = document.getElementById('sidebar-icon-logo');
+            const header   = document.getElementById('sidebar-header');
+            logo     && logo.classList.add('hidden');
+            iconLogo && (iconLogo.classList.remove('hidden'), iconLogo.classList.add('flex'));
+            header   && (header.classList.remove('justify-between'), header.classList.add('justify-center'));
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('space-x-3', 'px-4');
+                link.classList.add('justify-center', 'px-0');
+            });
+        }
+
+        /* ── Initialise correct sidebar state on load & resize ──── */
+        function initResponsiveSidebar() {
+            if (isMobile()) {
+                // Always start hidden on mobile
+                closeMobileSidebar();
+                _showSidebarText(); // Labels visible inside drawer
+            } else {
+                // Start expanded on desktop
+                collapseDesktopSidebar(false);
+            }
+        }
+
+        window.addEventListener('resize', () => {
+            // Re-evaluate on orientation change / window resize
+            initResponsiveSidebar();
+        });
+
+        document.addEventListener('DOMContentLoaded', initResponsiveSidebar);
+
+        /* ═══════════════════════════════════════════════════════════
+           CART ANIMATION
+        ═══════════════════════════════════════════════════════════ */
+        function animateCart(id) {
+            const element = document.getElementById(id);
+            if (!element) return;
+            element.classList.add(
+                'bg-primary/10', 'ring-2', 'ring-primary/40',
+                'scale-[1.02]', 'transition', 'duration-300', 'ease-in-out'
+            );
+            element.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            setTimeout(() => {
+                element.classList.remove(
+                    'bg-primary/10', 'ring-2', 'ring-primary/40', 'scale-[1.02]'
+                );
+            }, 2000);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           PROGRESS BAR MODAL
+        ═══════════════════════════════════════════════════════════ */
+        function showProgessBar() {
+            const modal       = document.getElementById('result-modal');
+            const progressBar = document.getElementById('progress-bar');
+            if (!modal || !progressBar) return;
+
+            modal.classList.remove('hidden', 'opacity-0');
+            modal.classList.add('opacity-100');
+
+            progressBar.style.transition = 'none';
+            progressBar.style.width      = '100%';
+            void progressBar.offsetWidth; // force reflow
+
+            progressBar.style.transition = 'width 10s linear';
+            progressBar.style.width      = '0%';
+
+            setTimeout(() => {
+                modal.classList.add('opacity-0');
+                setTimeout(() => modal.classList.add('hidden'), 300);
+            }, 2000);
+        }
+
+        /* ═══════════════════════════════════════════════════════════
+           OFF-CANVAS PANEL
+        ═══════════════════════════════════════════════════════════ */
+        function openOffcanvas(overlayId, elementId) {
+            const overlay   = document.getElementById(overlayId);
+            const offcanvas = document.getElementById(elementId);
+            if (!overlay || !offcanvas) return;
+            overlay.classList.remove('hidden');
+            setTimeout(() => {
+                overlay.classList.remove('opacity-0');
+                offcanvas.classList.remove('translate-x-full');
+            }, 10);
+        }
+
+        function closeOffcanvas(overlayId, elementId) {
+            const overlay   = document.getElementById(overlayId);
+            const offcanvas = document.getElementById(elementId);
+            if (!overlay || !offcanvas) return;
+            overlay.classList.add('opacity-0');
+            offcanvas.classList.add('translate-x-full');
+            setTimeout(() => overlay.classList.add('hidden'), 300);
+        }
+    </script>
+</body>
+</html>
