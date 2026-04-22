@@ -1,36 +1,39 @@
 ﻿@using DYS.JPay.Shared.Shared.Dtos
+
 @if (Display == "grid")
 {
-
-     <div class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-3 gap-4">
+    <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
         @foreach (var product in Products)
         {
-            <button @onclick="@(() => OnAddToOrder(product))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 hover:border-primary/30 hover:shadow-md transition-all text-left flex flex-col items-center group">
-                <div class="w-24 h-24 rounded-full overflow-hidden mb-4 bg-surface-container-low">
-                    <img alt="@product.Name" class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300" referrerpolicy="no-referrer"
-                         src="@product.ImageUrl">
+            <button @onclick="@(() => OnAddToOrder(product))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left flex flex-col h-full group">
+                <div class="w-full aspect-square bg-surface-container-low rounded-xl mb-4 overflow-hidden relative group-hover:scale-105 transition-transform duration-300">
+                    <img src="@product.ImageUrl" alt="@product.Name" class="w-full h-full object-cover" referrerpolicy="no-referrer">
+                    <div class="absolute top-2 right-2 flex gap-1">
+                        <span class="px-2 py-1 bg-surface/80 backdrop-blur-sm rounded-lg text-xs font-bold text-on-surface">@product.Name</span>
+                    </div>
                 </div>
-                <h3 class="font-bold text-on-surface text-center mb-1">@product.Name</h3>
-                <p class="text-primary font-headline font-bold">@Currency@product.Price?.ToString("N2")</p>
+                <h3 class="font-bold text-on-surface leading-tight mb-1">@product.Name</h3>
+                <p class="text-primary font-black mt-auto">@Currency@product.Price?.ToString("N2")</p>
             </button>
         }
     </div>
 }
 else if(Display == "list")
 {
-     <div class="flex flex-col gap-3">
+
+    <div id="products-container" class="flex flex-col gap-3">
         @foreach (var product in Products)
         {
             <button @onclick="@(() => OnAddToOrder(product))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10
-        hover:border-primary/30 hover:shadow-md transition-all text-left
-        flex items-center gap-4 group">
+                hover:border-primary/30 hover:shadow-md transition-all text-left
+                flex items-center gap-4 group">
 
                 <!-- Product Image -->
                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-surface-container-low shrink-0">
                     <img alt="@product.Name"
                          src="@product.ImageUrl"
-                    class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                    referrerpolicy="no-referrer" />
+                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                         referrerpolicy="no-referrer" />
                 </div>
 
                 <!-- Product Info -->
@@ -40,16 +43,16 @@ else if(Display == "list")
                 </div>
 
                 <!-- Price -->
-                <p class="text-primary font-headline font-bold text-lg">@Currency@product.Price.ToCurrency(Currency, 2)</p>
+                <p class="text-primary font-headline font-bold text-lg">@Currency@product.Price?.ToString("N2")</p>
 
                 <!-- Add Button -->
                 <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center
-            group-hover:bg-primary group-hover:text-white transition-colors ml-2">
+                    group-hover:bg-primary group-hover:text-white transition-colors ml-2">
                     <svg xmlns="http://www.w3.org/2000/svg"
-                    width="24" height="24" viewBox="0 0 24 24"
-                    fill="none" stroke="currentColor" stroke-width="2"
-                    stroke-linecap="round" stroke-linejoin="round"
-                    class="lucide lucide-plus w-5 h-5" aria-hidden="true">
+                         width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="2"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         class="lucide lucide-plus w-5 h-5" aria-hidden="true">
                         <path d="M5 12h14"></path>
                         <path d="M12 5v14"></path>
                     </svg>

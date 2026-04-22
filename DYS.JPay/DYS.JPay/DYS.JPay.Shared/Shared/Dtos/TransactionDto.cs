@@ -13,6 +13,9 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public string ReferenceNo { get; set; } = string.Empty;
         public double? AmountTendered { get; set; }
         public double? Total { get; set; }
+        public double? SubTotal { get; set; }
+        public double? Tax { get; set; }
+        public double? TotalTax { get; set; }
         public double? Count { get; set; }
         public DateTime? Date { get; set; }
         public string PaymentStatus { get; set; } = GlobalSettings.PAID;

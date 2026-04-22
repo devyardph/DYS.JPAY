@@ -112,6 +112,9 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                     id = newId.ToString();
                 }
                 Transaction.Total = Orders?.Sum(query => query.Price * query.Count);
+                Transaction.Tax = Session.AppSettings.Tax;
+                Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
+                Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
                 PendingCartId = $"cart-{id}";
             }
         }
@@ -139,6 +142,9 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                 id = newId.ToString();
             }
             Transaction.Total = Orders?.Sum(query => query.Price * query.Count);
+            Transaction.Tax = Session.AppSettings.Tax;
+            Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
+            Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
             PendingCartId = $"cart-{id}";
             await _jsRuntime.InvokeVoidAsync("closeModal", "variants-modal");
         }
@@ -195,6 +201,9 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         {
             if (order.Count == 0) Orders?.RemoveAll(query => query.Id == order.Id);
             Transaction.Total = Orders?.Sum(query => query.Product.Price * query.Count);
+            Transaction.Tax = Session.AppSettings.Tax;
+            Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
+            Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
         }
         public void OnDisplayChanged(string display) {
             var settings = Session.AppSettings;

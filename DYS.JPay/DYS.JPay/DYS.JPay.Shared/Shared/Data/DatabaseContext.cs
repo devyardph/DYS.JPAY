@@ -470,13 +470,14 @@ namespace DYS.JPay.Shared.Shared.Data
 
             if (!existingStore.Any())
             {
-                var settings = new Entities.AppSetting    
+                var settings = new Entities.AppSetting
                 {
-                   StoreName = "Lacasetta de Brit",
-                   StoreDescription = "Italian restaurant",
-                   Currency="USD",
-                   Display = "grid",
-                   Default= true,
+                    StoreName = "Lacasetta de Brit",
+                    StoreDescription = "Italian restaurant",
+                    Currency = "$",
+                    Display = "grid",
+                    Default = true,
+                    Tax = 12
                 };
 
                 await _connection.InsertAsync(settings);

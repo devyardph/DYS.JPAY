@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS - POS & Management</title>
+    <title>JPay</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
@@ -63,24 +63,24 @@
 
         .ledger-gradient {
             background: linear-gradient( 135deg, #4A154B 0%, /* Primary color */
-            #4A154B 50%, /* Vibrant purple accent */
+            #4A154B 50%, /* Rich purple accent */
             #4A154B 100% /* Deep complementary tone */
             );
         }
 
-            .glass-nav {
-                backdrop-filter: blur(16px);
-                background-color: rgba(247, 249, 255, 0.8);
-            }
+        .glass-nav {
+            backdrop-filter: blur(16px);
+            background-color: rgba(247, 249, 255, 0.8);
+        }
 
-            .no-scrollbar::-webkit-scrollbar {
-                display: none;
-            }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
 
-            .no-scrollbar {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-            }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body id="app" class="min-h-screen flex">
@@ -105,6 +105,7 @@
                     modal.classList.add('hidden');
                 }, 300);
             }
+
             function toggleMobileMenu() {
                 const sidebar = document.getElementById('sidebar');
                 const overlay = document.getElementById('mobile-menu-overlay');
@@ -125,6 +126,7 @@
                     }, 300);
                 }
             }
+
             function toggleMobileCart() {
                 const sidebar = document.getElementById('cart-sidebar');
                 const overlay = document.getElementById('mobile-cart-overlay');
@@ -145,6 +147,7 @@
                     }, 300);
                 }
             }
+
             function toggleSidebar() {
                 const sidebar = document.getElementById('sidebar');
                 const mainContent = document.getElementById('main-content');
@@ -177,6 +180,7 @@
 
                     collapseIcon.setAttribute('d', 'M15 19l-7-7 7-7');
                 } else {
+        
                     sidebar.classList.remove('w-64');
                     sidebar.classList.add('w-20');
                     mainContent.classList.remove('lg:ml-64');
@@ -197,6 +201,7 @@
                     collapseIcon.setAttribute('d', 'M9 5l7 7-7 7');
                 }
             }
+
             function toggleMainbar() {
                 const sidebar = document.getElementById('sidebar');
                 const isSideBarCollapsed = sidebar.classList.contains('w-20');

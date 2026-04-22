@@ -1,47 +1,90 @@
 ﻿@using DYS.JPay.Shared.Shared.Dtos
+@inject IJSRuntime JS
 
- <div id="cart-items" class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-3 scroll-smooth">
-    @if (OrderItems.Any())
-    {
-        @foreach (var orderItem in OrderItems)
+<div id="cart-sidebar" class="w-full fixed lg:right-0 bottom-0 lg:top-0 h-[80vh] lg:h-screen lg:w-96 bg-surface-container-lowest lg:rounded-none rounded-t-1xl border border-outline-variant/10 lg:border-y-0 lg:border-r-0 lg:border-l flex flex-col overflow-hidden shadow-2xl lg:shadow-2xl z-50 transform translate-y-full lg:translate-y-0 transition-transform duration-300">
+    <div class="p-6 border-b border-outline-variant/10 bg-surface-container-low/50 flex justify-between items-center">
+        <h2 class="text-xl font-headline font-bold text-primary flex items-center gap-2">
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            Current Order
+        </h2>
+        <button onclick="toggleMobileCart()" class="lg:hidden p-2 text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container-highest transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+    </div>
+
+    <div id="cart-items" class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-4 scroll-smooth">
+        @if (OrderItems.Any())
         {
-            <div class="flex items-center justify-between gap-0 p-2 rounded-xl transition-all duration-500" id="cart-@orderItem.Id">
-                <!-- Item Info -->
-                <div class="flex-1">
-                    <h4 class="font-bold text-sm text-on-surface">@orderItem.Title</h4>
-                    <p class="text-xs text-on-surface-variant">@Currency@orderItem.Price</p>
+            @foreach (var orderItem in OrderItems)
+            {
+                <div class="flex items-center justify-between gap-0 p-1 rounded-xl transition-all duration-500" id="cart-@orderItem.Id">
+                    <!-- Item Info -->
+                    <div class="flex-1">
+                        <h4 class="font-bold text-sm text-on-surface">@orderItem.Title</h4>
+                        <p class="text-xs text-on-surface-variant">@Currency@orderItem.Price</p>
+                    </div>
+                    <!-- Quantity Controls -->
+                    <div class="flex items-center gap-1 bg-surface-container-low rounded-lg p-1">
+                        <button @onclick="@(() => @DecreaseOrder(orderItem))" class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-white text-on-surface-variant hover:text-primary transition-colors">-</button>
+                        <span class="text-sm font-bold w-4 text-center">@orderItem.Count</span>
+                        <button @onclick="@(() => IncreaseOrder(orderItem))" class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-white text-on-surface-variant hover:text-primary transition-colors">+</button>
+                    </div>
+                    <!-- Price -->
+                    <div class="text-right w-16">
+                        <p class="font-bold text-sm">@Currency@((orderItem.Price * @orderItem.Count)?.ToString("N2"))</p>
+                    </div>
+                    <!-- Remove Button -->
+                    <button class="text-error/70 hover:text-error p-1" @onclick="@(() => OnRemoveOrder(orderItem))">
+                        <svg xmlns="http://www.w3.org/2000/svg"
+                             width="24" height="24" viewBox="0 0 24 24"
+                             fill="none" stroke="currentColor" stroke-width="2"
+                             stroke-linecap="round" stroke-linejoin="round"
+                             class="lucide lucide-x w-4 h-4" aria-hidden="true">
+                            <path d="M18 6 6 18"></path>
+                            <path d="m6 6 12 12"></path>
+                        </svg>
+                    </button>
                 </div>
-                <!-- Quantity Controls -->
-                <div class="flex items-center gap-3 bg-surface-container-low rounded-lg p-1">
-                    <button @onclick="@(() => @DecreaseOrder(orderItem))" class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-white text-on-surface-variant hover:text-primary transition-colors">-</button>
-                    <span class="text-sm font-bold w-4 text-center">@orderItem.Count</span>
-                    <button @onclick="@(() => IncreaseOrder(orderItem))" class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-white text-on-surface-variant hover:text-primary transition-colors">+</button>
-                </div>
-                <!-- Price -->
-                <div class="text-right w-16">
-                    <p class="font-bold text-sm">@Currency@((orderItem.Price * @orderItem.Count)?.ToString("N2"))</p>
-                </div>
-                <!-- Remove Button -->
-                <button class="text-error/70 hover:text-error p-1" @onclick="@(() => OnRemoveOrder(orderItem))">
-                    <svg xmlns="http://www.w3.org/2000/svg"
-                         width="24" height="24" viewBox="0 0 24 24"
-                         fill="none" stroke="currentColor" stroke-width="2"
-                         stroke-linecap="round" stroke-linejoin="round"
-                         class="lucide lucide-x w-4 h-4" aria-hidden="true">
-                        <path d="M18 6 6 18"></path>
-                        <path d="m6 6 12 12"></path>
-                    </svg>
-                </button>
-            </div>
-        }    
-    }
+            }
+        }
+    </div>
 
-    else
-    {
-        <div class="h-full flex flex-col items-center justify-center text-on-surface-variant opacity-50"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-shopping-cart w-12 h-12 mb-4" aria-hidden="true"><circle cx="8" cy="21" r="1"></circle><circle cx="19" cy="21" r="1"></circle><path d="M2.05 2.05h2l2.66 12.42a2 2 0 0 0 2 1.58h9.78a2 2 0 0 0 1.95-1.57l1.65-7.43H5.12"></path></svg><p>Cart is empty</p></div>
-            
-    }
+    <div class="p-6 border-t border-outline-variant/10 bg-surface-container-low/30">
+        <div class="space-y-2 mb-4">
+            <div class="flex items-center justify-between text-sm mb-2">
+                <span class="text-on-surface-variant">Discount</span>
+                <div class="flex gap-2">
+                    <button onclick="setDiscount(0)" id="discount-0" class="px-2 py-1 rounded-md text-xs font-bold transition-colors bg-primary text-white">None</button>
+                    <button onclick="setDiscount(10)" id="discount-10" class="px-2 py-1 rounded-md text-xs font-bold transition-colors bg-surface-container-highest text-on-surface-variant hover:text-primary">10%</button>
+                    <button onclick="setDiscount(20)" id="discount-20" class="px-2 py-1 rounded-md text-xs font-bold transition-colors bg-surface-container-highest text-on-surface-variant hover:text-primary">20%</button>
+                </div>
+            </div>
+            <div class="flex justify-between text-sm text-on-surface-variant">
+                <span>Subtotal</span>
+                <span id="cart-subtotal">@Currency@Transaction.SubTotal?.ToString("N2")</span>
+            </div>
+            <div id="discount-row" class="flex justify-between text-sm text-error hidden">
+                <span>Discount</span>
+                <span id="cart-discount">-$0.00</span>
+            </div>
+            <div class="flex justify-between text-sm text-on-surface-variant">
+                <span>Tax (@Transaction.Tax%)</span>
+                <span id="cart-tax">@Currency@Transaction.TotalTax?.ToString("N2")</span>
+            </div>
+            <div class="flex justify-between text-lg font-black text-primary pt-2 border-t border-outline-variant/10">
+                <span>Total</span>
+                <span id="cart-total">@Currency@Transaction.Total?.ToString("N2")</span>
+            </div>
+        </div>
+        <button id="charge-btn" onclick="@ProcessOrderAsync" class="w-full ledger-gradient text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+            Charge <span id="charge-amount">@Currency@Transaction.Total?.ToString("N2")</span>
+            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </button>
+    </div>
 </div>
+
+
+
 @code {
     [Parameter]
     public string Currency { get; set; } = string.Empty;
@@ -49,6 +92,8 @@
     public List<OrderDto> OrderItems { get; set; } = new List<OrderDto>();
     [Parameter]
     public EventCallback<OrderDto> OrderChanged { get; set; }
+    [Parameter]
+    public TransactionDto Transaction { get; set; } = new TransactionDto();
 
     public async Task OnRemoveOrder(OrderDto order)
     {
@@ -70,4 +115,6 @@
         order.Count = order.Count - 1;
         await OrderChanged.InvokeAsync(order);
     }
+
+    public async Task ProcessOrderAsync() => await JS.InvokeVoidAsync("openModal", "payment-modal");
 }

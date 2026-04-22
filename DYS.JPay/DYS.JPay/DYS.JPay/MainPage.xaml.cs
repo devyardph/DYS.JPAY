@@ -12,7 +12,7 @@ namespace DYS.JPay
 #if IOS
     if (DeviceInfo.Idiom == DeviceIdiom.Tablet)
     {
-        Padding = new Thickness(0, 0, 0, -50); // adjust value as needed
+        Padding = new Thickness(0, 0, 0, 0); // adjust value as needed
     }
 #endif
         }

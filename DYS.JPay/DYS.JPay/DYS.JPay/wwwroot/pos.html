@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>POS - POS & Management</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+            headline: ['Manrope', 'sans-serif'],
+          },
+          colors: {
+            primary: '#6d28d9',
+            'primary-container': '#4c1d95',
+            secondary: '#8b5cf6',
+            background: '#f7f9ff',
+            surface: '#f7f9ff',
+            'surface-container-low': '#f1f4fa',
+            'surface-container-lowest': '#ffffff',
+            'surface-container-highest': '#dfe3e8',
+            'on-surface': '#181c20',
+            'on-surface-variant': '#40484c',
+            'outline-variant': '#c0c7cd',
+          },
+          animation: {
+            'fade-in-up': 'fadeInUp 0.4s ease-out forwards',
+          },
+          keyframes: {
+            fadeInUp: {
+              '0%': { opacity: '0', transform: 'translateY(20px)' },
+              '100%': { opacity: '1', transform: 'translateY(0)' },
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body { font-family: 'Inter', sans-serif; background-color: #f7f9ff; color: #181c20; }
+    h1, h2, h3, h4, h5, h6 { font-family: 'Manrope', sans-serif; }
+    .ledger-gradient { background: linear-gradient(135deg, #6d28d9 0%, #4c1d95 100%); }
+    .glass-nav { backdrop-filter: blur(16px); background-color: rgba(247, 249, 255, 0.8); }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="min-h-screen flex">
+  <!-- Mobile Menu Overlay -->
+  <div id="mobile-menu-overlay" onclick="toggleMobileMenu()" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[60] hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
+
+  <!-- Sidebar -->
+  <aside id="sidebar" class="fixed left-0 top-0 h-screen w-64 bg-primary-container border-r border-primary/20 flex flex-col py-6 z-[70] transition-all duration-300 ease-in-out -translate-x-full lg:translate-x-0">
+    <div id="sidebar-header" class="mb-8 flex justify-between items-center px-6">
+      <div id="sidebar-logo" class="overflow-hidden whitespace-nowrap">
+        <h1 class="text-xl font-black text-white tracking-tight font-headline">Point of Sale</h1>
+        <p class="text-[10px] text-white/70 font-bold uppercase tracking-widest">Store Management</p>
+      </div>
+      <div id="sidebar-icon-logo" class="hidden w-10 h-10 bg-white/10 rounded-xl items-center justify-center text-white font-bold">
+        POS
+      </div>
+    </div>
+
+    <nav class="flex-1 space-y-2 px-4">
+      <a href="pos.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold bg-white text-primary shadow-sm group" title="Point of Sale">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Point of Sale</span>
+      </a>
+      <a href="dashboard.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Dashboard">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+      </a>
+      <a href="reports.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Reports">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Reports</span>
+      </a>
+      <a href="accounts.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Accounts">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Accounts</span>
+      </a>
+      <a href="transactions.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Transactions">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Transactions</span>
+      </a>
+      <a href="users.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Users">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Users</span>
+      </a>
+      <a href="settings.html" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group" title="Settings">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Settings</span>
+      </a>
+    </nav>
+
+    <div class="pt-4 px-4">
+      <button class="nav-link w-full bg-secondary text-white py-3 rounded-xl font-bold shadow-lg active:scale-95 transition-all flex items-center justify-center space-x-2" title="Add Transaction">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Add Transaction</span>
+      </button>
+    </div>
+
+    <div class="mt-auto space-y-2 border-t border-white/10 pt-4 px-4">
+      <button class="nav-link w-full flex items-center space-x-3 px-4 py-2 transition-colors font-headline text-sm font-medium text-white/70 hover:text-white hover:bg-white/10 rounded-xl" title="Help">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Help</span>
+      </button>
+      <a href="login.html" class="nav-link w-full flex items-center space-x-3 px-4 py-2 text-white/70 hover:text-white hover:bg-white/10 rounded-xl transition-colors font-headline text-sm font-medium" title="Logout">
+        <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path></svg>
+        <span class="sidebar-text whitespace-nowrap">Logout</span>
+      </a>
+    </div>
+
+    <!-- Collapse Toggle (Desktop Only) -->
+    <button onclick="toggleSidebar()" class="hidden lg:flex absolute -right-3 top-8 w-6 h-6 bg-surface-container-lowest border border-outline-variant/20 rounded-full items-center justify-center text-on-surface-variant hover:text-primary shadow-sm z-50 transition-transform">
+      <svg id="collapse-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"></path></svg>
+    </button>
+  </aside>
+
+  <!-- Main Content -->
+  <div id="main-content" class="flex-1 lg:ml-64 h-screen overflow-y-auto lg:overflow-hidden flex flex-col lg:flex-row transition-all duration-300">
+    <main class="flex-1 p-4 md:p-8 lg:pr-[26rem] opacity-0 animate-fade-in-up lg:overflow-y-auto no-scrollbar">
+      <div class="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-8">
+        <div class="flex items-center gap-4">
+          <button onclick="toggleMobileMenu()" class="lg:hidden p-2 text-on-surface-variant hover:bg-surface-container-highest rounded-full transition-colors -ml-2">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+          </button>
+          <div>
+            <h1 class="text-3xl font-headline font-bold text-primary">Point of Sale</h1>
+            <p class="text-on-surface-variant">Select items to add to the current order.</p>
+          </div>
+        </div>
+        <div class="flex items-center gap-4 w-full sm:w-auto mt-4 sm:mt-0">
+          <div class="relative flex-1 sm:w-64">
+            <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-on-surface-variant w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+            <input id="search-input" type="text" placeholder="Search products..." oninput="handleSearch(event)" class="w-full pl-10 pr-4 py-2 bg-surface-container-lowest border border-outline-variant/20 rounded-xl text-sm focus:ring-1 focus:ring-primary transition-all" />
+          </div>
+          <div class="flex items-center bg-surface-container-lowest rounded-lg p-1 shrink-0 border border-outline-variant/20">
+            <button id="view-grid-btn" onclick="setViewMode('grid')" class="p-2 rounded-md transition-colors bg-surface-container-highest text-primary shadow-sm hover:text-primary">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+            </button>
+            <button id="view-list-btn" onclick="setViewMode('list')" class="p-2 rounded-md transition-colors text-on-surface-variant hover:text-primary">
+              <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Categories -->
+      <div id="categories-container" class="flex gap-2 overflow-x-auto no-scrollbar pb-4 mb-4">
+        <!-- Rendered by JS -->
+      </div>
+
+      <!-- Products Grid -->
+      <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+        <!-- Rendered by JS -->
+      </div>
+    </main>
+
+    <!-- Cart Sidebar -->
+    <div id="cart-sidebar" class="w-full fixed lg:right-0 bottom-0 lg:top-0 h-[80vh] lg:h-screen lg:w-96 bg-surface-container-lowest lg:rounded-none rounded-t-3xl border border-outline-variant/10 lg:border-y-0 lg:border-r-0 lg:border-l flex flex-col overflow-hidden shadow-2xl lg:shadow-2xl z-50 transform translate-y-full lg:translate-y-0 transition-transform duration-300">
+      <div class="p-6 border-b border-outline-variant/10 bg-surface-container-low/50 flex justify-between items-center">
+        <h2 class="text-xl font-headline font-bold text-primary flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          Current Order
+        </h2>
+        <button onclick="toggleMobileCart()" class="lg:hidden p-2 text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container-highest transition-colors">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+        </button>
+      </div>
+      
+      <div id="cart-items" class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-4 scroll-smooth">
+        <!-- Cart Items will be rendered here -->
+      </div>
+      
+      <div class="p-6 border-t border-outline-variant/10 bg-surface-container-low/30">
+        <div class="space-y-2 mb-4">
+          <div class="flex items-center justify-between text-sm mb-2">
+            <span class="text-on-surface-variant">Discount</span>
+            <div class="flex gap-2">
+              <button onclick="setDiscount(0)" id="discount-0" class="px-2 py-1 rounded-md text-xs font-bold transition-colors bg-primary text-white">None</button>
+              <button onclick="setDiscount(10)" id="discount-10" class="px-2 py-1 rounded-md text-xs font-bold transition-colors bg-surface-container-highest text-on-surface-variant hover:text-primary">10%</button>
+              <button onclick="setDiscount(20)" id="discount-20" class="px-2 py-1 rounded-md text-xs font-bold transition-colors bg-surface-container-highest text-on-surface-variant hover:text-primary">20%</button>
+            </div>
+          </div>
+          <div class="flex justify-between text-sm text-on-surface-variant">
+            <span>Subtotal</span>
+            <span id="cart-subtotal">$0.00</span>
+          </div>
+          <div id="discount-row" class="flex justify-between text-sm text-error hidden">
+            <span>Discount</span>
+            <span id="cart-discount">-$0.00</span>
+          </div>
+          <div class="flex justify-between text-sm text-on-surface-variant">
+            <span>Tax (8%)</span>
+            <span id="cart-tax">$0.00</span>
+          </div>
+          <div class="flex justify-between text-lg font-black text-primary pt-2 border-t border-outline-variant/10">
+            <span>Total</span>
+            <span id="cart-total">$0.00</span>
+          </div>
+        </div>
+        <button id="charge-btn" onclick="openPaymentModal()" class="w-full ledger-gradient text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+          Charge <span id="charge-amount">$0.00</span>
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Mobile Floating Cart Button -->
+  <button id="mobile-cart-btn" onclick="toggleMobileCart()" class="lg:hidden fixed bottom-6 right-6 z-40 bg-primary text-white p-4 rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
+    <div class="relative">
+      <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+      <span id="mobile-cart-badge" class="absolute -top-2 -right-2 bg-error text-white text-[10px] font-bold w-5 h-5 rounded-full flex items-center justify-center border-2 border-surface-container-lowest hidden">0</span>
+    </div>
+  </button>
+  
+  <!-- Overlay for Mobile Cart -->
+  <div id="mobile-cart-overlay" onclick="toggleMobileCart()" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-40 hidden opacity-0 transition-opacity duration-300 lg:hidden"></div>
+
+  <!-- Modals -->
+  <!-- Payment Modal -->
+  <div id="payment-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-md w-full shadow-2xl transform scale-95 transition-transform duration-300" id="payment-modal-content">
+      <h2 class="text-2xl font-headline font-bold text-primary mb-2">Select Payment Method</h2>
+      <p class="text-on-surface-variant mb-8">Amount due: <span id="payment-amount" class="font-bold text-primary">$0.00</span></p>
+      
+      <div class="grid grid-cols-2 gap-4 mb-6">
+        <button onclick="processPayment('Cash')" class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-outline-variant/20 hover:border-primary hover:bg-primary/5 transition-all group">
+          <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 9V7a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2m2 4h10a2 2 0 002-2v-6a2 2 0 00-2-2H9a2 2 0 00-2 2v6a2 2 0 002 2zm7-5a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+          </div>
+          <span class="font-bold">Cash</span>
+        </button>
+        <button onclick="processPayment('Credit')" class="flex flex-col items-center justify-center gap-3 p-6 rounded-2xl border-2 border-outline-variant/20 hover:border-primary hover:bg-primary/5 transition-all group">
+          <div class="w-12 h-12 rounded-full bg-surface-container-low flex items-center justify-center group-hover:bg-primary group-hover:text-white transition-colors">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
+          </div>
+          <span class="font-bold">Credit</span>
+        </button>
+      </div>
+      
+      <button onclick="closePaymentModal()" class="w-full py-3 rounded-xl font-bold text-on-surface-variant hover:bg-surface-container-low transition-colors">
+        Cancel
+      </button>
+    </div>
+  </div>
+
+  <!-- Success Modal -->
+  <div id="success-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center transform scale-95 transition-transform duration-300" id="success-modal-content">
+      <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+        <svg class="w-10 h-10 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path></svg>
+      </div>
+      <h2 class="text-2xl font-headline font-bold text-on-surface mb-2">Payment Successful</h2>
+      <p class="text-on-surface-variant mb-8">Order has been completed and receipt generated.</p>
+      <button onclick="closeSuccessModal()" class="w-full ledger-gradient text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
+        New Order
+      </button>
+    </div>
+  </div>
+
+  <script>
+    const MOCK_PRODUCTS = [
+      { id: 'p1', name: 'Espresso', price: 3.50, category: 'Coffee', image: 'https://images.unsplash.com/photo-1510061162669-201d220976fe?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p2', name: 'Latte', price: 4.50, category: 'Coffee', image: 'https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p3', name: 'Cappuccino', price: 4.50, category: 'Coffee', image: 'https://images.unsplash.com/photo-1534778101976-62847782c213?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p4', name: 'Croissant', price: 3.00, category: 'Pastry', image: 'https://images.unsplash.com/photo-1555507036-ab1f40ce88cb?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p5', name: 'Blueberry Muffin', price: 3.50, category: 'Pastry', image: 'https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p6', name: 'Iced Tea', price: 3.00, category: 'Beverage', image: 'https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p7', name: 'Turkey Sandwich', price: 7.50, category: 'Food', image: 'https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p8', name: 'Avocado Toast', price: 6.50, category: 'Food', image: 'https://images.unsplash.com/photo-1588137378633-dea1336ce1e2?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p9', name: 'Matcha Latte', price: 5.00, category: 'Coffee', image: 'https://images.unsplash.com/photo-1515823662972-da6a2e4d3002?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p10', name: 'Cold Brew', price: 4.00, category: 'Coffee', image: 'https://images.unsplash.com/photo-1461023058943-07fcbe16d735?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p11', name: 'Chocolate Chip Cookie', price: 2.50, category: 'Pastry', image: 'https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&q=80&w=200&h=200' },
+      { id: 'p12', name: 'Orange Juice', price: 3.50, category: 'Beverage', image: 'https://images.unsplash.com/photo-1622483767028-3f66f32aef97?auto=format&fit=crop&q=80&w=200&h=200' },
+    ];
+    let cart = [];
+    let selectedCategory = 'All';
+    let searchQuery = '';
+    let viewMode = 'grid';
+    let currentDiscount = 0;
+
+    function setDiscount(value) {
+      currentDiscount = value;
+      [0, 10, 20].forEach(d => {
+        const btn = document.getElementById(`discount-${d}`);
+        if(d === value) {
+          btn.className = 'px-2 py-1 rounded-md text-xs font-bold transition-colors bg-primary text-white';
+        } else {
+          btn.className = 'px-2 py-1 rounded-md text-xs font-bold transition-colors bg-surface-container-highest text-on-surface-variant hover:text-primary';
+        }
+      });
+      renderCart();
+    }
+
+    function setViewMode(mode) {
+      viewMode = mode;
+      document.getElementById('view-grid-btn').className = `p-2 rounded-md transition-colors ${mode === 'grid' ? 'bg-surface-container-highest text-primary shadow-sm' : 'text-on-surface-variant hover:text-primary'}`;
+      document.getElementById('view-list-btn').className = `p-2 rounded-md transition-colors ${mode === 'list' ? 'bg-surface-container-highest text-primary shadow-sm' : 'text-on-surface-variant hover:text-primary'}`;
+      renderProducts();
+    }
+
+    function handleSearch(event) {
+      searchQuery = event.target.value.toLowerCase();
+      renderProducts();
+    }
+
+    function setCategory(category) {
+      selectedCategory = category;
+      renderCategories();
+      renderProducts();
+    }
+
+    function renderCategories() {
+      const categoriesContainer = document.getElementById('categories-container');
+      const categories = ['All', ...new Set(MOCK_PRODUCTS.map(p => p.category))];
+      
+      categoriesContainer.innerHTML = categories.map(cat => {
+        const isActive = cat === selectedCategory;
+        const activeClass = isActive 
+          ? 'bg-primary text-white shadow-md' 
+          : 'bg-surface-container-lowest text-on-surface-variant hover:bg-surface-container-highest border border-outline-variant/10';
+        return `<button onclick="setCategory('${cat}')" class="px-4 py-2 rounded-xl text-sm font-bold whitespace-nowrap transition-all ${activeClass}">${cat === 'All' ? 'All Items' : cat}</button>`;
+      }).join('');
+    }
+
+    function renderProducts() {
+      const productsContainer = document.getElementById('products-container');
+      
+      let filtered = MOCK_PRODUCTS.filter(p => {
+        const matchesCategory = selectedCategory === 'All' || p.category === selectedCategory;
+        const matchesSearch = p.name.toLowerCase().includes(searchQuery);
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        productsContainer.className = 'flex flex-col items-center justify-center py-12 text-on-surface-variant col-span-full';
+        productsContainer.innerHTML = `
+          <svg class="w-12 h-12 mb-4 opacity-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
+          <p>No products found</p>
+        `;
+        return;
+      }
+
+      const gridClass = viewMode === 'grid' 
+        ? 'grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4' 
+        : 'flex flex-col gap-4';
+      
+      productsContainer.className = gridClass;
+
+      productsContainer.innerHTML = filtered.map(product => {
+        if (viewMode === 'grid') {
+          return `
+            <button onclick="addToCart('${product.name}', ${product.price})" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left flex flex-col h-full group">
+              <div class="w-full aspect-square bg-surface-container-low rounded-xl mb-4 overflow-hidden relative group-hover:scale-105 transition-transform duration-300">
+                <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
+                <div class="absolute top-2 right-2 flex gap-1">
+                  <span class="px-2 py-1 bg-surface/80 backdrop-blur-sm rounded-lg text-xs font-bold text-on-surface">${product.category}</span>
+                </div>
+              </div>
+              <h3 class="font-bold text-on-surface leading-tight mb-1">${product.name}</h3>
+              <p class="text-primary font-black mt-auto">$${product.price.toFixed(2)}</p>
+            </button>
+          `;
+        } else {
+          return `
+            <button onclick="addToCart('${product.name}', ${product.price})" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all flex items-center justify-between group">
+              <div class="flex items-center gap-4">
+                <div class="w-16 h-16 shrink-0 bg-surface-container-low rounded-xl overflow-hidden group-hover:scale-105 transition-transform duration-300">
+                  <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" referrerpolicy="no-referrer" />
+                </div>
+                <div class="text-left">
+                  <h3 class="font-bold text-on-surface">${product.name}</h3>
+                  <span class="text-xs text-on-surface-variant font-medium">${product.category}</span>
+                </div>
+              </div>
+              <p class="text-primary font-black">$${product.price.toFixed(2)}</p>
+            </button>
+          `;
+        }
+      }).join('');
+    }
+
+    function addToCart(name, price) {
+      const existing = cart.find(item => item.name === name);
+      if (existing) {
+        existing.quantity += 1;
+      } else {
+        cart.push({ name, price, quantity: 1 });
+      }
+      renderCart(name);
+    }
+
+    function updateQuantity(name, delta) {
+      const item = cart.find(item => item.name === name);
+      if (item) {
+        item.quantity += delta;
+        if (item.quantity <= 0) {
+          cart = cart.filter(i => i.name !== name);
+        }
+      }
+      renderCart();
+    }
+
+    function renderCart(highlightName = null) {
+      const cartItemsContainer = document.getElementById('cart-items');
+      cartItemsContainer.innerHTML = '';
+
+      let subtotal = 0;
+
+      if (cart.length === 0) {
+        cartItemsContainer.innerHTML = `
+          <div class="h-full flex flex-col items-center justify-center text-on-surface-variant opacity-50 pt-10">
+            <svg class="w-12 h-12 mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
+            <p>Cart is empty</p>
+          </div>
+        `;
+      } else {
+        cart.forEach(item => {
+          subtotal += item.price * item.quantity;
+          const isHighlighted = item.name === highlightName;
+          const highlightClass = isHighlighted ? 'bg-primary/10 ring-1 ring-primary/30 scale-[1.02]' : 'bg-surface-container-low';
+          
+          const itemEl = document.createElement('div');
+          itemEl.id = `cart-item-${item.name.replace(/\s+/g, '-')}`;
+          itemEl.className = `flex justify-between items-center p-3 rounded-xl transition-all duration-500 ${highlightClass}`;
+          itemEl.innerHTML = `
+            <div class="flex-1">
+              <p class="font-bold text-on-surface text-sm">${item.name}</p>
+              <p class="text-primary font-bold text-sm">$${item.price.toFixed(2)}</p>
+            </div>
+            <div class="flex items-center gap-3 bg-surface-container-lowest rounded-lg p-1 border border-outline-variant/10">
+              <button onclick="updateQuantity('${item.name}', -1)" class="w-6 h-6 flex items-center justify-center text-on-surface-variant hover:text-error hover:bg-error/10 rounded-md transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 12H4"></path></svg>
+              </button>
+              <span class="font-bold text-sm w-4 text-center">${item.quantity}</span>
+              <button onclick="updateQuantity('${item.name}', 1)" class="w-6 h-6 flex items-center justify-center text-on-surface-variant hover:text-primary hover:bg-primary/10 rounded-md transition-colors">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4v16m8-8H4"></path></svg>
+              </button>
+            </div>
+          `;
+          cartItemsContainer.appendChild(itemEl);
+
+          if (isHighlighted) {
+            setTimeout(() => {
+              itemEl.classList.remove('bg-primary/10', 'ring-1', 'ring-primary/30', 'scale-[1.02]');
+              itemEl.classList.add('bg-surface-container-low');
+            }, 500);
+          }
+        });
+      }
+
+      const discountAmount = subtotal * (currentDiscount / 100);
+      const subtotalAfterDiscount = subtotal - discountAmount;
+      const tax = subtotalAfterDiscount * 0.08;
+      const total = subtotalAfterDiscount + tax;
+
+      document.getElementById('cart-subtotal').innerText = `$${subtotal.toFixed(2)}`;
+      document.getElementById('cart-tax').innerText = `$${tax.toFixed(2)}`;
+      document.getElementById('cart-total').innerText = `$${total.toFixed(2)}`;
+      document.getElementById('charge-amount').innerText = `$${total.toFixed(2)}`;
+      document.getElementById('payment-amount').innerText = `$${total.toFixed(2)}`;
+      
+      const discountRow = document.getElementById('discount-row');
+      if(currentDiscount > 0) {
+        discountRow.classList.remove('hidden');
+        document.getElementById('cart-discount').innerText = `-$${discountAmount.toFixed(2)} (${currentDiscount}%)`;
+      } else {
+        discountRow.classList.add('hidden');
+      }
+      
+      const chargeBtn = document.getElementById('charge-btn');
+      if (total > 0) {
+        chargeBtn.removeAttribute('disabled');
+      } else {
+        chargeBtn.setAttribute('disabled', 'true');
+      }
+
+      if (highlightName) {
+        const el = document.getElementById(`cart-item-${highlightName.replace(/\s+/g, '-')}`);
+        if (el) {
+          el.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }
+
+      // Update mobile cart badge
+      const mobileBadge = document.getElementById('mobile-cart-badge');
+      const totalItems = cart.reduce((acc, item) => acc + item.quantity, 0);
+      if (totalItems > 0) {
+        mobileBadge.innerText = totalItems;
+        mobileBadge.classList.remove('hidden');
+      } else {
+        mobileBadge.classList.add('hidden');
+      }
+    }
+
+    // Initialize cart and products
+    renderCart();
+    renderCategories();
+    renderProducts();
+
+    function openPaymentModal() {
+      const modal = document.getElementById('payment-modal');
+      const content = document.getElementById('payment-modal-content');
+      modal.classList.remove('hidden');
+      // small delay to allow display:block to apply before opacity transition
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        content.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function closePaymentModal() {
+      const modal = document.getElementById('payment-modal');
+      const content = document.getElementById('payment-modal-content');
+      modal.classList.add('opacity-0');
+      content.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+      }, 300);
+    }
+
+    function processPayment(method) {
+      closePaymentModal();
+      setTimeout(() => {
+        openSuccessModal();
+      }, 300);
+    }
+
+    function openSuccessModal() {
+      const modal = document.getElementById('success-modal');
+      const content = document.getElementById('success-modal-content');
+      modal.classList.remove('hidden');
+      setTimeout(() => {
+        modal.classList.remove('opacity-0');
+        content.classList.remove('scale-95');
+      }, 10);
+    }
+
+    function closeSuccessModal() {
+      const modal = document.getElementById('success-modal');
+      const content = document.getElementById('success-modal-content');
+      modal.classList.add('opacity-0');
+      content.classList.add('scale-95');
+      setTimeout(() => {
+        modal.classList.add('hidden');
+        cart = [];
+        setDiscount(0);
+        renderCart();
+      }, 300);
+    }
+
+    function toggleMobileMenu() {
+      const sidebar = document.getElementById('sidebar');
+      const overlay = document.getElementById('mobile-menu-overlay');
+      
+      const isHidden = sidebar.classList.contains('-translate-x-full');
+      
+      if (isHidden) {
+        sidebar.classList.remove('-translate-x-full');
+        overlay.classList.remove('hidden');
+        setTimeout(() => {
+          overlay.classList.remove('opacity-0');
+        }, 10);
+      } else {
+        sidebar.classList.add('-translate-x-full');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+        }, 300);
+      }
+    }
+
+    function toggleMobileCart() {
+      const sidebar = document.getElementById('cart-sidebar');
+      const overlay = document.getElementById('mobile-cart-overlay');
+      
+      const isHidden = sidebar.classList.contains('translate-y-full');
+      
+      if (isHidden) {
+        sidebar.classList.remove('translate-y-full');
+        overlay.classList.remove('hidden');
+        setTimeout(() => {
+          overlay.classList.remove('opacity-0');
+        }, 10);
+      } else {
+        sidebar.classList.add('translate-y-full');
+        overlay.classList.add('opacity-0');
+        setTimeout(() => {
+          overlay.classList.add('hidden');
+        }, 300);
+      }
+    }
+
+    function toggleSidebar() {
+      const sidebar = document.getElementById('sidebar');
+      const mainContent = document.getElementById('main-content');
+      const texts = document.querySelectorAll('.sidebar-text');
+      const logo = document.getElementById('sidebar-logo');
+      const iconLogo = document.getElementById('sidebar-icon-logo');
+      const header = document.getElementById('sidebar-header');
+      const collapseIcon = document.getElementById('collapse-icon');
+      const navLinks = document.querySelectorAll('.nav-link');
+      
+      const isCollapsed = sidebar.classList.contains('w-20');
+      
+      if (isCollapsed) {
+        sidebar.classList.remove('w-20');
+        sidebar.classList.add('w-64');
+        mainContent.classList.remove('lg:ml-20');
+        mainContent.classList.add('lg:ml-64');
+        
+        texts.forEach(t => t.classList.remove('hidden'));
+        logo.classList.remove('hidden');
+        iconLogo.classList.add('hidden');
+        iconLogo.classList.remove('flex');
+        header.classList.remove('justify-center');
+        header.classList.add('justify-between');
+        
+        navLinks.forEach(link => {
+          link.classList.remove('justify-center', 'px-0');
+          link.classList.add('space-x-3', 'px-4');
+        });
+        
+        collapseIcon.setAttribute('d', 'M15 19l-7-7 7-7');
+      } else {
+        sidebar.classList.remove('w-64');
+        sidebar.classList.add('w-20');
+        mainContent.classList.remove('lg:ml-64');
+        mainContent.classList.add('lg:ml-20');
+        
+        texts.forEach(t => t.classList.add('hidden'));
+        logo.classList.add('hidden');
+        iconLogo.classList.remove('hidden');
+        iconLogo.classList.add('flex');
+        header.classList.remove('justify-between');
+        header.classList.add('justify-center');
+        
+        navLinks.forEach(link => {
+          link.classList.remove('space-x-3', 'px-4');
+          link.classList.add('justify-center', 'px-0');
+        });
+        
+        collapseIcon.setAttribute('d', 'M9 5l7 7-7 7');
+      }
+    }
+  </script>
+</body>
+</html>
