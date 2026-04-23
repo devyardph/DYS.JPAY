@@ -13,12 +13,12 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Features.Orders.ViewModels
 {
-    public partial class TransactionsViewModel : BaseViewModel
+    public partial class ReportViewModel : BaseViewModel
     {
 
         public readonly ITransactionService _transactionService;
 
-        public TransactionsViewModel(NavigationManager navigationManager,
+        public ReportViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             SessionService sessionService,
             ITransactionService transactionService) : base(navigationManager, jsRuntime, sessionService)
@@ -28,7 +28,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
 
         #region PROPERTIES
         [ObservableProperty]
-        private SearchDto search = new SearchDto();
+        private SearchReportDto search = new SearchReportDto();
 
         [ObservableProperty]
         private PageDto<TransactionDto> transactions = new PageDto<TransactionDto>() { Results = new List<TransactionDto>() };
@@ -67,20 +67,14 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             IsBusy = false;
         }
 
-        public async Task OpenTransaction(TransactionDto? transaction)
+        public async Task OpenReport(TransactionDto? transaction)
         {
             Transaction = transaction ?? new TransactionDto();
             var orders = await _transactionService.GetOrderListAsync(Transaction.Id ?? Guid.Empty);
             Orders = orders;
-            await _jsRuntime.InvokeVoidAsync("openOffcanvas", "transaction-overlay", "transaction-component");
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas", "report-overlay", "report-component");
         }
 
-        public async Task UpdateTransaction(string status)
-        {
-            await _transactionService.UpdateTransactionAsync(Transaction?.Id ?? Guid.Empty,status, "");
-            await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "transaction-overlay", "transaction-component");
-            await SearchTransactionsWithPagingAsync();
-        }
         #endregion
 
     }

@@ -1,10 +1,11 @@
-﻿@page "/transactions"
+﻿@page "/reports"
 @using DYS.JPay.Shared.Features.Orders.ViewModels
+@using DYS.JPay.Shared.Features.Reports.Components
 @using DYS.JPay.Shared.Features.Transactions.Components
 @using DYS.JPay.Shared.Shared.Components
 @using DYS.JPay.Shared.Shared.Extensions
 @using Microsoft.AspNetCore.Authorization
-@inject TransactionsViewModel VM
+@inject ReportViewModel VM
 
  
 <PageComponent>
@@ -15,8 +16,8 @@
 
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
-                        <h1 class="text-3xl font-headline font-extrabold text-primary tracking-tight">Transaction orders</h1>
-                        <p class="text-sm text-on-surface-variant">Manage order listing.</p>
+                        <h1 class="text-3xl font-headline font-extrabold text-primary tracking-tight">Reporting</h1>
+                        <p class="text-sm text-on-surface-variant">Download transactions.</p>
            
                     </div>
                     <div class="flex gap-3">
@@ -25,15 +26,33 @@
                 </div>
 
                 <div class="bg-[#f1f4fa] p-4 md:p-6 rounded-2xl flex flex-col md:flex-row flex-wrap gap-4 items-stretch md:items-end shadow-sm border border-[#dfe3e8]/50">
+                    <!-- Search keyword -->
                     <div class="flex-grow min-w-0 sm:min-w-[300px]">
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-[#40484c] mb-2">Search transactions</label>
                         <div class="relative">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-[#40484c]"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-[#40484c]">
+                                <circle cx="11" cy="11" r="8" />
+                                <path d="m21 21-4.3-4.3" />
+                            </svg>
                             <input @bind-value="@VM.Search.Keyword" type="text" placeholder="Name, payment mode, status ,reference no..." class="w-full bg-white border-none rounded-xl pl-10 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
                         </div>
                     </div>
-                    <!-- Filters... -->
-                    <button id="btn-search" @onclick="@(() => @VM.SearchTransactionsWithPagingAsync(action: "", refresh: true))" class="bg-[#dfe3e8] text-[#003345] text-sm font-bold px-6 py-2 rounded-xl flex items-center justify-center gap-2">
+
+                    <!-- Start Date -->
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-[#40484c] mb-2">Start Date</label>
+                        <input @bind-value="@VM.Search.StartDate" type="date" class="bg-white border-none rounded-xl px-3 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
+                    </div>
+
+                    <!-- End Date -->
+                    <div>
+                        <label class="block text-[10px] font-bold uppercase tracking-wider text-[#40484c] mb-2">End Date</label>
+                        <input @bind-value="@VM.Search.EndDate" type="date" class="bg-white border-none rounded-xl px-3 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
+                    </div>
+
+                    <!-- Search button -->
+                    <button id="btn-search" @onclick="@(() => VM.SearchTransactionsWithPagingAsync())"
+                            class="bg-[#dfe3e8] text-[#003345] text-sm font-bold px-6 py-2 rounded-xl flex items-center justify-center gap-2">
                         Search
                     </button>
                 </div>
@@ -118,7 +137,7 @@
                                                 <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[@DataExtensions.GetTransactionStatus(@transaction.Status)?.BackgroundColor] text-[@DataExtensions.GetTransactionStatus(@transaction.Status)?.TextColor]">@transaction.Status</span>
                                              </td>
                                             <td class="px-6 py-2 text-right">
-                                                <button @onclick="@(() => VM.OpenTransaction(transaction))" class="p-2 hover:bg-primary/10 text-primary rounded-xl transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button>
+                                                <button @onclick="@(() => VM.OpenReport(transaction))" class="p-2 hover:bg-primary/10 text-primary rounded-xl transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button>
                                             </td>
                                         </tr>
                                     }
@@ -143,13 +162,12 @@
             </main>
         </div>
 
-        <OffCanvassComponent Overlay="transaction-overlay" Id="transaction-component">
+        <OffCanvassComponent Overlay="report-overlay" Id="report-component">
             <Content>
-                <TransactionComponent 
+                <ReportComponent 
                     IsBusy="VM.isProcessing"
                     @bind-Transaction="@VM.Transaction" 
                     Orders="@VM.Orders"
-                    UpdateStatus="VM.UpdateTransaction"
                     Currency="@VM.Session.AppSettings.Currency"/> 
             </Content>
         </OffCanvassComponent>
