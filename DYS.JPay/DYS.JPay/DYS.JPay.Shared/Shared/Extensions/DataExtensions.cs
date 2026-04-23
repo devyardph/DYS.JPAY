@@ -5,6 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Net.NetworkInformation;
 using System.Text;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DYS.JPay.Shared.Shared.Extensions
 {
@@ -26,6 +27,27 @@ namespace DYS.JPay.Shared.Shared.Extensions
         {
             var option = data.FirstOrDefault(c => c.Id == id);
             return option?.DisplayName ?? string.Empty;
+        }
+
+        public static DateTime? GetTransactionDate(TransactionDto transaction)
+        {
+            DateTime? date = null;
+            switch (transaction.Status)
+            {
+                case GlobalSettings.NEW:
+                    date = transaction.DateOrdered;
+                    break;
+                case GlobalSettings.PREPARING:
+                    date = transaction.DatePrepared;
+                    break;
+                case GlobalSettings.COMPLETED:
+                    date = transaction.DateCompleted;
+                    break;
+                case GlobalSettings.CANCELLED:
+                    date = transaction.DateCancelled;
+                    break;
+            }
+            return date;
         }
 
         public static StatusDto GetTransactionStatus(string content)

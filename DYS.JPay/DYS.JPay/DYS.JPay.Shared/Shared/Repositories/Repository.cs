@@ -49,7 +49,7 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
         };
     }
 
-    public async Task<PageDto<T>> GetPagedAsync(int pageIndex, int pageSize, string keyword = "", List<string> columns= null)
+    public async Task<PageDto<T>> GetPagedAsync(int pageIndex, int pageSize, string keyword = "", List<string> columns= null, bool showAll= false)
     {
         var query = _connection.Table<T>();
 
@@ -74,6 +74,11 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
                 return false;
             }).ToList();
 
+            if (showAll == false)
+            {
+               all = all.Where(query => query.IsDeleted == false).ToList();
+            }
+
             var totalCount = all.Count;
             var index = pageIndex >0 ? pageIndex - 1 : pageIndex;
             var results = all.Skip(index).Take(pageSize).ToList();
@@ -88,8 +93,10 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
         }
         else
         {
-            var totalCount = await query.CountAsync();
-            var results = await query.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToListAsync();
+            var all = await query.ToListAsync();
+            if (showAll == false) all = all.Where(query => query.IsDeleted == false).ToList();
+            var totalCount = all.Count();
+            var results = all.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
 
             return new PageDto<T>
             {

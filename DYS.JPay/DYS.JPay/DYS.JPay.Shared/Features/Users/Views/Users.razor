@@ -31,11 +31,11 @@
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-[#40484c] mb-2">Search users</label>
                         <div class="relative">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-[#40484c]"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-                            <input @bind-value="@VM.Search.Keyword" type="text" placeholder="Description, vendor, or reference..." class="w-full bg-white border-none rounded-xl pl-10 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
+                            <input @bind-value="@VM.Search.Keyword" type="text" placeholder="name, email or role..." class="w-full bg-white border-none rounded-xl pl-10 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
                         </div>
                     </div>
                     <!-- Filters... -->
-                    <button @onclick="@(() => @VM.SearchUsersWithPagingAsync(action: "", refresh: true))" class="bg-[#dfe3e8] text-[#003345] text-sm font-bold px-6 py-2 rounded-xl flex items-center justify-center gap-2">
+                    <button id="btn-search" @onclick="@(() => @VM.SearchUsersWithPagingAsync(action: "", refresh: true))" class="bg-[#dfe3e8] text-[#003345] text-sm font-bold px-6 py-2 rounded-xl flex items-center justify-center gap-2">
                         Search
                     </button>
                 </div>
@@ -49,6 +49,7 @@
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Role</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Email</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Date created</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Active</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c] text-right">Action</th>
                                 </tr>
                             </thead>
@@ -111,6 +112,10 @@
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
                                                 @user.CreatedAt.FormatDate("dd MMM yyy")
                                             </td>
+                                            <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
+                                                <CheckboxComponent Item="@user.Active" Disabled="true" Label="" SubLabel="" />
+                                            </td>
+
                                        
                                             <td class="px-6 py-2 text-right">
                                                 <button @onclick="@(() => VM.OpenUser(user))" class="p-2 hover:bg-primary/10 text-primary rounded-xl transition-colors"><svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-arrow-right w-5 h-5" aria-hidden="true"><path d="M5 12h14"></path><path d="m12 5 7 7-7 7"></path></svg></button>
@@ -138,7 +143,7 @@
             </main>
         </div>
 
-        <OffCanvassComponent>
+        <OffCanvassComponent Overlay="user-overlay" Id="user-component">
             <Content>
                  <UserComponent @bind-User="@VM.User" Save="VM.SubmitUserAsync" /> 
             </Content>

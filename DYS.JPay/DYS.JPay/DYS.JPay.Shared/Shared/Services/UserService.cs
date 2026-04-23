@@ -23,7 +23,7 @@ namespace DYS.JPay.Shared.Shared.Services
              await _userRepository.GetPagedAsync(search.CurrentPage, 
                  search.PageSize, 
                  search.Keyword, 
-                 search.Columns);
+                 search.Columns, showAll: false);
 
         public async Task<User> GetUserByIdAsync(Guid id) =>
             await _userRepository.GetAsync(query => query.Id == id);

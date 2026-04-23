@@ -279,6 +279,12 @@
                     overlay.classList.add('hidden');
                 }, 300);
             }
+            function trigger(id) {
+                const element = document.getElementById(id);
+                if (element) {
+                    element.dispatchEvent(new Event('click', { bubbles: true }));
+                }
+            }
         </script>
     </body>
 </html>

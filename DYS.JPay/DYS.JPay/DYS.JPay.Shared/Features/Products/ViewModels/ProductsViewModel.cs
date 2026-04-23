@@ -60,7 +60,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             Products = new PageDto<ProductDto>();
             Search.CurrentPage = currentPage;
             Search.PageSize = 20;
-            Search.Columns = new List<string>() { $"Name","Description","Price"};
+            Search.Columns = new List<string>() { $"Name","Description","Price", "Code"};
             var output = await _productService.GetProductsAsync(Search);
             if (output is not null)
             {

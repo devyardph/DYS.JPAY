@@ -12,6 +12,7 @@ namespace DYS.JPay.Shared.Shared.Entities
         public string Role { get; set; } // e.g., "Admin", "Cashier"
         public string Email { get; set; }
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool Active { get; set; } = true;
     }
 
 }

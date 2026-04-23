@@ -46,6 +46,7 @@ namespace DYS.JPay.Shared.Shared.Data
             {
                 var admin = new User
                 {
+                    Name="admin",
                     Username = "admin",
                     Code = "123456",   // default 6-digit login code
                     Role = GlobalSettings.ADMIN,

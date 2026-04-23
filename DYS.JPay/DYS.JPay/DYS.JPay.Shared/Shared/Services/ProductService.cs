@@ -40,7 +40,8 @@ namespace DYS.JPay.Shared.Shared.Services
              await _productRepository.GetPagedAsync(search.CurrentPage, 
                  search.PageSize, 
                  search.Keyword, 
-                 search.Columns);
+                 search.Columns, 
+                 showAll: false);
         public async Task<Product> SubmitProductAsync(ProductDto product)
         {
             try

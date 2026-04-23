@@ -1,0 +1,29 @@
+﻿<label class="text-xs text-on-surface-variant uppercase tracking-wider pl-1">@Label</label>
+<div class="relative">
+    <span class="absolute left-5 top-1/2 -translate-y-1/2 font-bold text-primary">@Prefix</span>
+    <input id="@Id" @oninput="@OnTextChanged" @bind-value="@Item" type="number" placeholder="@PlaceHolder" class="w-full @Style border-none rounded-2xl pl-10 pr-6 py-2 text-lg font-headline font-bold focus:ring-2 focus:ring-primary transition-all">
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } ="text-1";
+    [Parameter]
+    public string Prefix { get; set; } = "PHP";
+    [Parameter]
+    public string Label { get; set; } = "Label here";
+    [Parameter]
+    public string Style { get; set; } = "bg-surface-container-low";
+    [Parameter]
+    public string PlaceHolder { get; set; } = "e.g. add name";
+    [Parameter]
+    public double? Item { get; set; } 
+    [Parameter]
+    public EventCallback<double?> ItemChanged { get; set; }
+
+    public void OnTextChanged(ChangeEventArgs e)
+    {
+        var text = Convert.ToDouble(e.Value);
+        ItemChanged.InvokeAsync(text);
+    }
+
+}

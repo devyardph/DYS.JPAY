@@ -49,7 +49,7 @@ namespace DYS.JPay.Shared.Features.Users.ViewModels
             Users = new PageDto<UserDto>();
             Search.CurrentPage = currentPage;
             Search.PageSize = 20;
-            Search.Columns = new List<string>() { $"Name", "Description", "Price" };
+            Search.Columns = new List<string>() { $"Name","Email", "Role" };
             var output = await _userService.GetUsersAsync(Search);
             if (output is not null)
             {
@@ -71,14 +71,14 @@ namespace DYS.JPay.Shared.Features.Users.ViewModels
             IsBusy = true;
             await _userService.SubmitUserAsync(User);
             await SearchUsersWithPagingAsync();
-            await _jsRuntime.InvokeVoidAsync("closeOffcanvas");
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "user-overlay", "user-component");
             IsBusy = false;
         }
 
         public async Task OpenUser(UserDto? user)
         {
             User = user ?? new UserDto();
-            await _jsRuntime.InvokeVoidAsync("openOffcanvas");
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas","user-overlay","user-component");
         }
         #endregion
 

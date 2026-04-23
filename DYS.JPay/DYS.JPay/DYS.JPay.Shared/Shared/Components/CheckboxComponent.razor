@@ -1,0 +1,46 @@
+﻿@if (Visible)
+{
+    <div class="flex items-center justify-between">
+        @if (!string.IsNullOrEmpty(Label) && !string.IsNullOrEmpty(SubLabel))
+        {
+            <div>
+                <label class="text-xs text-on-surface-variant uppercase tracking-wider">@Label</label>
+                <p class="text-xs text-on-surface-variant">
+                    @SubLabel
+                </p>
+            </div>
+        }
+
+        <label class="relative inline-flex items-center cursor-pointer">
+            <!-- Proper two-way binding -->
+            <input id="@Id" type="checkbox" class="sr-only peer" @onchange="@OnItemChanged" checked="@Item" disabled="@Disabled" />
+            <div class="w-11 h-6 bg-surface-container-highest rounded-full peer-focus:outline-none
+            peer-checked:bg-primary
+            after:content-[''] after:absolute after:top-[2px] after:left-[2px]
+            after:bg-white after:border-gray-300 after:border after:rounded-full
+            after:h-5 after:w-5 after:transition-all
+            peer-checked:after:translate-x-full peer-checked:after:border-white">
+            </div>
+        </label>
+    </div>
+}
+@code {
+    [Parameter] public string Id { get; set; } = "text-1";
+    [Parameter] public string Label { get; set; } = "Label here";
+    [Parameter] public string SubLabel { get; set; } = "Label here";
+    [Parameter] public string PlaceHolder { get; set; } = "e.g. add name";
+    [Parameter] public bool Disabled { get; set; }
+    [Parameter] public bool Item { get; set; }
+    [Parameter] public bool Visible { get; set; } = true;
+    [Parameter] public EventCallback<bool> ItemChanged { get; set; }
+    [Parameter] public EventCallback<bool> ItemTriggered { get; set; }
+
+    public async Task OnItemChanged(ChangeEventArgs e)
+    {
+        var item = Convert.ToBoolean(e.Value);
+        await ItemChanged.InvokeAsync(item);
+        await ItemTriggered.InvokeAsync(item);
+    }
+
+
+}

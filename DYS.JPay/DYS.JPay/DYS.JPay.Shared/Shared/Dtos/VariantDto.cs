@@ -10,5 +10,6 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public Guid? ProductId { get; set; }
         public string Name { get; set; }
         public double? Price { get; set; }
+        public bool IsDeleted { get; set; } = false;
     }
 }

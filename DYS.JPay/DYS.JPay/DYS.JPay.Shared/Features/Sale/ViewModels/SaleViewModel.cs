@@ -69,7 +69,8 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             IsBusy = true;
             var categoryOutput = await _categoryService.GetCategoriesAsync();
             if (categoryOutput is not null) {
-                Categories = categoryOutput.Select(query => new SelectDto() { Id = query.Id.ToString(), Name = query.Name }).ToList();
+                Categories = categoryOutput.Where(query => query.IsDeleted == false)
+                            .Select(query => new SelectDto() { Id = query.Id.ToString(), Name = query.Name }).ToList();
             }
             var productOutput = await _productService.GetProductsAsync();
             if (productOutput is not null) {
@@ -153,7 +154,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             var total = Orders.Sum(query => query.Count * query.Price);
             var count = Orders.Sum(query => query.Count);
             var transaction = new Transaction { 
-                Date = DateTime.UtcNow, 
+                DateOrdered = DateTime.UtcNow, 
                 CustomerName = Transaction.CustomerName, 
                 PaymentMode = Transaction.PaymentMode,
                 ReferenceNo =  Transaction.ReferenceNo, 

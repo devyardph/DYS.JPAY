@@ -29,11 +29,11 @@
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-[#40484c] mb-2">Search products</label>
                         <div class="relative">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-[#40484c]"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-                            <input @bind-value="@VM.Search.Keyword" type="text" placeholder="Description, vendor, or reference..." class="w-full bg-white border-none rounded-xl pl-10 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
+                            <input @bind-value="@VM.Search.Keyword" type="text" placeholder="Name, payment mode, status ,reference no..." class="w-full bg-white border-none rounded-xl pl-10 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
                         </div>
                     </div>
                     <!-- Filters... -->
-                    <button @onclick="@(() => @VM.SearchTransactionsWithPagingAsync(action: "", refresh: true))" class="bg-[#dfe3e8] text-[#003345] text-sm font-bold px-6 py-2 rounded-xl flex items-center justify-center gap-2">
+                    <button id="btn-search" @onclick="@(() => @VM.SearchTransactionsWithPagingAsync(action: "", refresh: true))" class="bg-[#dfe3e8] text-[#003345] text-sm font-bold px-6 py-2 rounded-xl flex items-center justify-center gap-2">
                         Search
                     </button>
                 </div>
@@ -103,7 +103,7 @@
                                                 </div>
                                             </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
-                                                @transaction.PaymentMode
+                                                @transaction.PaymentMode?.ToUpper()
                                             </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
                                                 @VM.Session.AppSettings.Currency@transaction.Total?.ToString("N2")
@@ -112,7 +112,7 @@
                                                 @transaction.Count
                                             </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
-                                                @transaction.Date.FormatDate("dd MMM yyyy hh:mmtt")
+                                                @DataExtensions.GetTransactionDate(transaction).FormatDate("dd MMM yyyy hh:mmtt")
                                             </td>
                                             <td class="px-3 py-2">
                                                 <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[@DataExtensions.GetTransactionStatus(@transaction.Status)?.BackgroundColor] text-[@DataExtensions.GetTransactionStatus(@transaction.Status)?.TextColor]">@transaction.Status</span>
@@ -146,6 +146,7 @@
         <OffCanvassComponent Overlay="transaction-overlay" Id="transaction-component">
             <Content>
                 <TransactionComponent 
+                    IsBusy="VM.isProcessing"
                     @bind-Transaction="@VM.Transaction" 
                     Orders="@VM.Orders"
                     UpdateStatus="VM.UpdateTransaction"

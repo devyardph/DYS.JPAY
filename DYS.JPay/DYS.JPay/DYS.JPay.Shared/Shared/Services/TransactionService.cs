@@ -3,6 +3,7 @@ using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Extensions;
 using DYS.JPay.Shared.Shared.Repositories;
+using DYS.JPay.Shared.Shared.Settings;
 using Mapster;
 
 namespace DYS.JPay.Shared.Shared.Services
@@ -72,6 +73,21 @@ namespace DYS.JPay.Shared.Shared.Services
               string note)
         {
             var item = await _transactionRepository.GetAsync(query => query.Id == transactionId);
+            switch (status)
+            {
+                case GlobalSettings.NEW:
+                    item.DateOrdered = DateTime.UtcNow;
+                    break;
+                case GlobalSettings.PREPARING:
+                    item.DatePrepared = DateTime.UtcNow;
+                    break;
+                case GlobalSettings.COMPLETED:
+                    item.DateCompleted = DateTime.UtcNow;
+                    break;
+                case GlobalSettings.CANCELLED:
+                    item.DateCancelled = DateTime.UtcNow;
+                    break;
+            }
             item.Status = status;
             item.Note = note;
             await _transactionRepository.UpdateAsync(item);

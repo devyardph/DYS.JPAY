@@ -62,10 +62,10 @@ namespace DYS.JPay.Shared.Features.Categories.ViewModels
 
         public async Task SubmitCategoryAsync()
         {
-            IsBusy = true;
+            IsProcessing = true;
             await _categoryService.SubmitCategoryAsync(Category);
             await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "category-overlay", "category-component");
-            IsBusy = false;
+            IsProcessing = false;
         }
 
         public async Task OpenCategory(CategoryDto? category) {

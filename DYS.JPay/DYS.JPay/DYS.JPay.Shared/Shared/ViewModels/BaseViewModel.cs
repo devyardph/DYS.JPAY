@@ -24,6 +24,9 @@ namespace DYS.JPay.Shared.Shared.ViewModels
         public bool isBusy = false;
 
         [ObservableProperty]
+        public bool isProcessing = false;
+
+        [ObservableProperty]
         public bool isReadOnly = false;
 
         [ObservableProperty]

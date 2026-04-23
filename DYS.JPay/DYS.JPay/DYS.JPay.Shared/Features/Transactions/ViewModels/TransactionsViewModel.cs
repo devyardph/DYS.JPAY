@@ -50,7 +50,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             Search.CurrentPage = currentPage;
             Search.PageSize = 10;
             Search.SortColumn = "Date";
-
+            Search.Columns = new List<string>() { $"CustomerName", "PaymentMode", "ReferenceNo","Status" };
             var output = await _transactionService.GetTransactionsAsync(Search);
             if (output is not null)
             {
@@ -77,7 +77,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
 
         public async Task UpdateTransaction(string status)
         {
-            await _transactionService.UpdateTransactionAsync(Transaction?.Id ?? Guid.Empty,status, "" );
+            await _transactionService.UpdateTransactionAsync(Transaction?.Id ?? Guid.Empty,status, "");
             await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "transaction-overlay", "transaction-component");
             await SearchTransactionsWithPagingAsync();
         }

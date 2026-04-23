@@ -1,5 +1,6 @@
 ﻿@using DYS.JPay.Shared.Shared.Entities
 @using DYS.JPay.Shared.Shared.Settings
+@inject IJSRuntime JS
 
 <div class="flex items-center justify-between p-6 border-b border-outline-variant/10 bg-surface-container-low/30">
     <div>
@@ -7,7 +8,7 @@
            @Transaction.CustomerName
         </h2>
         <h2 id="offcanvas-title" class="text-1xl font-headline font-extrabold text-primary">
-            @Transaction.Status - @Transaction.Date.FormatDate("dd MMM yyyh hh:mmtt")
+            @Transaction.Status - @Transaction.DateOrdered.FormatDate("dd MMM yyyh hh:mmtt")
         </h2>
     </div>
     <button onclick="closeOffcanvas()" class="p-2 hover:bg-surface-container-highest rounded-full transition-colors text-on-surface-variant">
@@ -37,16 +38,27 @@
         }
     </div>
 </div>
+<form id="canvass-form" class="space-y-3 p-6">
+    <div class="space-y-2 space-x-3">
+        <CheckboxComponent Visible="true" @bind-Item="@Transaction.Cancelled" Label="Cancel order" SubLabel="Set if you want to cancel." />
+    </div>
+</form>
 
-<div class="p-6 border-t border-outline-variant/10 bg-surface-container-lowest flex gap-3 mb-5">
-    <button @onclick="@(() => @OnUpdateStatus(GlobalSettings.PREPARING))" class="flex-1 py-2 bg-surface-container-highest text-on-surface rounded-2xl font-bold hover:bg-outline-variant/30 transition-colors">
-        PREPARING
-    </button>
-    <button @onclick="@(() => @OnUpdateStatus(GlobalSettings.COMPLETED))" id="offcanvas-submit" type="submit" form="user-form" class="flex-1 py-2 bg-primary text-white rounded-2xl font-bold shadow-xl active:scale-95 transition-all">
-        COMPLETED
-    </button>
-    <p></p>
-</div>
+@if (Transaction.Cancelled)
+{
+    <div class="p-6 border-t border-outline-variant/10 bg-surface-container-lowest flex gap-3 mb-5">
+        <ButtonComponent Id="btn-completed" IsBusy="@IsBusy" Click="@Back" ActionText="BACK" Style="bg-surface-container-highest text-on-surface" />
+        <ButtonComponent Id="btn-cancelled" IsBusy="@IsBusy" Click="@(() => @OnUpdateStatus(GlobalSettings.CANCELLED))" ActionText="CANCEL ORDER" Style="bg-red-500 text-white" />
+    </div>
+}
+else
+{
+    <div class="p-6 border-t border-outline-variant/10 bg-surface-container-lowest flex gap-3 mb-5">
+        <ButtonComponent Id="btn-completed" IsBusy="@IsBusy" Click="@(() => @OnUpdateStatus(GlobalSettings.PREPARING))" ActionText="PREPARING" Style="bg-surface-container-highest text-on-surface" />
+        <ButtonComponent Id="btn-completed" IsBusy="@IsBusy" Click="@(() => @OnUpdateStatus(GlobalSettings.COMPLETED))" ActionText="COMPLETED" Style="bg-primary text-white" />
+    </div>
+}
+
 
 @code {
     [Parameter]
@@ -64,6 +76,11 @@
     [Parameter]
     public EventCallback<string> UpdateStatus { get; set; }
 
+    public void Back()
+    {
+        Transaction.Cancelled = false;
+    }
+
     public void OnSave()
     {
         TransactionChanged.InvokeAsync(Transaction);
@@ -78,5 +95,12 @@
     protected override async Task OnInitializedAsync()
     {
         await base.OnInitializedAsync();
+    }
+
+    public async Task OnCancelAsync()
+    {
+        await JS.InvokeVoidAsync("closeOffcanvas", "transaction-overlay", "transaction-component");
+        await JS.InvokeVoidAsync("trigger", "btn-search");
+        Transaction.Cancelled = false;
     }
 }

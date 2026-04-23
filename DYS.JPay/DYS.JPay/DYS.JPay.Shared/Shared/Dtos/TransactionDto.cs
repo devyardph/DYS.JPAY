@@ -17,9 +17,15 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public double? Tax { get; set; }
         public double? TotalTax { get; set; }
         public double? Count { get; set; }
-        public DateTime? Date { get; set; }
         public string PaymentStatus { get; set; } = GlobalSettings.PAID;
         public string Status { get; set; } = GlobalSettings.NEW;
+
+        public string Note { get; set; }
+        public bool Cancelled { get; set; } = false;
+        public DateTime? DateOrdered { get; set; }
+        public DateTime? DatePrepared { get; set; }
+        public DateTime? DateCompleted { get; set; }
+        public DateTime? DateCancelled { get; set; }
 
     }
 }

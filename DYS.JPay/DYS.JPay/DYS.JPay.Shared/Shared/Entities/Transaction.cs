@@ -7,7 +7,7 @@ namespace DYS.JPay.Shared.Shared.Entities
 {
     public class Transaction : BaseEntity
     {
-        public DateTime? Date { get; set; }
+        
         public string CustomerName { get; set; }
         public string PaymentMode { get; set; }
         public string ReferenceNo { get; set; }
@@ -22,6 +22,10 @@ namespace DYS.JPay.Shared.Shared.Entities
         public string Status { get; set; } = GlobalSettings.NEW;
 
         public string Note { get; set; }
+        public DateTime? DateOrdered { get; set; }
+        public DateTime? DatePrepared { get; set; }
+        public DateTime? DateCompleted { get; set; }
+        public DateTime? DateCancelled { get; set; }
     }
 
 }

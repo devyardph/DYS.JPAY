@@ -9,6 +9,7 @@ namespace DYS.JPay.Shared.Shared.Services
         Task<List<Category>> GetCategoriesAsync();
         Task<PageDto<Category>> GetCategoriesAsync(SearchDto search);
         Task<Category> SubmitCategoryAsync(CategoryDto category);
+        Task<int> DeleteCategoryAsync(Guid? id);
     }
     public class CategoryService : BaseService, ICategoryService
     {
@@ -24,7 +25,8 @@ namespace DYS.JPay.Shared.Shared.Services
              _categoryRepository.GetPagedAsync(search.CurrentPage, 
                  search.PageSize, 
                  search.Keyword, 
-                 search.Columns);
+                 search.Columns, 
+                 false);
 
         public async Task<Category> SubmitCategoryAsync(CategoryDto category)
         {
@@ -40,6 +42,12 @@ namespace DYS.JPay.Shared.Shared.Services
                 await _categoryRepository.UpdateAsync(item);
             }
             return item;
+        }
+
+        public async Task<int> DeleteCategoryAsync(Guid? id)
+        {
+            var category = await _categoryRepository.GetAsync(query => query.Id == id);
+            return await _categoryRepository.DeleteAsync(category);
         }
     }
 

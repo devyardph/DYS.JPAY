@@ -44,10 +44,17 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             var output = await _appSettingService.SaveChangesAsync(AppSetting);
             var settings = await _appSettingService.GetSettingAsync();
             _sessionService.SetAppSettings(settings);
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "setting-overlay", "setting-component");
             IsBusy = false;
         }
 
         public void SetDisplay(string display) => AppSetting.Display = display;
+
+        public async Task OpenSetting(AppSetting setting)
+        {
+            AppSetting = setting ?? new AppSetting();
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas", "setting-overlay", "setting-component");
+        }
         #endregion
 
     }

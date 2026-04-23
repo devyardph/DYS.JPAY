@@ -13,6 +13,8 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public string Code { get; set; } // 6-digit login code
         public string Role { get; set; } // e.g., "Admin", "Cashier"
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
+        public bool Active { get; set; } = true;
+        public bool IsDeleted { get; set; } = false;
     }
 
 }
