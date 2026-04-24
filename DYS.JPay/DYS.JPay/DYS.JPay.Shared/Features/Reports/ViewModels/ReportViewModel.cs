@@ -11,6 +11,7 @@ using Microsoft.JSInterop;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using DYS.JPay.Shared.Shared.Helpers;
 
 namespace DYS.JPay.Shared.Features.Orders.ViewModels
 {
@@ -67,6 +68,16 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             var orders = await _transactionService.GetOrderListAsync(Transaction.Id ?? Guid.Empty);
             Orders = orders;
             await _jsRuntime.InvokeVoidAsync("openOffcanvas", "report-overlay", "report-component");
+        }
+
+        public async Task DownloadReport()
+        {
+            if (Transactions.Any())
+            {
+                var bytes = Shared.Helpers.CsvHelper.ExportToCsv(Transactions);
+                var base64 = Convert.ToBase64String(bytes);
+                await _jsRuntime.InvokeVoidAsync("downloadFile", "export.csv", "text/csv", base64);
+            }
         }
 
         #endregion

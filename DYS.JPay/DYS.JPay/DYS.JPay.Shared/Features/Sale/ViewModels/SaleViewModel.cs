@@ -162,6 +162,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                 Count = count,
                 PaymentStatus = GlobalSettings.PAID,
                 Status = GlobalSettings.NEW,
+                Cashier = Session.CurrentUser.Name
             };
             var items = new List<Order>();
             foreach (var item in Orders!)

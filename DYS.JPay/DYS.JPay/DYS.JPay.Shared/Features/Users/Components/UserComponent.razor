@@ -44,7 +44,7 @@
             <CheckboxComponent Visible="true" @bind-Item="@User.Active" Label="User status" SubLabel="Set if active or inactive." />
         </div>
         <div class="space-y-2">
-            <CheckboxComponent Visible="@(User.Id != null)" ItemTriggered="@ConfirmDeletionAsync" @bind-Item="@User.IsDeleted" Label="Soft delete" SubLabel="Soft delete category." />
+            <CheckboxComponent Visible="@(User.Id != null && User.Role != GlobalSettings.ADMIN)" ItemTriggered="@ConfirmDeletionAsync" @bind-Item="@User.IsDeleted" Label="Soft delete" SubLabel="Soft delete category." />
         </div>
     </form>
 </div>

@@ -7,7 +7,7 @@ namespace DYS.JPay.Shared.Shared.Entities
 {
     public class Transaction : BaseEntity
     {
-        
+        public string Cashier { get; set; }
         public string CustomerName { get; set; }
         public string PaymentMode { get; set; }
         public string ReferenceNo { get; set; }

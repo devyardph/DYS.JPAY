@@ -63,7 +63,7 @@
             </main>
 
             <!-- CART -->
-            <CartComponent OrderItems="@VM.Orders" OrderChanged="@VM.OrderChanged" Currency="@VM.Session.AppSettings.Currency" Transaction="@VM.Transaction"/>
+            <CartComponent OrderItems="@VM.Orders" Staff="@VM.Session.CurrentUser.Name" OrderChanged="@VM.OrderChanged" Currency="@VM.Session.AppSettings.Currency" Transaction="@VM.Transaction" />
             <!-- CART -->
         </div>
 

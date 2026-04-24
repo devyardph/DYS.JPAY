@@ -2,11 +2,14 @@
 @inject IJSRuntime JS
 
 <div id="cart-sidebar" class="w-full fixed lg:right-0 bottom-0 lg:top-0 h-[80vh] lg:h-screen lg:w-96 bg-surface-container-lowest lg:rounded-none rounded-t-1xl border border-outline-variant/10 lg:border-y-0 lg:border-r-0 lg:border-l flex flex-col overflow-hidden shadow-2xl lg:shadow-2xl z-50 transform translate-y-full lg:translate-y-0 transition-transform duration-300">
-    <div class="p-6 border-b border-outline-variant/10 bg-surface-container-low/50 flex justify-between items-center">
-        <h2 class="text-xl font-headline font-bold text-primary flex items-center gap-2">
-            <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13L5.4 5M7 13l-2.293 2.293c-.63.63-.184 1.707.707 1.707H17m0 0a2 2 0 100 4 2 2 0 000-4zm-8 2a2 2 0 11-4 0 2 2 0 014 0z"></path></svg>
-            Current Order
-        </h2>
+    <div class="p-6 pt-4 pb-4 border-b border-outline-variant/10 bg-surface-container-low/50 flex justify-between items-center">
+        <div class="flex-1">
+            <h2 class="text-xl font-headline font-bold text-primary flex items-center gap-2">
+                Today's order
+            </h2>
+            <p class="text-[.6em] text-on-surface-variant uppercase tracking-wider">@DateTime.Now.ToString("dd MMM yyyy hh:mmtt")</p>
+
+        </div>
         <button onclick="toggleMobileCart()" class="lg:hidden p-2 text-on-surface-variant hover:text-primary rounded-full hover:bg-surface-container-highest transition-colors">
             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
         </button>
@@ -86,6 +89,8 @@
 
 
 @code {
+    [Parameter]
+    public string Staff { get; set; } = string.Empty;
     [Parameter]
     public string Currency { get; set; } = string.Empty;
     [Parameter]

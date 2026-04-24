@@ -8,6 +8,7 @@ namespace DYS.JPay.Shared.Shared.Dtos
     public class TransactionDto
     {
         public Guid? Id { get; set; }
+        public string Cashier { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
         public string PaymentMode { get; set; } = string.Empty;
         public string ReferenceNo { get; set; } = string.Empty;
