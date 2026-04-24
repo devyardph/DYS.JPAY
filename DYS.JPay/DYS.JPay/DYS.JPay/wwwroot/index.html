@@ -2,8 +2,8 @@
 <html lang="en" class="h-full">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>POS - POS & Management</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>JPay</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Manrope:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <script>
@@ -55,6 +55,7 @@
             font-family: 'Inter', sans-serif;
             background-color: #f7f9ff;
             color: #181c20;
+            touch-action: manipulation; /* disables double-tap zoom */
         }
 
         h1, h2, h3, h4, h5, h6 {
@@ -68,19 +69,19 @@
             );
         }
 
-            .glass-nav {
-                backdrop-filter: blur(16px);
-                background-color: rgba(247, 249, 255, 0.8);
-            }
+        .glass-nav {
+            backdrop-filter: blur(16px);
+            background-color: rgba(247, 249, 255, 0.8);
+        }
 
-            .no-scrollbar::-webkit-scrollbar {
-                display: none;
-            }
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
 
-            .no-scrollbar {
-                -ms-overflow-style: none;
-                scrollbar-width: none;
-            }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
     </style>
 </head>
 <body id="app" class="min-h-screen flex">

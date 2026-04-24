@@ -219,7 +219,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                            Products.Where(p => p.CategoryId == new Guid(Category.Id)).ToList();
         }
 
-        public void SearchProducts()
+        public void SearchProducts(ChangeEventArgs e)
         {
             MenuProducts = string.IsNullOrEmpty(Search.Keyword) ? Products :
                            Products.Where(p => p.Name.Contains(Search.Keyword,StringComparison.OrdinalIgnoreCase)).ToList();
