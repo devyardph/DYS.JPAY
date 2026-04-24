@@ -2,7 +2,7 @@
         id="@Id"
         type="button"
         class="flex-1 py-2 rounded-2xl font-bold transition-all flex 
-        items-center justify-center space-x-2
+               items-center justify-center space-x-2 px-6
         active:scale-95 
         disabled:bg-gray-400 disabled:text-gray-200 disabled:shadow-none disabled:cursor-not-allowed
         @Style"
@@ -21,6 +21,7 @@
     }
     else
     {
+        @SVGIcon
         <span>@ActionText</span>
     }
 </button>
@@ -32,6 +33,7 @@
     [Parameter] public bool Disabled { get; set; }
     [Parameter] public string ActionText { get; set; } = "Save";
     [Parameter] public EventCallback Click { get; set; }
+    [Parameter] public RenderFragment SVGIcon { get; set; }
 
     public async Task OnClick() => await Click.InvokeAsync();
 }

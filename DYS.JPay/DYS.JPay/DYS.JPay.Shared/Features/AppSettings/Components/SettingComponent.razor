@@ -76,6 +76,26 @@
         <div class="space-y-1">
             <DoubleComponent Id="tax" Prefix="%" @bind-Item="@AppSetting.Tax" Label="Tax" PlaceHolder="" Style="bg-[#f1f4fa]" />
         </div>
+        <div class="space-y-1">
+            <div class="flex gap-2">
+                <div class="flex-1">
+                    <DoubleComponent Id="daily-sales" Prefix="@AppSetting.Currency" @bind-Item="@AppSetting.TargetDailySales" Label="Daily target" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                </div>
+                <div class="flex-1">
+                    <DoubleComponent Id="weekly-sales" Prefix="@AppSetting.Currency" @bind-Item="@AppSetting.TargetWeeklySales" Label="Weekly target" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                </div>
+            </div>
+        </div>
+        <div class="space-y-1">
+            <div class="flex  gap-2">
+                <div class="flex-1">
+                    <DoubleComponent Id="montly-sales" Prefix="@AppSetting.Currency" @bind-Item="@AppSetting.TargetMonthlySales" Label="Monthly target" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                </div>
+                <div class="flex-1">
+                    <DoubleComponent Id="yearly-sales" Prefix="@AppSetting.Currency" @bind-Item="@AppSetting.TargetYearlySales" Label="Yearly target" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                </div>
+            </div>
+        </div>
     </form>
 </div>
 

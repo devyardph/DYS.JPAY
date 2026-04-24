@@ -11,6 +11,11 @@ namespace DYS.JPay.Shared.Shared.Entities
         public string Currency { get; set; }
         public string Display { get; set; } // grid or list
         public bool Default { get; set; } = false;
-        public double? Tax { get; set; } 
+        public double? Tax { get; set; }
+
+        public double? TargetDailySales { get; set; }
+        public double? TargetWeeklySales { get; set; }
+        public double? TargetMonthlySales { get; set; }
+        public double? TargetYearlySales { get; set; }
     }
 }

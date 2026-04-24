@@ -12,14 +12,14 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DYS.JPay.Shared.Features.Orders.ViewModels
+namespace DYS.JPay.Shared.Features.Dashboard.ViewModels
 {
-    public partial class ReportViewModel : BaseViewModel
+    public partial class DashboardViewModel : BaseViewModel
     {
 
         public readonly ITransactionService _transactionService;
 
-        public ReportViewModel(NavigationManager navigationManager,
+        public DashboardViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             SessionService sessionService,
             ITransactionService transactionService) : base(navigationManager, jsRuntime, sessionService)
@@ -35,9 +35,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
         [ObservableProperty]
         private List<TransactionDto> transactions = new List<TransactionDto>();
         [ObservableProperty]
-        private TransactionDto transaction = new TransactionDto();
-        [ObservableProperty]
-        private List<Order> orders = new List<Order>();
+        private List<TransactionDto> latestTransactions = new List<TransactionDto>();
         #endregion
 
         #region FUNCTIONS
@@ -51,24 +49,20 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             if (output is not null)
             {
                 Transactions = output.Adapt<List<TransactionDto>>();
+                LatestTransactions = Transactions.OrderByDescending(query => query.DateOrdered).Take(5).ToList();
                 var completed = output.Where(o => o.Status == GlobalSettings.COMPLETED).Sum(query => query.Total);
                 var pending = output.Where(o => o.Status == GlobalSettings.NEW || o.Status == GlobalSettings.PREPARING).Sum(query => query.Total);
                 var cancelled = output.Where(o => o.Status == GlobalSettings.CANCELLED).Sum(query => query.Total);
                 Dashboard.Completed = completed;
                 Dashboard.Pending = pending;
                 Dashboard.Cancelled = cancelled;
+
+                Dashboard.CompletedTotal = output.Where(o => o.Status == GlobalSettings.COMPLETED).Count();
+                Dashboard.PendingTotal = output.Where(o => o.Status == GlobalSettings.NEW || o.Status == GlobalSettings.PREPARING).Count();
+                Dashboard.CancelledTotal = output.Where(o => o.Status == GlobalSettings.CANCELLED).Count();
             }
             IsBusy = false;
         }
-
-        public async Task OpenReport(TransactionDto? transaction)
-        {
-            Transaction = transaction ?? new TransactionDto();
-            var orders = await _transactionService.GetOrderListAsync(Transaction.Id ?? Guid.Empty);
-            Orders = orders;
-            await _jsRuntime.InvokeVoidAsync("openOffcanvas", "report-overlay", "report-component");
-        }
-
         #endregion
 
     }

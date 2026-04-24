@@ -5,6 +5,7 @@ using DYS.JPay.Shared.Shared.Extensions;
 using DYS.JPay.Shared.Shared.Repositories;
 using DYS.JPay.Shared.Shared.Settings;
 using Mapster;
+using System.Linq.Expressions;
 
 namespace DYS.JPay.Shared.Shared.Services
 {
@@ -15,6 +16,8 @@ namespace DYS.JPay.Shared.Shared.Services
               Guid transactionId,
               string status,
               string note);
+
+        Task<List<Transaction>> GetAllTransactionsAsync(Expression<Func<Transaction, bool>> predicate);
         Task<PageDto<Transaction>> GetTransactionsAsync(SearchDto search);
         Task<List<Order>> GetOrderListAsync(Guid transactionId);
     }
@@ -36,6 +39,9 @@ namespace DYS.JPay.Shared.Shared.Services
             _transactionRepository = transactionRepository;
             _orderRepository = orderRepository;
         }
+
+        public async Task<List<Transaction>> GetAllTransactionsAsync(Expression<Func<Transaction, bool>> predicate) =>
+          await _transactionRepository.GetAllAsync(predicate);
 
         public async Task<PageDto<Transaction>> GetTransactionsAsync(SearchDto search) =>
           await _transactionRepository.GetPagedAsync(search.CurrentPage,

@@ -87,7 +87,24 @@
                             </select>
                         </div>
                         <div class="space-y-1">
-                            <DoubleComponent  Id="tax" Prefix="%" @bind-Item="@VM.AppSetting.Tax" Label="Tax" PlaceHolder="" Style="bg-[#f1f4fa]"  />
+                            <DoubleComponent Id="tax" ReadOnly="true" Prefix="%" @bind-Item="@VM.AppSetting.Tax" Label="Tax" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                        </div>
+
+                        <div class="space-y-1">
+                            <div class="flex gap-4">
+                                <div class="flex-1">
+                                    <DoubleComponent ReadOnly="true" Id="daily-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetDailySales" Label="Daily target" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                </div>
+                                <div class="flex-1">
+                                    <DoubleComponent ReadOnly="true" Id="weekly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetWeeklySales" Label="Weekly target" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                </div>
+                                <div class="flex-1">
+                                    <DoubleComponent ReadOnly="true" Id="montly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetMonthlySales" Label="Monthly target" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                </div>
+                                <div class="flex-1">
+                                    <DoubleComponent ReadOnly="true" Id="yearly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetYearlySales" Label="Yearly target" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                </div>
+                            </div>                           
                         </div>
                     </div>
 

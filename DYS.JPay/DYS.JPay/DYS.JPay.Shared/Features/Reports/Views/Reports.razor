@@ -16,13 +16,34 @@
 
                 <div class="flex flex-col md:flex-row md:items-end justify-between gap-6">
                     <div>
-                        <h1 class="text-3xl font-headline font-extrabold text-primary tracking-tight">Reporting</h1>
-                        <p class="text-sm text-on-surface-variant">Download transactions.</p>
+                        <h1 class="text-3xl font-headline font-extrabold text-primary tracking-tight">Sales Report</h1>
+                        <p class="text-sm text-on-surface-variant">Monitoring sales report.</p>
            
                     </div>
                     <div class="flex gap-3">
-                      
+                        <ButtonComponent Id="btn-completed" IsBusy="@VM.IsBusy" ActionText="Download CSV" Style="bg-primary text-white">
+                            <SVGIcon>
+                                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
+                            </SVGIcon>
+                        </ButtonComponent>
                     </div>
+                  
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div class="bg-white p-6 rounded-[1rem] shadow-sm border border-[#dfe3e8]/30 space-y-2">
+                        <p class="text-xs text-[#40484c] uppercase tracking-widest opacity-70">Total sales</p>
+                        <p class="text-3xl font-black text-emerald-600" id="total-income">@VM.Session.AppSettings.Currency@VM.Dashboard.Completed?.ToString("N2")</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-[1rem] shadow-sm border border-[#dfe3e8]/30 space-y-2">
+                        <p class="text-xs text-[#40484c] uppercase tracking-widest opacity-70">Pending Sales</p>
+                        <p class="text-3xl font-black text-[#003345]" id="net-savings">@VM.Session.AppSettings.Currency@VM.Dashboard.Pending?.ToString("N2")</p>
+                    </div>
+                    <div class="bg-white p-6 rounded-[1rem] shadow-sm border border-[#dfe3e8]/30 space-y-2">
+                        <p class="text-xs text-[#40484c] uppercase tracking-widest opacity-70">Cancelled</p>
+                        <p class="text-3xl font-black text-rose-600" id="total-expenses">@VM.Session.AppSettings.Currency@VM.Dashboard.Cancelled?.ToString("N2")</p>
+                    </div>
+                   
                 </div>
 
                 <div class="bg-[#f1f4fa] p-4 md:p-6 rounded-2xl flex flex-col md:flex-row flex-wrap gap-4 items-stretch md:items-end shadow-sm border border-[#dfe3e8]/50">
@@ -51,7 +72,7 @@
                     </div>
 
                     <!-- Search button -->
-                    <button id="btn-search" @onclick="@(() => VM.SearchTransactionsWithPagingAsync())"
+                    <button id="btn-search" @onclick="@(() => VM.SearchTransactionsAsync())"
                             class="bg-[#dfe3e8] text-[#003345] text-sm font-bold px-6 py-2 rounded-xl flex items-center justify-center gap-2">
                         Search
                     </button>
@@ -107,7 +128,7 @@
                                 }
                                 else
                                 {
-                                    @foreach (var transaction in VM?.Transactions?.Results!)
+                                    @foreach (var transaction in VM?.Transactions!)
                                     {
                                         <tr class="hover:bg-surface-container-low/50 transition-colors group">
                                             <td class="px-3 py-2">
@@ -146,18 +167,6 @@
                         </table>
 
                     </div>
-          
-                    <div class="p-7 bg-surface-container-low/10 border-t border-outline-variant/20 flex justify-between items-center">
-                        <p class="text-xs text-on-surface-variant font-medium">@VM!.Search.Summary</p>
-                        <div class="flex gap-2">
-                            <button disabled="@(VM!.Search.PreviousEnabled == false)" @onclick="@((async) => VM!.SearchTransactionsWithPagingAsync("previous"))" class="p-2 bg-white border border-outline-variant rounded-lg text-on-surface-variant @BooleanExtensions.GetConditionalString(VM.Search.PreviousEnabled, "", "disabled:opacity-50")">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="rotate-180"><path d="m9 18 6-6-6-6" /></svg>
-                            </button>
-                            <button disabled="@(VM!.Search.NextEnabled == false)" @onclick="@((async) => VM!.SearchTransactionsWithPagingAsync("next"))" class="p-2 bg-white border border-outline-variant rounded-lg text-on-surface-variant @BooleanExtensions.GetConditionalString(VM.Search.NextEnabled, "", "disabled:opacity-50")">
-                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m9 18 6-6-6-6" /></svg>
-                            </button>
-                        </div>
-                    </div>
                 </div>
             </main>
         </div>
@@ -177,7 +186,9 @@
 @code{
     protected override async Task OnInitializedAsync()
     {
-        await VM.SearchTransactionsWithPagingAsync(action: "", refresh: true);
+        VM.Search.StartDate = DateTime.Now.StartOfMonth();
+        VM.Search.EndDate = DateTime.Now.EndOfMonth();
+        await VM.SearchTransactionsAsync();
         await base.OnInitializedAsync();
     }
 }
