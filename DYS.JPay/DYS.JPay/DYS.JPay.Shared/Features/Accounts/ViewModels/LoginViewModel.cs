@@ -39,10 +39,13 @@ namespace DYS.JPay.Shared.Features.Accounts.ViewModels
         public async Task BasicLogin()
         {
             IsBusy = true;
+            Notification = new NotificationDto();
             await _accountService.GetAllAsync();
             var result = await _accountService.LoginAsync(profile.Username, profile.Passcode);
             if (result != null)
             {
+                Notification.Success = true;
+                Notification.Description = "Logged in successfully.";
                 _sessionService.SetUser(result);
 
                 //INITIALIZE SETTINGS
@@ -52,7 +55,8 @@ namespace DYS.JPay.Shared.Features.Accounts.ViewModels
             }
             else
             {
-
+                Notification.Success = false;
+                Notification.Description = "Invalid username or 6-digit passcode. Please try again";
             }
             IsBusy = false;
         }
