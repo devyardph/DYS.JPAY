@@ -2,6 +2,7 @@
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Repositories;
 using Mapster;
+using System.Linq.Expressions;
 namespace DYS.JPay.Shared.Shared.Services
 {
     public interface IUserService : IBaseService
@@ -9,6 +10,7 @@ namespace DYS.JPay.Shared.Shared.Services
         Task<PageDto<User>> GetUsersAsync(SearchDto search);
         Task<User> GetUserByIdAsync(Guid id);
         Task<User> SubmitUserAsync(UserDto user);
+        Task<User> GetUserAsync(Expression<Func<User, bool>> predicate);
     }
     public class UserService : BaseService, IUserService
     {
@@ -24,6 +26,9 @@ namespace DYS.JPay.Shared.Shared.Services
                  search.PageSize, 
                  search.Keyword, 
                  search.Columns, showAll: false);
+
+        public async Task<User> GetUserAsync(Expression<Func<User, bool>> predicate) =>
+          await _userRepository.GetAsync(predicate);
 
         public async Task<User> GetUserByIdAsync(Guid id) =>
             await _userRepository.GetAsync(query => query.Id == id);

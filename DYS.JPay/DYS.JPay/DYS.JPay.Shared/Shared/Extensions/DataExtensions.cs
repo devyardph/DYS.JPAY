@@ -1,4 +1,5 @@
-﻿using DYS.JPay.Shared.Shared.Dtos;
+﻿using DYS.JPay.Shared.Features.Products.Views;
+using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Settings;
 using System;
@@ -92,5 +93,32 @@ namespace DYS.JPay.Shared.Shared.Extensions
             return status;
         }
 
+        public static string GenerateImagePath(string path) {
+            if (string.IsNullOrEmpty(path)) 
+                return "";
+            if (path.Contains("https")) return path;
+            var bytes = File.ReadAllBytes(path);
+            var base64 = Convert.ToBase64String(bytes);
+            var dataUri = $"data:image/jpeg;base64,{base64}";
+            return dataUri;
+        }
+
+        public static bool ValidContent(this ProductDto content) => !string.IsNullOrEmpty(content.Name) && content.Price.HasValue;
+        public static bool ValidContent(this CategoryDto content) => !string.IsNullOrEmpty(content.Name);
+        public static bool ValidContent(this UserDto content) => 
+            !string.IsNullOrEmpty(content.Name) &&
+            !string.IsNullOrEmpty(content.Username) &&
+            !string.IsNullOrEmpty(content.Email) &&
+            !string.IsNullOrEmpty(content.Code);
+
+        public static bool ValidContent(this AppSetting content) => 
+            !string.IsNullOrEmpty(content.StoreName) &&
+            !string.IsNullOrEmpty(content.StoreDescription) &&
+            !string.IsNullOrEmpty(content.Currency);
+
+        public static bool ValidContent(this TransactionDto content) =>
+           !string.IsNullOrEmpty(content.CustomerName) &&
+           !string.IsNullOrEmpty(content.PaymentMode) &&
+           !string.IsNullOrEmpty(content.ReferenceNo);
     }
 }

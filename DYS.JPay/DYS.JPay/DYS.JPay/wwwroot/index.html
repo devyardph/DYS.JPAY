@@ -82,6 +82,50 @@
             -ms-overflow-style: none;
             scrollbar-width: none;
         }
+        .animate-fade-in {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-pop {
+            animation: popIn 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+        }
+
+        @keyframes popIn {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .animate-check {
+            stroke-dasharray: 50;
+            stroke-dashoffset: 50;
+            animation: drawCheck 0.4s cubic-bezier(0.65, 0, 0.45, 1) forwards;
+            animation-delay: 0.2s;
+        }
+
+        @keyframes drawCheck {
+            to {
+                stroke-dashoffset: 0;
+            }
+        }
     </style>
 </head>
 <body id="app" class="min-h-screen flex">
@@ -293,6 +337,31 @@
                 document.body.appendChild(link);
                 link.click();
                 document.body.removeChild(link)
+            }
+            function goToStep(step) {
+                document.getElementById('step-1').classList.add('hidden');
+                document.getElementById('step-2').classList.add('hidden');
+                document.getElementById('step-3').classList.add('hidden');
+                document.getElementById('step-4').classList.add('hidden');
+
+                const el = document.getElementById(`step-${step}`);
+                el.classList.remove('hidden');
+                el.classList.add('animate-fade-in');
+
+                for (let i = 1; i <= 4; i++) {
+                    const dot = document.getElementById(`dot-${i}`);
+                    if (i <= step) {
+                        dot.classList.add('bg-primary');
+                        dot.classList.remove('bg-surface-container-highest');
+                    } else {
+                        dot.classList.remove('bg-primary');
+                        dot.classList.add('bg-surface-container-highest');
+                    }
+                }
+
+                if (step === 3) {
+                    document.getElementById('finalStoreName').innerText = document.getElementById('storeName').value;
+                }
             }
         </script>
     </body>

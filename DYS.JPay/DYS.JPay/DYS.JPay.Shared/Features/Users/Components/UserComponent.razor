@@ -51,7 +51,7 @@
 
 <div class="p-6 border-t border-outline-variant/10 bg-surface-container-lowest flex gap-3 mb-5">
     <ButtonComponent Id="btn-cancel" Click="@OnCancelAsync" ActionText="Cancel" Style="bg-surface-container-highest text-on-surface border-t border-outline-variant/10" />
-    <ButtonComponent Id="btn-category" IsBusy="@IsBusy" Click="@OnSaveAsync" ActionText="@ActionText" Style="@ActionStyle" />
+    <ButtonComponent Disabled="@(!User.ValidContent())" Id="btn-category" IsBusy="@IsBusy" Click="@OnSaveAsync" ActionText="@ActionText" Style="@ActionStyle" />
 </div>
 
 @code {

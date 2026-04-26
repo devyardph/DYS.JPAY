@@ -1,4 +1,6 @@
 ﻿@using DYS.JPay.Shared.Shared.Dtos
+@using DYS.JPay.Shared.Shared.Helpers
+@inject IImageService ImageService
 
 @if (Display == "grid")
 {
@@ -6,8 +8,9 @@
         @foreach (var product in Products)
         {
             <button @onclick="@(() => OnAddToOrder(product))" class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left flex flex-col h-full group">
-                <div class="w-full aspect-square bg-surface-container-low rounded-xl mb-4 overflow-hidden relative group-hover:scale-105 transition-transform duration-300">
-                    <img src="@product.ImageUrl" alt="@product.Name" class="w-full h-full object-cover" referrerpolicy="no-referrer">
+                <div  class="w-full aspect-square bg-surface-container-low rounded-xl mb-4 overflow-hidden relative group-hover:scale-105 transition-transform duration-300">
+@*                  <img src="@DataExtensions.GenerateImagePath(product.ImageUrl)" alt="@product.Name" class="w-full h-full object-cover" referrerpolicy="no-referrer"> *@
+                    <ImageComponent ImageUrl="@product.ImageUrl" />
                     <div class="absolute top-2 right-2 flex gap-1">
                         <span class="px-2 py-1 bg-surface/80 backdrop-blur-sm rounded-lg text-xs font-bold text-on-surface">@product.Name</span>
                     </div>
@@ -30,16 +33,17 @@ else if(Display == "list")
 
                 <!-- Product Image -->
                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-surface-container-low shrink-0">
-                    <img alt="@product.Name"
-                         src="@product.ImageUrl"
+                 @*    <img alt="@product.Name"
+                         src="@DataExtensions.GenerateImagePath(product.ImageUrl)"
                          class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                         referrerpolicy="no-referrer" />
+                         referrerpolicy="no-referrer" /> *@
+                    <ImageComponent ImageUrl="@product.ImageUrl" Style="group-hover:scale-110 transition-transform duration-300" />
                 </div>
 
                 <!-- Product Info -->
                 <div class="flex-1">
-                    <h3 class="font-bold text-on-surface mb-1">Espresso</h3>
-                    <p class="text-xs text-on-surface-variant uppercase tracking-wider">@product.Type</p>
+                    <h3 class="font-bold text-on-surface mb-1">@product.Name</h3>
+                    <p class="text-xs text-on-surface-variant uppercase tracking-wider">@product.Description</p>
                 </div>
 
                 <!-- Price -->
@@ -66,14 +70,11 @@ else if(Display == "list")
     [Parameter]
     public string Display { get; set; } = "grid";
     [Parameter]
-    public string Currency { get; set; } 
+    public string Currency { get; set; } = string.Empty;
     [Parameter]
     public List<ProductDto> Products { get; set; } = new List<ProductDto>();
     [Parameter]
     public EventCallback<ProductDto> AddToOrder { get; set; }
 
-    public void OnAddToOrder(ProductDto product)
-    {
-        AddToOrder.InvokeAsync(product);
-    }
+    public void OnAddToOrder(ProductDto product) => AddToOrder.InvokeAsync(product);
 }

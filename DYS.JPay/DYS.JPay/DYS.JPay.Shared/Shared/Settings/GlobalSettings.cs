@@ -10,6 +10,9 @@ namespace DYS.JPay.Shared.Shared.Settings
 
         public const string AppName = "DYS.JPay";
 
+        public const string CASH = "CASH";
+        public const string CREDIT = "CREDIT";
+
         //TRANSACTION STATUS: NEW, PREPARING, READY, COMPLETED
         public const string NEW = "NEW";
         public const string PREPARING = "PREPARING";

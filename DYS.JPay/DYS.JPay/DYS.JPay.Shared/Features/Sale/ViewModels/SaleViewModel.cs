@@ -191,8 +191,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             _peerService.SendOrder(JsonExtensions.Convert(cart));
 
             await _jsRuntime.InvokeVoidAsync("closeModal", "charge-modal");
-            await _jsRuntime.InvokeVoidAsync("showProgessBar");
-
+            await _jsRuntime.InvokeVoidAsync("openModal", "result-modal");
             Transaction = new TransactionDto();
             Orders = new List<OrderDto>();
         }      

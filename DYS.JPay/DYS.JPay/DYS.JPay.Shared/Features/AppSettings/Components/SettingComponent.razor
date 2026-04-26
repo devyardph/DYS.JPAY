@@ -67,7 +67,7 @@
             <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Currency</label>
             <select @bind="@AppSetting.Currency" 
                     class="w-full bg-[#f1f4fa] border-none rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary transition-all">
-                @foreach (var currency in GlobalSettings.Currencies!)
+                @foreach (var currency in GlobalSettings.Currencies.OrderBy(x => x.Name)!)
                 {
                     <option value="@currency.DisplayName">@currency.Name - @currency.DisplayName</option>
                 }
@@ -101,7 +101,7 @@
 
 <div class="p-6 border-t border-outline-variant/10 bg-surface-container-lowest flex gap-3 mb-5">
     <ButtonComponent Id="btn-cancel" Click="@OnCancelAsync" ActionText="Cancel" Style="bg-surface-container-highest text-on-surface border-t border-outline-variant/10" />
-    <ButtonComponent Id="btn-category" IsBusy="@IsBusy" Click="@OnSaveAsync" ActionText="@ActionText" Style="@ActionStyle" />
+    <ButtonComponent Disabled="@(!AppSetting.ValidContent())" Id="btn-category" IsBusy="@IsBusy" Click="@OnSaveAsync" ActionText="@ActionText" Style="@ActionStyle" />
 </div>
 
 @code {

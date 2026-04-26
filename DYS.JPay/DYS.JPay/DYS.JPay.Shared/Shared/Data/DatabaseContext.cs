@@ -31,8 +31,8 @@ namespace DYS.JPay.Shared.Shared.Data
             // Seed default admin
             await SeedOwnerUser();
             await SeedAdminUser();
-            await SeedCategories();
-            await SeedProducts();
+            //await SeedCategories();
+            //await SeedProducts();
             await SeedSettings();
         }
         public SQLiteAsyncConnection Connection => _connection;
@@ -49,7 +49,7 @@ namespace DYS.JPay.Shared.Shared.Data
                 {
                     Name="Owner",
                     Username = "owner",
-                    Code = "123456",   // default 6-digit login code
+                    Code = "",   // default 6-digit login code
                     Role = GlobalSettings.OWNER,
                     CreatedAt = DateTime.UtcNow
                 };
@@ -204,12 +204,13 @@ namespace DYS.JPay.Shared.Shared.Data
             {
                 var settings = new Entities.AppSetting
                 {
-                    StoreName = "Lacasetta de Brit",
-                    StoreDescription = "Italian restaurant",
+                    StoreName = "",
+                    StoreDescription = "",
                     Currency = "$",
                     Display = "grid",
                     Default = true,
-                    Tax = 12
+                    Tax = 12,
+                    Setup = false
                 };
 
                 await _connection.InsertAsync(settings);

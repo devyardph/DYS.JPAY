@@ -6,6 +6,7 @@ namespace DYS.JPay.Shared.Shared.Entities
 {
     public class AppSetting : BaseEntity
     {
+        public bool Setup { get; set; } = false;
         public string StoreName { get; set; }
         public string StoreDescription { get; set; }
         public string Currency { get; set; }

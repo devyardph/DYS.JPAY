@@ -79,7 +79,7 @@
                 <span id="cart-total">@Currency@Transaction.Total?.ToString("N2")</span>
             </div>
         </div>
-        <button id="charge-btn" onclick="@ProcessOrderAsync" class="w-full ledger-gradient text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+        <button disabled="@(!OrderItems.Any())" id="charge-btn" onclick="@ProcessOrderAsync" class="w-full ledger-gradient text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
             Charge <span id="charge-amount">@Currency@Transaction.Total?.ToString("N2")</span>
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
         </button>

@@ -3,6 +3,7 @@ using DYS.JPay.Services;
 using DYS.JPay.Shared.Shared.Data;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Extensions;
+using DYS.JPay.Shared.Shared.Helpers;
 using DYS.JPay.Shared.Shared.Providers;
 using DYS.JPay.Shared.Shared.Repositories;
 using DYS.JPay.Shared.Shared.Services;
@@ -12,6 +13,7 @@ using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
 using Microsoft.Maui.LifecycleEvents;
 using SQLite;
+using System.Runtime.ConstrainedExecution;
 
 namespace DYS.JPay
 {
@@ -29,7 +31,7 @@ namespace DYS.JPay
 
             // Add device-specific services used by the DYS.JPay.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V7.db");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V15.db");
             var dbContext = new DatabaseContext(dbPath);
 
             Task.Run(async () => await dbContext.InitializeAsync());
@@ -50,7 +52,7 @@ namespace DYS.JPay
             var ip = NetworkHelper.GetLocalWifiIp();
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri($"http://{ip}:5000") });
             builder.Services.AddScoped<IRequestProvider, RequestProvider>();
-
+            builder.Services.AddSingleton<IImageService, ImageService>();
             builder.Services.AddMauiBlazorWebView();
 
             //PEER TO PEER

@@ -1,17 +1,54 @@
 ﻿@page "/help"
+@layout EmptyLayout
 @using DYS.JPay.Shared.Features.Orders.ViewModels
 @using DYS.JPay.Shared.Shared.Components
-@using DYS.JPay.Shared.Shared.Extensions
-@using DYS.JPay.Shared.Shared.Settings
-@using Microsoft.AspNetCore.Authorization
-@inject AppSettingsViewModel VM
+@using DYS.JPay.Shared.Shared.Helpers
+@inject IImageService ImageService
 
  
-<PageComponent>
-    <PageContent>
-       Help
-    </PageContent>
-</PageComponent>
+<div id="main-content" class="flex-1 lg:ml-64 min-h-screen flex flex-col transition-all duration-300 ">
+    <main class="flex-1 pt-10 px-4 md:px-8 lg:px-12 pb-16 max-w-7xl mx-auto w-full opacity-0 space-y-8 animate-fade-in-up">
+
+        <button @onclick="UploadAndResize">Upload & Resize</button>
+        @resizedPath
+
+        <div id="products-container" class="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-4 gap-4">
+            @for (int i = 0; i < 20; i++)
+            {
+                @if (!string.IsNullOrEmpty(resizedPath))
+                {
+                    <button class="bg-surface-container-lowest rounded-2xl p-4 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left flex flex-col h-full group">
+                        <div class="overflow-hidden w-full aspect-square bg-surface-container-low rounded-xl mb-4 overflow-hidden relative group-hover:scale-105 transition-transform duration-300">
+                            <img src="@DataExtensions.GenerateImagePath(@resizedPath)" alt="Demo testing" class="rounded-xl w-full h-full object-cover" referrerpolicy="no-referrer">
+                            <div class="absolute top-2 right-2 flex gap-1">
+                                <span class="px-2 py-1 bg-surface/80 backdrop-blur-sm rounded-lg text-xs font-bold text-on-surface">Demo testing</span>
+                            </div>
+                        </div>
+                        <h3 class="font-bold text-on-surface leading-tight mb-1">Demo testing</h3>
+                        <p class="text-primary font-black mt-auto">$33.55</p>
+                    </button>
+
+ 
+                     
+                }
+            }
+
+        </div>
+    </main>
+</div>
+
+@code {
+    private string resizedPath = string.Empty;
+
+    private async Task UploadAndResize()
+    {
+        var path = await ImageService.PickAndResizeAsync(500);
+        if (path != null)
+        {
+            resizedPath = path;
+        }
+    }
+}
 
 
 

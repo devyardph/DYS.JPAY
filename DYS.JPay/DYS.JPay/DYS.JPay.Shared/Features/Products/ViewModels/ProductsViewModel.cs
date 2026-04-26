@@ -2,6 +2,7 @@
 using DYS.JPay.Shared.Features.Products.Components;
 using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
+using DYS.JPay.Shared.Shared.Helpers;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Mapster;
@@ -19,15 +20,18 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
 
         public readonly IProductService _productService;
         public readonly ICategoryService _categoryService;
+        public readonly IImageService _imageService;
         public ProductsViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             SessionService sessionService,
             IProductService patientService,
-            ICategoryService categoryService) 
+            ICategoryService categoryService,
+            IImageService imageService) 
             : base(navigationManager, jsRuntime, sessionService)
         {
             _productService = patientService;
             _categoryService = categoryService;
+            _imageService = imageService;
         }
 
         #region PROPERTIES
@@ -109,6 +113,14 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             Variants = variants.variants.Adapt<List<VariantDto>>();
             VariantComponent.InitializeContents(Product, Variants);
             await _jsRuntime.InvokeVoidAsync("openOffcanvas", "variant-overlay", "variant-component");
+        }
+
+        public async Task UploadImageAsync()
+        {
+            IsProcessing = true;
+            var output = await _imageService.PickAndResizeAsync(500);
+            Product.ImageUrl = output;
+            IsProcessing = false;
         }
         #endregion
 
