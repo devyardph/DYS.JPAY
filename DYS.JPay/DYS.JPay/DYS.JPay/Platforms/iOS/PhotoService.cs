@@ -9,59 +9,88 @@ namespace DYS.JPay.Platforms.iOS
 {
     public class PhotoService: IPhotoService
     {
-       
-        public Task<string> SaveImageToAlbumAsync(string filePath, string albumName)
+        private PHObjectPlaceholder _lastPlaceholder;
+        public Task<string> SaveImageToAlbumAsync(string tempPath, string album)
         {
             var tcs = new TaskCompletionSource<string>();
-            var nsUrl = NSUrl.FromFilename(filePath);
+            var nsUrl = NSUrl.FromFilename(tempPath);
 
             PHPhotoLibrary.SharedPhotoLibrary.PerformChanges(() =>
             {
                 // Create asset
                 var assetRequest = PHAssetCreationRequest.CreationRequestForAsset();
                 assetRequest.AddResource(PHAssetResourceType.Photo, nsUrl, new PHAssetResourceCreationOptions());
-                var assetPlaceholder = assetRequest.PlaceholderForCreatedAsset;
 
-                // Find album
+                var placeholder = assetRequest.PlaceholderForCreatedAsset;
+
+                // Try to fetch album
                 var fetchOptions = new PHFetchOptions
                 {
-                    Predicate = NSPredicate.FromFormat("title = %@", new NSObject[] { new NSString(albumName) })
+                    Predicate = NSPredicate.FromFormat("title = %@", new NSString(album))
                 };
-
                 var collection = PHAssetCollection.FetchAssetCollections(PHAssetCollectionType.Album, PHAssetCollectionSubtype.Any, fetchOptions);
 
                 if (collection.Count > 0)
                 {
+                    // Existing album
                     var album = collection[0] as PHAssetCollection;
                     var albumChangeRequest = PHAssetCollectionChangeRequest.ChangeRequest(album);
-                    albumChangeRequest.AddAssets(new[] { assetPlaceholder });
+                    albumChangeRequest.AddAssets(new[] { placeholder });
                 }
                 else
                 {
-                    // ✅ This is the correct usage
-                    var albumRequest = PHAssetCollectionChangeRequest.CreateAssetCollection(albumName);
-                    albumRequest.AddAssets(new[] { assetPlaceholder });
+                    // ✅ Create new album
+                    var albumRequest = PHAssetCollectionChangeRequest.CreateAssetCollection(album);
+                    albumRequest.AddAssets(new[] { placeholder });
                 }
+
+                _lastPlaceholder = placeholder;
 
             }, (success, error) =>
             {
-                if (success)
-                {
-                    // ✅ Return the LocalIdentifier of the saved asset
-                    var fetchOptions = new PHFetchOptions();
-                    fetchOptions.SortDescriptors = new[] { new NSSortDescriptor("creationDate", false) };
-                    var asset = PHAsset.FetchAssets(PHAssetMediaType.Image, fetchOptions).LastObject;
-                    tcs.SetResult(asset?.ToString());
-                }
+                if (success && _lastPlaceholder != null)
+                    tcs.SetResult(_lastPlaceholder.LocalIdentifier);
                 else
-                {
                     tcs.SetException(new NSErrorException(error));
-                }
             });
 
             return tcs.Task;
         }
+        public async Task<string> GetImageDataUriAsync(string tempPath, string photoPath)
+        {
+            // Fetch the asset by identifier
+            var fetchResult = PHAsset.FetchAssetsUsingLocalIdentifiers(new[] { photoPath }, null);
 
+            // ✅ Correctly cast to PHAsset
+            var asset = fetchResult.FirstOrDefault() as PHAsset;
+            if (asset == null) return null;
 
-    }
+            var tcs = new TaskCompletionSource<string>();
+
+            var options = new PHImageRequestOptions
+            {
+                Synchronous = false,
+                NetworkAccessAllowed = true,
+                DeliveryMode = PHImageRequestOptionsDeliveryMode.HighQualityFormat
+            };
+
+            // Request raw image data
+            PHImageManager.DefaultManager.RequestImageData(asset, options, (data, dataUti, orientation, info) =>
+            {
+                if (data != null)
+                {
+                    var base64 = Convert.ToBase64String(data.ToArray());
+                    var dataUri = $"data:image/jpeg;base64,{base64}";
+                    tcs.SetResult(dataUri);
+                }
+                else
+                {
+                    tcs.SetResult(null);
+                }
+            });
+
+            return await tcs.Task;
+        }
+
+        }
 }

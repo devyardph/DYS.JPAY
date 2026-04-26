@@ -108,7 +108,7 @@
                         <div class="w-full h-50 bg-surface-container-low border border-outline-variant/10 rounded-2xl flex items-center justify-center text-on-surface-variant hover:bg-surface-container-highest transition-colors cursor-pointer group">
                             <button type="button" @onclick="@UploadImageAsync" class="bg-surface-container-lowest rounded-2xl p-2 border border-outline-variant/10 shadow-sm hover:shadow-md hover:border-primary/30 transition-all text-left flex flex-col h-full group w-full">
 @*                              <img src="@DataExtensions.GenerateImagePath(VM.Product.ImageUrl)" alt="Demo testing" class="rounded-xl w-full h-full object-cover" referrerpolicy="no-referrer"> *@
-                                <ImageComponent IsBusy="@VM.IsProcessing"  ImageUrl="@VM.Product.ImageUrl" Style="" />
+                                <ImagePreviewComponent IsBusy="@VM.IsProcessing"  ImageUrl="@VM.Product.TempImageUrl" Style="" />
                             </button>
                         </div>
                      
@@ -177,7 +177,8 @@
     {
         VM.IsProcessing = true;
         var output = await ImageService.PickAndResizeAsync(500);
-        VM.Product.ImageUrl = output;
+        VM.Product.TempImageUrl = output.tempPath;
+        VM.Product.ImageUrl = output.photoPath;
         VM.IsProcessing = false;
     }
 }

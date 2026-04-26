@@ -7,6 +7,6 @@ namespace DYS.JPay.Shared.Shared.Helpers
 {
     public interface IImageService
     {
-        Task<string> PickAndResizeAsync(int size);
+        Task<(string tempPath, string photoPath)> PickAndResizeAsync(int size);
     }
 }

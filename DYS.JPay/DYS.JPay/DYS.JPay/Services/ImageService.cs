@@ -1,4 +1,5 @@
 ﻿using DYS.JPay.Shared.Shared.Helpers;
+using DYS.JPay.Shared.Shared.Services;
 using SkiaSharp;
 using System;
 using System.Collections.Generic;
@@ -8,7 +9,12 @@ namespace DYS.JPay.Services
 {
     public class ImageService: IImageService
     { 
-        public async Task<string> PickAndResizeAsync(int targetSize)
+        private readonly IPhotoService _photoService;
+        public ImageService(IPhotoService photoService)
+        {
+            _photoService = photoService;
+        }
+        public async Task<(string tempPath, string photoPath)> PickAndResizeAsync(int targetSize)
         {
             try
             {
@@ -17,7 +23,7 @@ namespace DYS.JPay.Services
                     Title = "Select a photo"
                 });
 
-                if (result == null) return null;
+                if (result == null) return ("","");
 
                 var inputPath = Path.Combine(FileSystem.AppDataDirectory, result.FileName);
                 using (var stream = await result.OpenReadAsync())
@@ -57,11 +63,12 @@ namespace DYS.JPay.Services
                 using var output = File.Open(outputPath, FileMode.Create, FileAccess.Write);
                 data.SaveTo(output);
 
-                return outputPath;
+                var identifier = await _photoService.SaveImageToAlbumAsync(outputPath, "jpay");
+                return (outputPath,identifier);
             }
             catch (Exception ex)
             {
-                return ex.Message;
+                return (ex.Message, ex.Message);
             }
         }
     }

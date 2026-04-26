@@ -96,18 +96,5 @@
     </PageContent>
 </PageComponent>
 
-@code {
-    private string resizedPath = string.Empty;
-
-    private async Task UploadAndResize()
-    {
-        var path = await ImageService.PickAndResizeAsync(500);
-        if (path != null)
-        {
-            resizedPath = path;
-        }
-    }
-}
-
 
 

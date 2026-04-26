@@ -13,6 +13,7 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public string Type { get; set; }
         public string Description{ get; set; }
         public string Barcode { get; set; }
+        public string TempImageUrl { get; set; }
         public string ImageUrl { get; set; }
         public double? Price { get; set; }
         public bool? Featured { get; set; } = false;

@@ -1,0 +1,17 @@
+﻿@if (Notification.Success == true)
+{
+    <div class="text-center text-sm text-green-500 mt-6 font-medium">
+        <small>@Notification.Description</small>
+    </div>
+}
+else 
+{
+    <div class="text-center text-sm text-red-500 mt-6 font-medium">
+        <small>@Notification.Description</small>
+    </div>
+}
+
+@code {
+    [Parameter]
+    public NotificationDto Notification { get; set; } = new NotificationDto();
+}

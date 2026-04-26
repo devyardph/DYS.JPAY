@@ -6,6 +6,7 @@ namespace DYS.JPay.Shared.Shared.Services
 {
     public interface IPhotoService
     {
-        Task<string> SaveImageToAlbumAsync(string filePath, string albumName);
+        Task<string> SaveImageToAlbumAsync(string tempPath, string photoPath);
+        Task<string> GetImageDataUriAsync(string tempPath, string album);
     }
 }

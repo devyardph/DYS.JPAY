@@ -53,15 +53,18 @@ namespace DYS.JPay
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri($"http://{ip}:5000") });
             builder.Services.AddScoped<IRequestProvider, RequestProvider>();
             builder.Services.AddSingleton<IImageService, ImageService>();
+           
             builder.Services.AddMauiBlazorWebView();
 
             //PEER TO PEER
 #if IOS
                 builder.Services.AddSingleton<IPeerService,  DYS.JPay.Platforms.iOS.PeerService>();
+                builder.Services.AddSingleton<IPhotoService, DYS.JPay.Platforms.iOS.PhotoService>();
 #elif ANDROID
             builder.Services.AddSingleton<IPeerService, DYS.JPay.Platforms.Android.PeerService>();
 #elif WINDOWS
                 builder.Services.AddSingleton<IPeerService, DYS.JPay.Platforms.Windows.PeerService>();
+                builder.Services.AddSingleton<IPhotoService, DYS.JPay.Platforms.Windows.PhotoService>();
 #endif
 
 

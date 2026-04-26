@@ -38,6 +38,11 @@
 	<array>
 		<string>_orderservice._tcp</string>
 	</array>
-	
+	<key>NSPhotoLibraryAddUsageDescription</key>
+	<string>This app needs access to save photos.</string>
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>This app needs access to read photos.</string>
+
+
 </dict>
 </plist>

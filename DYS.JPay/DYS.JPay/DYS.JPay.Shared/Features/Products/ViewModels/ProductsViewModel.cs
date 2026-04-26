@@ -119,7 +119,8 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         {
             IsProcessing = true;
             var output = await _imageService.PickAndResizeAsync(500);
-            Product.ImageUrl = output;
+            Product.TempImageUrl = output.tempPath;
+            Product.ImageUrl = output.photoPath;
             IsProcessing = false;
         }
         #endregion
