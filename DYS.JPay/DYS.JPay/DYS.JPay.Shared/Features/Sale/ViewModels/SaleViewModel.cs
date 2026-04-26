@@ -224,7 +224,8 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             var key = e.Value?.ToString();
             MenuProducts = string.IsNullOrEmpty(key) ? Products :
                            Products.Where(p => 
-                           (!string.IsNullOrEmpty(p.Name) &&p.Name.Contains(key, StringComparison.OrdinalIgnoreCase)) || 
+                           (!string.IsNullOrEmpty(p.Name) &&p.Name.Contains(key, StringComparison.OrdinalIgnoreCase)) ||
+                           (!string.IsNullOrEmpty(p.Code) && p.Code.Contains(key, StringComparison.OrdinalIgnoreCase)) ||
                            (!string.IsNullOrEmpty(p.Description) && p.Description.Contains(key, StringComparison.OrdinalIgnoreCase))).ToList();
         }
         #endregion
