@@ -88,6 +88,8 @@ namespace DYS.JPay.Shared.Features.Onboarding.ViewModels
         public async Task SaveProductAsync()
         {
             IsBusy = true;
+            var category = await _categoryService.SubmitCategoryAsync(Category);
+            Product.CategoryId = category.Id;
             await _productService.SubmitProductAsync(Product);
             IsBusy = false;
         }

@@ -35,7 +35,12 @@ namespace DYS.JPay.Shared.Shared.Services
                 category.Id == null)
             {
                 item.Id = Guid.NewGuid();
-                await _categoryRepository.InsertAsync(item);
+                var entity = await _categoryRepository.GetAsync(x => x.Name.ToLower() == category.Name.ToLower());
+                if (entity == null) {
+                    await _categoryRepository.InsertAsync(item);
+                    return item;
+                }
+                return entity ?? new Category();
             }
             else
             {

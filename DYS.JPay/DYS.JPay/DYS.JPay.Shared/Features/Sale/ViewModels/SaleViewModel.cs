@@ -221,8 +221,9 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
 
         public void SearchProducts(ChangeEventArgs e)
         {
-            MenuProducts = string.IsNullOrEmpty(Search.Keyword) ? Products :
-                           Products.Where(p => p.Name.Contains(Search.Keyword,StringComparison.OrdinalIgnoreCase)).ToList();
+            var key = e.Value?.ToString();
+            MenuProducts = string.IsNullOrEmpty(key) ? Products :
+                           Products.Where(p => p.Name.Contains(key, StringComparison.OrdinalIgnoreCase) || p.Description.Contains(key, StringComparison.OrdinalIgnoreCase)).ToList();
         }
         #endregion
     }

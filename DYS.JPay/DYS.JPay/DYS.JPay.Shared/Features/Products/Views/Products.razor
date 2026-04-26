@@ -150,7 +150,7 @@
 
         <OffCanvassComponent Id="product-component" Overlay="product-overlay">
             <Content>
-                <ProductComponent @bind-Product="@VM.Product" 
+                <ProductComponent @bind-Product="@VM.Product" IsBusy="@VM.IsBusy" IsProcessing="@VM.IsProcessing"
                 Categories="@VM.Categories" Save="@VM.SubmitProductAsync" ImageUploaded="@VM.UploadImageAsync"
                 Currency="@VM.Session.AppSettings.Currency"/>
             </Content>
