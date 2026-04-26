@@ -7,109 +7,7 @@ using System.Text;
 namespace DYS.JPay.Services
 {
     public class ImageService: IImageService
-    {
-        //public async Task<string> PickAndResizeAsync(int targetWidth, int targetHeight)
-        //{
-        //    var result = await FilePicker.PickAsync(new PickOptions
-        //    {
-        //        PickerTitle = "Select an image",
-        //        FileTypes = FilePickerFileType.Images
-        //    });
-
-        //    if (result == null) return null;
-
-        //    var inputPath = Path.Combine(FileSystem.AppDataDirectory, result.FileName);
-        //    using (var stream = await result.OpenReadAsync())
-        //    using (var fileStream = File.Create(inputPath))
-        //        await stream.CopyToAsync(fileStream);
-
-        //    var uniqueId = Guid.NewGuid().ToString();
-        //    var outputPath = Path.Combine(FileSystem.AppDataDirectory, $"{uniqueId}.jpg");
-
-        //    using var input = File.OpenRead(inputPath);
-        //    using var bitmap = SKBitmap.Decode(input);
-
-        //    // Calculate proportional scale
-        //    float widthRatio = (float)targetWidth / bitmap.Width;
-        //    float heightRatio = (float)targetHeight / bitmap.Height;
-        //    float scale = Math.Min(widthRatio, heightRatio);
-
-        //    int newWidth = (int)(bitmap.Width * scale);
-        //    int newHeight = (int)(bitmap.Height * scale);
-
-        //    // Create surface with target size
-        //    using var surface = SKSurface.Create(new SKImageInfo(targetWidth, targetHeight));
-        //    surface.Canvas.Clear(SKColors.White);
-
-        //    // Draw resized image centered
-        //    var destRect = new SKRect(
-        //        (targetWidth - newWidth) / 2,
-        //        (targetHeight - newHeight) / 2,
-        //        (targetWidth - newWidth) / 2 + newWidth,
-        //        (targetHeight - newHeight) / 2 + newHeight
-        //    );
-
-        //    surface.Canvas.DrawBitmap(bitmap, destRect);
-        //    surface.Canvas.Flush();
-
-        //    using var image = surface.Snapshot();
-        //    using var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
-
-        //    using var output = File.Open(outputPath, FileMode.Create, FileAccess.Write);
-        //    data.SaveTo(output);
-
-        //    return outputPath;
-        //}
-
-        public async Task<string> PickAndResizeAsync(int targetWidth, int targetHeight)
-        {
-            var result = await FilePicker.PickAsync(new PickOptions
-            {
-                PickerTitle = "Select an image",
-                FileTypes = FilePickerFileType.Images
-            });
-
-            if (result == null) return null;
-
-            var inputPath = Path.Combine(FileSystem.AppDataDirectory, result.FileName);
-            using (var stream = await result.OpenReadAsync())
-            using (var fileStream = File.Create(inputPath))
-                await stream.CopyToAsync(fileStream);
-
-            var uniqueId = Guid.NewGuid().ToString();
-            var outputPath = Path.Combine(FileSystem.AppDataDirectory, $"{uniqueId}.jpg");
-
-            using var input = File.OpenRead(inputPath);
-            using var bitmap = SKBitmap.Decode(input);
-
-            // Calculate proportional scale to fit inside square
-            float widthRatio = (float)targetWidth / bitmap.Width;
-            float heightRatio = (float)targetHeight / bitmap.Height;
-            float scale = Math.Min(widthRatio, heightRatio);
-
-            int newWidth = (int)(bitmap.Width * scale);
-            int newHeight = (int)(bitmap.Height * scale);
-
-            // Create square canvas
-            using var surface = SKSurface.Create(new SKImageInfo(targetWidth, targetHeight));
-            surface.Canvas.Clear(SKColors.White);
-
-            // Center the resized image
-            int x = (targetWidth - newWidth) / 2;
-            int y = (targetHeight - newHeight) / 2;
-            var destRect = new SKRect(x, y, x + newWidth, y + newHeight);
-
-            surface.Canvas.DrawBitmap(bitmap, destRect);
-            surface.Canvas.Flush();
-
-            using var image = surface.Snapshot();
-            using var data = image.Encode(SKEncodedImageFormat.Jpeg, 90);
-
-            using var output = File.Open(outputPath, FileMode.Create, FileAccess.Write);
-            data.SaveTo(output);
-
-            return outputPath;
-        }
+    { 
         public async Task<string> PickAndResizeAsync(int targetSize)
         {
             try
@@ -166,8 +64,5 @@ namespace DYS.JPay.Services
                 return ex.Message;
             }
         }
-
-
-
     }
 }

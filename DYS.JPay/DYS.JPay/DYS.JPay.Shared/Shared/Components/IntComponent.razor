@@ -22,8 +22,9 @@
 
     public void OnTextChanged(ChangeEventArgs e)
     {
-        var text = Convert.ToInt32(e.Value);
-        ItemChanged.InvokeAsync(text);
+        if (Int32.TryParse(e.Value?.ToString(), out var text))
+            ItemChanged.InvokeAsync(text);
+        else ItemChanged.InvokeAsync(null);
     }
 
 }

@@ -24,8 +24,9 @@
 
     public void OnTextChanged(ChangeEventArgs e)
     {
-        var text = Convert.ToDouble(e.Value);
-        ItemChanged.InvokeAsync(text);
+        if (double.TryParse(e.Value?.ToString(), out var text))
+            ItemChanged.InvokeAsync(text);
+        else ItemChanged.InvokeAsync(null);
     }
 
 }
