@@ -1,6 +1,5 @@
 ﻿using DYS.JPay.Helpers;
-using DYS.JPay.Schedulers;
-using DYS.JPay.Services;
+using DYS.JPay.Shared.Services;
 using DYS.JPay.Shared.Shared.Data;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Extensions;
@@ -56,7 +55,7 @@ namespace DYS.JPay
             builder.Services.AddSingleton<IImageService, ImageService>();
 
             // Register DailyJob as a singleton
-            builder.Services.AddSingleton<DailyJob>();
+            builder.Services.AddSingleton<SchedulerService>();
 
             builder.Services.AddMauiBlazorWebView();
 
@@ -79,7 +78,7 @@ namespace DYS.JPay
 
             var app = builder.Build();
             // Resolve and start
-            var job = app.Services.GetService<DailyJob>();
+            var job = app.Services.GetService<SchedulerService>();
 
             return app;
         }

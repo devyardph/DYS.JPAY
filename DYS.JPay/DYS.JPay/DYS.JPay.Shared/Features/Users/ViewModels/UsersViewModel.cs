@@ -61,7 +61,7 @@ namespace DYS.JPay.Shared.Features.Users.ViewModels
                 var show = Users!.TotalCount >= display ? display : Users.TotalCount;
                 Search.PreviousEnabled = Users.PageIndex > 1;
                 Search.NextEnabled = Users.PageIndex <= Users.TotalCount && show < Users.TotalCount;
-                Search.Summary = $"showing {show} of {Users!.TotalCount.ToString("N0")} patients";
+                Search.Summary = $"showing {show} of {Users!.TotalCount.ToString("N0")} users";
             }
             IsBusy = false;
         }

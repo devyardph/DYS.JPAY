@@ -1,6 +1,6 @@
 using DYS.JPay.Shared.Shared.Services;
 
-namespace DYS.JPay.Services
+namespace DYS.JPay.Shared.Services
 {
     public class FormFactor : IFormFactor
     {

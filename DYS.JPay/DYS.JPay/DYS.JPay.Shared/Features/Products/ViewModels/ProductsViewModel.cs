@@ -78,7 +78,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                 var show = Products!.TotalCount >= display ? display : Products.TotalCount;
                 Search.PreviousEnabled = Products.PageIndex > 1;
                 Search.NextEnabled = Products.PageIndex <= Products.TotalCount && show < Products.TotalCount;
-                Search.Summary = $"showing {show} of {Products!.TotalCount.ToString("N0")} patients";
+                Search.Summary = $"showing {show} of {Products!.TotalCount.ToString("N0")} products";
             }
             if (!Categories.Any())
             {

@@ -1,35 +1,31 @@
-﻿using DYS.JPay.Shared.Features.Transactions.Views;
-using DYS.JPay.Shared.Shared.Dtos;
+﻿using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Timers;
 using DYS.JPay.Shared.Shared.Helpers;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.Settings;
 
-namespace DYS.JPay.Schedulers
+namespace DYS.JPay.Shared.Shared.Services
 {
-    public class DailyJob
+    public interface ISchedulerService: IBaseService
     {
-        private readonly System.Timers.Timer _timer;
+        Task RunDailyExport(CancellationToken cancellationToken = default);
+    }
+
+    public class SchedulerService: BaseService, ISchedulerService
+    {
+       
         private readonly IAppSettingService _appSettingService;
         private readonly ILoggerService _loggerService;
-        public DailyJob(
+        public SchedulerService(
             IAppSettingService appSettingService,
             ILoggerService loggerService)
         {
             _appSettingService = appSettingService;
             _loggerService = loggerService;
-            // Run once every 24 hours2
-            _timer = new System.Timers.Timer(TimeSpan.FromHours(2).TotalMilliseconds);
-            _timer.Elapsed += async (s, e) => await RunDailyExport();
-            _timer.AutoReset = true;
-            _timer.Start();
+
         }
 
-        private async Task RunDailyExport()
+        public async Task RunDailyExport(CancellationToken cancellationToken = default)
         {
             var info = new Logger()
             {
@@ -43,7 +39,7 @@ namespace DYS.JPay.Schedulers
             var base64 = Convert.ToBase64String(bytes);
 
             string today = DateTime.Now.ToString("yyyyMMdd");
-            string filePath = Path.Combine(FileSystem.AppDataDirectory, $"sales_{today}.csv");
+            //string filePath = Path.Combine(FileSystem.AppDataDirectory, $"sales_{today}.csv");
 
             var setting = await _appSettingService.GetSettingAsync();
             var sender = setting.GmailAccount;
@@ -57,7 +53,8 @@ namespace DYS.JPay.Schedulers
                 var emailSent = await EmailService.SendEmailAsync(
                     "jfvaleroso.smart@gmail.com",
                     $"Daily Sales Report {today}",
-                    "Attached is the daily sales CSV.", sender, password
+                    "Attached is the daily sales CSV.", sender, password, 
+                    cancellationToken
                 );
 
                 var log = new Logger()

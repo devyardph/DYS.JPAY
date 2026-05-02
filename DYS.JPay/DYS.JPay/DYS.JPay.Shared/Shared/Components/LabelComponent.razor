@@ -1,0 +1,18 @@
+﻿
+
+<label class="text-xs text-on-surface-variant uppercase tracking-wider pl-1">@Label</label>
+<p class="p-3 @Style">@Item</p>
+
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; } ="text-1";
+    [Parameter]
+    public string Label { get; set; } = "Label here";
+    [Parameter]
+    public string Style { get; set; } = "bg-surface-container-low rounded-2xl";
+    [Parameter]
+    public string Item { get; set; } = string.Empty;
+
+}

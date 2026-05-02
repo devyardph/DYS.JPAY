@@ -30,10 +30,8 @@
 	<string>Assets.xcassets/appicon.appiconset</string>
 	<key>CFBundleIdentifier</key>
 	<string>com.devyard.jpay</string>
-
 	<key>NSLocalNetworkUsageDescription</key>
 	<string>This app needs local network access to connect devices for order syncing.</string>
-
 	<key>NSBonjourServices</key>
 	<array>
 		<string>_orderservice._tcp</string>
@@ -42,7 +40,15 @@
 	<string>This app needs access to save photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to read photos.</string>
+	<key>UIBackgroundModes</key>
+	<array>
+		<string>fetch</string>
+		<string>processing</string>
+	</array>
 
-
+	<key>BGTaskSchedulerPermittedIdentifiers</key>
+	<array>
+		<string>com.devyard.jpay.dailyemailreport</string>
+	</array>
 </dict>
 </plist>

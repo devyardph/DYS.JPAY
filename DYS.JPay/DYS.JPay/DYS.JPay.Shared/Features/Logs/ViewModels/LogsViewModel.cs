@@ -45,8 +45,8 @@ namespace DYS.JPay.Shared.Features.Logs.ViewModels
 
             Loggers = new PageDto<LoggerDto>();
             Search.CurrentPage = currentPage;
-            Search.PageSize = 20;
-            Search.Columns = new List<string>() { $"Name","Email", "Role" };
+            Search.PageSize = 8;
+            Search.Columns = new List<string>() { $"Type","Message" };
             var output = await _logService.GetLogsAsync(Search);
             if (output is not null)
             {
@@ -58,7 +58,7 @@ namespace DYS.JPay.Shared.Features.Logs.ViewModels
                 var show = Loggers!.TotalCount >= display ? display : Loggers.TotalCount;
                 Search.PreviousEnabled = Loggers.PageIndex > 1;
                 Search.NextEnabled = Loggers.PageIndex <= Loggers.TotalCount && show < Loggers.TotalCount;
-                Search.Summary = $"showing {show} of {Loggers!.TotalCount.ToString("N0")} patients";
+                Search.Summary = $"showing {show} of {Loggers!.TotalCount.ToString("N0")} logs";
             }
             IsBusy = false;
         }
@@ -76,7 +76,7 @@ namespace DYS.JPay.Shared.Features.Logs.ViewModels
         public async Task OpenLogger(LoggerDto? logger)
         {
             Logger = logger ?? new LoggerDto();
-            await _jsRuntime.InvokeVoidAsync("openOffcanvas","user-overlay","logger-component");
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas", "logger-overlay", "logger-component");
         }
         #endregion
 

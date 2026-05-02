@@ -55,7 +55,7 @@ namespace DYS.JPay.Shared.Features.Categories.ViewModels
                 var show = Categories!.TotalCount >= display ? display : Categories.TotalCount;
                 Search.PreviousEnabled = Categories.PageIndex > 1;
                 Search.NextEnabled = Categories.PageIndex <= Categories.TotalCount && show < Categories.TotalCount;
-                Search.Summary = $"showing {show} of {Categories!.TotalCount.ToString("N0")} patients";
+                Search.Summary = $"showing {show} of {Categories!.TotalCount.ToString("N0")} categories";
             }
             IsBusy = false;
         }

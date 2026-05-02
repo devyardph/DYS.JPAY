@@ -37,10 +37,10 @@
                                             <p class="text-sm text-on-surface-variant">Store settings configuration.</p>
                                         </div>
                                         <div class="space-y-2 mb-2">
-                                            <TextComponent ReadOnly="true" Id="store-name" @bind-Item="@VM.AppSetting.StoreName" Label="Store Name" PlaceHolder="e.g. Store name" Style="bg-[#f1f4fa]" />
+                                            <LabelComponent Id="store-name" Item="@VM.AppSetting.StoreName" Label="Store Name"  Style="bg-[#f1f4fa] rounded-2xl" />
                                         </div>
                                         <div class="space-y-2  mb-2">
-                                            <TextAreaComponent ReadOnly="true" Id="store-name" @bind-Item="@VM.AppSetting.StoreDescription" Label="Store Description" PlaceHolder="e.g. Store StoreDescription" Style="bg-[#f1f4fa]" />
+                                            <LabelComponent Id="store-description" Item="@VM.AppSetting.StoreDescription" Label="Store Description" Style="bg-[#f1f4fa] rounded-2xl" />
                                         </div>
 
                                         <div class="space-y-2  mb-2">
@@ -95,7 +95,7 @@
                                             </select>
                                         </div>
                                         <div class="space-y-2 mb-5">
-                                            <DoubleComponent Id="tax" ReadOnly="true" Prefix="%" @bind-Item="@VM.AppSetting.Tax" Label="Tax" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                            <LabelComponent Id="tax" Item="@($"{VM.AppSetting.Tax?.ToString()}%")" Label="Tax" Style="bg-[#f1f4fa] rounded-2xl" />
                                         </div>
                                         <div class="flex-1 mb-5">
                                             <h1 class="text-2xl font-headline font-extrabold text-gray tracking-tight">Sales Target</h1>
@@ -104,16 +104,16 @@
                                         <div class="space-y-2">
                                             <div class="flex gap-4">
                                                 <div class="flex-1">
-                                                    <DoubleComponent ReadOnly="true" Id="daily-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetDailySales" Label="Daily" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                                    <LabelComponent Id="daily" Item="@(VM.AppSetting.TargetDailySales?.ToString())" Label="Daily" Style="bg-[#f1f4fa] rounded-2xl" />
                                                 </div>
                                                 <div class="flex-1">
-                                                    <DoubleComponent ReadOnly="true" Id="weekly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetWeeklySales" Label="Weekly" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                                    <LabelComponent Id="weekly" Item="@(VM.AppSetting.TargetWeeklySales?.ToString())" Label="weekly" Style="bg-[#f1f4fa] rounded-2xl" />
                                                 </div>
                                                 <div class="flex-1">
-                                                    <DoubleComponent ReadOnly="true" Id="montly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetMonthlySales" Label="Monthly" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                                    <LabelComponent Id="monthly" Item="@(VM.AppSetting.TargetMonthlySales?.ToString())" Label="monthly" Style="bg-[#f1f4fa] rounded-2xl" />
                                                 </div>
                                                 <div class="flex-1">
-                                                    <DoubleComponent ReadOnly="true" Id="yearly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetYearlySales" Label="Yearly" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                                    <LabelComponent Id="yearly" Item="@(VM.AppSetting.TargetYearlySales?.ToString())" Label="yearly" Style="bg-[#f1f4fa] rounded-2xl" />
                                                 </div>
                                             </div>
                                         </div>
@@ -127,7 +127,7 @@
                                             <p class="text-sm text-on-surface-variant">Setings to receive email notification.</p>
                                         </div>
                                         <div class="space-y-2  mb-2">
-                                            <TextComponent ReadOnly="true" Id="gmail-account" @bind-Item="@VM.AppSetting.GmailAccount" Label="GMAIL account" PlaceHolder="e.g. test@gmail.com" Style="bg-[#f1f4fa]" />
+                                            <LabelComponent Id="email" Item="@VM.AppSetting.GmailAccount" Label="GMAIL account" Style="bg-[#f1f4fa] rounded-2xl" />
                                         </div>
                                         <div class="space-y-2 mb-2">
                                             <SecretCodeComponent ReadOnly="true" Id="gmail-account" @bind-Item="@VM.AppSetting.AppPassword" Label="APP Passcode" PlaceHolder="e.g. 123-334-343-434" Style="bg-[#f1f4fa]" />

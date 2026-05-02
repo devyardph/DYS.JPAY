@@ -69,7 +69,44 @@ namespace DYS.JPay
 
         protected override Window CreateWindow(IActivationState? activationState)
         {
-            return new Window(new MainPage()) { Title = "DYS.JPay" };
+            //return new Window(new MainPage()) { Title = "DYS.JPay" };
+
+
+            //SENDING EMAIL IN BACKGROUND TASK
+            var window = new Window(new MainPage()) { Title = "DYS.JPay" };
+
+#if WINDOWS
+        var args = Environment.GetCommandLineArgs();
+
+        if (args.Contains("--send-daily-report"))
+        {
+            // Headless mode — send email then quit
+            var cancelToken = new CancellationTokenSource();
+            Task.Run(async () =>
+            {
+                try
+                {
+                     var emailService = IPlatformApplication.Current!
+                      .Services.GetRequiredService<ISchedulerService>();
+
+                    await emailService.RunDailyExport(cancelToken.Token);
+                }
+                finally
+                {
+                    Application.Current?.Dispatcher.Dispatch(() =>
+                        Application.Current.Quit());
+                }
+            });
+        }
+        else
+        {
+            // Normal launch — register the scheduled task
+            DYS.JPay.Platforms.Windows.BackgroundService
+                .RegisterDailyEmailTask();
+        }
+#endif
+
+            return window;
         }
     }
 }

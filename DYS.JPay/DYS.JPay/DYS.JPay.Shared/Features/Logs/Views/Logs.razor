@@ -28,7 +28,7 @@
                         <label class="block text-[10px] font-bold uppercase tracking-wider text-[#40484c] mb-2">Search logs</label>
                         <div class="relative">
                             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="absolute left-3 top-1/2 -translate-y-1/2 text-[#40484c]"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>
-                            <input @bind-value="@VM.Search.Keyword" type="text" placeholder="name, email or role..." class="w-full bg-white border-none rounded-xl pl-10 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
+                            <input @bind-value="@VM.Search.Keyword" type="text" placeholder="type or activity..." class="w-full bg-white border-none rounded-xl pl-10 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
                         </div>
                     </div>
                     <!-- Filters... -->
@@ -91,7 +91,7 @@
                                                 @logger.Type
                                             </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
-                                                @logger.Message
+                                                @logger.Message.Truncate(200)
                                             </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
                                                 @logger.DateExecuted.FormatDate("dd MMM yyyy hh:mmtt")
@@ -122,9 +122,9 @@
             </main>
         </div>
 
-        <OffCanvassComponent Overlay="user-overlay" Id="user-component">
+        <OffCanvassComponent Overlay="logger-overlay" Id="logger-component">
             <Content>
-               @*   <UserComponent @bind-User="@VM.User" Save="VM.SubmitUserAsync" />  *@
+                <LogComponent Logger="@VM.Logger" />
             </Content>
         </OffCanvassComponent>
     </PageContent>

@@ -5,7 +5,7 @@ using System;
 using System.Collections.Generic;
 using System.Text;
 
-namespace DYS.JPay.Services
+namespace DYS.JPay.Shared.Services
 {
     public class ImageService: IImageService
     { 
