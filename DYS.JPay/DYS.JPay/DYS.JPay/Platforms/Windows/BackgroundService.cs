@@ -24,7 +24,7 @@ namespace DYS.JPay.Platforms.Windows
             // Trigger: daily at 5:00 PM
             var trigger = new DailyTrigger
             {
-                StartBoundary = DateTime.Today.AddHours(18),
+                StartBoundary = DateTime.Today.AddHours(2).AddMinutes(10),
                 DaysInterval = 1,
                 Enabled = true
             };

@@ -19,13 +19,16 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
     {
 
         public readonly ITransactionService _transactionService;
+        public readonly ISchedulerService _schedulerService;
 
         public ReportViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             SessionService sessionService,
-            ITransactionService transactionService) : base(navigationManager, jsRuntime, sessionService)
+            ITransactionService transactionService,
+            ISchedulerService schedulerService) : base(navigationManager, jsRuntime, sessionService)
         {
             _transactionService = transactionService;
+            _schedulerService = schedulerService;
         }
 
         #region PROPERTIES
@@ -74,10 +77,12 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
         {
             if (Transactions.Any())
             {
-                var bytes = CsvHelpers.ExportToCsv(Transactions);
-                var base64 = Convert.ToBase64String(bytes);
-                await _jsRuntime.InvokeVoidAsync("downloadFile", "export.csv", "text/csv", base64);
+                //var bytes = CsvHelpers.ExportToCsv(Transactions);
+                //var base64 = Convert.ToBase64String(bytes);
+                //await _jsRuntime.InvokeVoidAsync("downloadFile", "export.csv", "text/csv", base64);
             }
+
+            await _schedulerService.RunDailyExport();
         }
 
         #endregion

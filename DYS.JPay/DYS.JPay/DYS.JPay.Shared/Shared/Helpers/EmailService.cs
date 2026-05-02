@@ -1,6 +1,10 @@
-﻿using MimeKit;
+﻿using DYS.JPay.Shared.Shared.Dtos;
 using MailKit.Net.Smtp;
-using DYS.JPay.Shared.Shared.Dtos;
+using MimeKit;
+using Org.BouncyCastle.Utilities;
+using static System.Net.Mime.MediaTypeNames;
+using Multipart = MimeKit.Multipart;
+
 
 //vgaq qvpd nlcr rpch
 namespace DYS.JPay.Shared.Shared.Helpers
@@ -17,6 +21,7 @@ namespace DYS.JPay.Shared.Shared.Helpers
        string body,
        string sender,
        string appPassword,
+       byte[]? attachment = null,
        CancellationToken cancellationToken = default)
         {
             var output = new ResponseDto();
@@ -26,7 +31,39 @@ namespace DYS.JPay.Shared.Shared.Helpers
                 message.From.Add(new MailboxAddress("JPay", sender));
                 message.To.Add(new MailboxAddress("", to));
                 message.Subject = subject;
-                message.Body = new TextPart("html") { Text = body };
+
+                // HTML body
+                var bodyPart = new TextPart("html")
+                {
+                    Text = body
+                };
+
+                if (attachment != null)
+                {
+                    // Create a readable MemoryStream
+                    var stream = new MemoryStream(attachment);
+                    stream.Position = 0; // reset pointer
+                    var file = new MimePart("text", "csv")
+                    {
+                        Content = new MimeContent(stream),
+                        ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
+                        ContentTransferEncoding = ContentEncoding.Base64,
+                        FileName = "sales_report.csv"
+                    };
+
+                    // Combine body + attachment
+                    var multipart = new Multipart("mixed");
+                    multipart.Add(bodyPart);
+                    multipart.Add(file);
+                    message.Body = multipart;
+                }
+                else
+                {
+                    message.Body = new TextPart("html")
+                    {
+                        Text = body
+                    };
+                }
 
                 using (var client = new SmtpClient())
                 {

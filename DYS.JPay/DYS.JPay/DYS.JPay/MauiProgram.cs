@@ -55,7 +55,7 @@ namespace DYS.JPay
             builder.Services.AddSingleton<IImageService, ImageService>();
 
             // Register DailyJob as a singleton
-            builder.Services.AddSingleton<SchedulerService>();
+            //builder.Services.AddSingleton<SchedulerService>();
 
             builder.Services.AddMauiBlazorWebView();
 
