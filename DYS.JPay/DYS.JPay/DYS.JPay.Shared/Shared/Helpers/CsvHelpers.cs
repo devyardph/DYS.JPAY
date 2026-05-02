@@ -6,7 +6,7 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Helpers
 {
-    public static class CsvHelper
+    public static class CsvHelpers
     {
         public static byte[] ExportToCsv<T>(IEnumerable<T> records)
         {

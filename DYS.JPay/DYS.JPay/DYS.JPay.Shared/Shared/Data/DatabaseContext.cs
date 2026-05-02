@@ -27,6 +27,7 @@ namespace DYS.JPay.Shared.Shared.Data
             await _connection.CreateTableAsync<Customer>();
             await _connection.CreateTableAsync<User>();
             await _connection.CreateTableAsync<AppSetting>();
+            await _connection.CreateTableAsync<Logger>();
 
             // Seed default admin
             await SeedOwnerUser();

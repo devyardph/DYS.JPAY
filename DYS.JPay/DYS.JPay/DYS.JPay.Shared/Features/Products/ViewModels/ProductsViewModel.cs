@@ -49,6 +49,8 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         [ObservableProperty]
         private ProductDto product = new ProductDto();
 
+
+        public ProductComponent ProductComponent { get; set; } = new ProductComponent();
         public VariantComponent VariantComponent { get; set; } = new VariantComponent();
         #endregion
 
@@ -104,6 +106,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         public async Task OpenProduct(ProductDto? product) {
             Product = product ?? new ProductDto();
             await _jsRuntime.InvokeVoidAsync("openOffcanvas","product-overlay","product-component");
+            await ProductComponent.LoadImageAsync();
         }
 
         public async Task OpenVariant(ProductDto? product)
@@ -122,6 +125,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             Product.TempImageUrl = output.tempPath;
             Product.ImageUrl = output.photoPath;
             IsProcessing = false;
+            await ProductComponent.LoadImageAsync();
         }
         #endregion
 

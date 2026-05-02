@@ -26,6 +26,7 @@ namespace DYS.JPay.Shared.Shared.Services
     {
         private readonly IRepository<Transaction> _transactionRepository;
         private readonly IRepository<Order> _orderRepository;
+        private readonly IRepository<Logger> _loggerRepository;
 
         /// <summary>
         /// TRANSACTION SERVICE CONSTRUCTOR
@@ -34,10 +35,12 @@ namespace DYS.JPay.Shared.Shared.Services
         /// <param name="orderRepository"></param>
         public TransactionService(
             IRepository<Transaction> transactionRepository,
-            IRepository<Order> orderRepository)
+            IRepository<Order> orderRepository,
+            IRepository<Logger> loggerRepository)
         {
             _transactionRepository = transactionRepository;
             _orderRepository = orderRepository;
+            _loggerRepository = loggerRepository;
         }
 
         public async Task<List<Transaction>> GetAllTransactionsAsync(Expression<Func<Transaction, bool>> predicate) =>
@@ -55,16 +58,40 @@ namespace DYS.JPay.Shared.Shared.Services
 
             var transaction = cart.Transaction.Adapt<Transaction>();
             transaction.Id = Guid.NewGuid();
-            await _transactionRepository.InsertAsync(transaction);
-            var items = new List<Order>();
-            foreach (var order in cart.Orders)
+            try
             {
-                order.TransactionId = transaction.Id;
-                var item = order.Adapt<Order>();
-                item.Id = Guid.NewGuid();
-                items.Add(item);
+                await _transactionRepository.InsertAsync(transaction);
+                var items = new List<Order>();
+                foreach (var order in cart.Orders)
+                {
+                    order.TransactionId = transaction.Id;
+                    var item = order.Adapt<Order>();
+                    item.Id = Guid.NewGuid();
+                    items.Add(item);
+                }
+
+                await _orderRepository.InsertAsync(items);
+
+                var log = new Logger
+                {
+                    Id = Guid.NewGuid(),
+                    Type = GlobalSettings.INFO,
+                    Message = $"Transaction {transaction.Id} placed with {items.Count} orders.",
+                    DateExecuted = DateTime.UtcNow
+                };
+                await _loggerRepository.InsertAsync(log);
             }
-            await _orderRepository.InsertAsync(items);
+            catch (Exception ex)
+            {
+                var log = new Logger
+                {
+                    Id = Guid.NewGuid(),
+                    Type = GlobalSettings.ERROR,
+                    Message = $"Transaction {transaction.Id} error. {ex.Message}",
+                    DateExecuted = DateTime.UtcNow
+                };
+                await _loggerRepository.InsertAsync(log);
+            }
             return transaction;
         }
 

@@ -25,6 +25,9 @@ namespace DYS.JPay.Shared.Shared.Settings
 
             TypeAdapterConfig<Transaction, TransactionDto>.NewConfig();
             TypeAdapterConfig<TransactionDto, Transaction>.NewConfig();
+
+            TypeAdapterConfig<Logger, LoggerDto>.NewConfig();
+            TypeAdapterConfig<LoggerDto, Logger>.NewConfig();
         }
     }
 

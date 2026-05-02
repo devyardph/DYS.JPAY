@@ -48,6 +48,4 @@ else
         if (!string.IsNullOrEmpty(ImageUrl) && !string.IsNullOrEmpty(TempImageUrl))
             ImagePath = await PhotoService.GetImageDataUriAsync(TempImageUrl, ImageUrl);
     }
-
-
 }

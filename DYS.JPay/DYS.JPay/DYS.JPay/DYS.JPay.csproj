@@ -32,7 +32,7 @@
     <ApplicationTitle>DYS.JPay</ApplicationTitle>
 
     <!-- App Identifier -->
-    <ApplicationId>com.companyname.dys.jpay</ApplicationId>
+    <ApplicationId>com.dys.jpay</ApplicationId>
 
     <!-- Versions -->
     <ApplicationDisplayVersion>1.0</ApplicationDisplayVersion>
@@ -51,14 +51,15 @@
   <PropertyGroup Condition="'$(TargetFramework)'=='net10.0-ios'">
     <ProvisioningType>manual</ProvisioningType>
     <CodesignKey>Apple Development: Created via API (VTWX448YF7)</CodesignKey>
+    <CodesignProvision></CodesignProvision>
   </PropertyGroup>
 
   <ItemGroup>
     <!-- App Icon -->
-    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#512BD4" />
+    <MauiIcon Include="Resources\AppIcon\appicon.svg" ForegroundFile="Resources\AppIcon\appiconfg.svg" Color="#4A154B" />
 
     <!-- Splash Screen -->
-    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#512BD4" BaseSize="128,128" />
+    <MauiSplashScreen Include="Resources\Splash\splash.svg" Color="#4A154B" BaseSize="128,128" />
 
     <!-- Images -->
     <MauiImage Include="Resources\Images\*" />

@@ -96,6 +96,15 @@
                 </div>
             </div>
         </div>
+        <div class="space-y-1">
+            <TextComponent Id="gmail-account" @bind-Item="@AppSetting.GmailAccount" Label="Gmail account for email notification" PlaceHolder="e.g. test@gmail.com" Style="bg-[#f1f4fa]" />
+        </div>
+        <div class="space-y-1">
+            <TextComponent Id="gmail-password" @bind-Item="@AppSetting.AppPassword" Label="Gmail App password" PlaceHolder="" Style="bg-[#f1f4fa]" />
+        </div>
+        <div class="space-y-1">
+            <CheckboxComponent Disabled="false" @bind-Item="@AppSetting.ReceiveEmailNotification" Label="Receive email notification" SubLabel="Activate email sending." />
+        </div>
     </form>
 </div>
 

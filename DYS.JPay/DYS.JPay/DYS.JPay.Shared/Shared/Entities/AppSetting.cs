@@ -18,5 +18,9 @@ namespace DYS.JPay.Shared.Shared.Entities
         public double? TargetWeeklySales { get; set; }
         public double? TargetMonthlySales { get; set; }
         public double? TargetYearlySales { get; set; }
+
+        public string GmailAccount { get; set; }
+        public string AppPassword { get; set; }
+        public bool ReceiveEmailNotification { get; set; } = true;
     }
 }

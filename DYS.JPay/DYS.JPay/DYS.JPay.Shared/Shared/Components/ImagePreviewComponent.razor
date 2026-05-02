@@ -1,4 +1,6 @@
-﻿@if (IsBusy)
+﻿@inject IPhotoService PhotoService
+
+@if (IsBusy)
 {
     <div class="w-24 h-24 flex items-center justify-center mx-auto mb-6">
         <svg class="animate-spin w-12 h-12 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
@@ -14,9 +16,9 @@
 }
 else
 {
-    @if (!string.IsNullOrEmpty(ImageUrl))
+    @if (!string.IsNullOrEmpty(ImagePath))
     {
-        <img src="@DataExtensions.GenerateImagePath(@ImageUrl)" alt="" class="rounded-xl w-full h-full object-cover @Style" referrerpolicy="no-referrer">
+        <img src="@ImagePath" alt="" class="rounded-xl w-full h-full object-cover @Style" referrerpolicy="no-referrer">
     }
     else
     {
@@ -29,7 +31,18 @@ else
     [Parameter]
     public string ImageUrl { get; set; } = string.Empty;
     [Parameter]
+    public string TempImageUrl { get; set; } = string.Empty;
+    public string ImagePath { get; set; } 
+    [Parameter]
     public string Style { get; set; } = string.Empty;
     [Parameter]
     public bool IsBusy { get; set; } = false;
+
+
+    public async Task LoadImageAsync(string imageUrl)
+    {
+        IsBusy = true;
+        ImagePath = await PhotoService.GetImageDataUriAsync(TempImageUrl, imageUrl);
+        IsBusy = false;
+    }
 }

@@ -74,7 +74,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
         {
             if (Transactions.Any())
             {
-                var bytes = Shared.Helpers.CsvHelper.ExportToCsv(Transactions);
+                var bytes = CsvHelpers.ExportToCsv(Transactions);
                 var base64 = Convert.ToBase64String(bytes);
                 await _jsRuntime.InvokeVoidAsync("downloadFile", "export.csv", "text/csv", base64);
             }

@@ -28,83 +28,151 @@
 
                 <div class="p-10 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm overflow-hidden">
                     <div class="space-y-4">
-                        <div class="space-y-1">
-                            <TextComponent ReadOnly="true"  Id="store-name" @bind-Item="@VM.AppSetting.StoreName" Label="Store Name" PlaceHolder="e.g. Store name" Style="bg-[#f1f4fa]" />
-                        </div>
-                        <div class="space-y-1">
-                            <TextAreaComponent ReadOnly="true" Id="store-name" @bind-Item="@VM.AppSetting.StoreDescription" Label="Store Description" PlaceHolder="e.g. Store StoreDescription" Style="bg-[#f1f4fa]" />
-                        </div>
+                        <div class="space-y-2">
+                            <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                                <div class="bg-white p-3 space-y-3">
+                                    <div class="flex-1">
+                                        <div class="flex-1 mb-5">
+                                            <h1 class="text-2xl font-headline font-extrabold text-gray tracking-tight">Store settings</h1>
+                                            <p class="text-sm text-on-surface-variant">Store settings configuration.</p>
+                                        </div>
+                                        <div class="space-y-2 mb-2">
+                                            <TextComponent ReadOnly="true" Id="store-name" @bind-Item="@VM.AppSetting.StoreName" Label="Store Name" PlaceHolder="e.g. Store name" Style="bg-[#f1f4fa]" />
+                                        </div>
+                                        <div class="space-y-2  mb-2">
+                                            <TextAreaComponent ReadOnly="true" Id="store-name" @bind-Item="@VM.AppSetting.StoreDescription" Label="Store Description" PlaceHolder="e.g. Store StoreDescription" Style="bg-[#f1f4fa]" />
+                                        </div>
 
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Product display settings</label>
-                            <div class="flex gap-2">
-                                <button @onclick="@(() => @VM.SetDisplay("grid"))" class="p-3 rounded-xl shadow-lg scale-110 @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "grid", "bg-[#003345] text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         width="24" height="24"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="2"
-                                         stroke-linecap="round"
-                                         stroke-linejoin="round"
-                                         class="lucide lucide-layout-grid w-5 h-5"
-                                         aria-hidden="true">
-                                        <rect width="7" height="7" x="3" y="3" rx="1"></rect>
-                                        <rect width="7" height="7" x="14" y="3" rx="1"></rect>
-                                        <rect width="7" height="7" x="14" y="14" rx="1"></rect>
-                                        <rect width="7" height="7" x="3" y="14" rx="1"></rect>
-                                    </svg>
-                                </button>
-                                <button @onclick="@(() => @VM.SetDisplay("list"))" class="p-3 rounded-xl @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "list", "bg-[#003345] text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
-                                    <svg xmlns="http://www.w3.org/2000/svg"
-                                         width="24" height="24"
-                                         viewBox="0 0 24 24"
-                                         fill="none"
-                                         stroke="currentColor"
-                                         stroke-width="2"
-                                         stroke-linecap="round"
-                                         stroke-linejoin="round"
-                                         class="lucide lucide-list w-5 h-5"
-                                         aria-hidden="true">
-                                        <path d="M3 5h.01"></path>
-                                        <path d="M3 12h.01"></path>
-                                        <path d="M3 19h.01"></path>
-                                        <path d="M8 5h13"></path>
-                                        <path d="M8 12h13"></path>
-                                        <path d="M8 19h13"></path>
-                                    </svg>
-                                </button>
+                                        <div class="space-y-2  mb-2">
+                                            <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Product display settings</label>
+                                            <div class="flex gap-2">
+                                                <button @onclick="@(() => @VM.SetDisplay("grid"))" class="p-3 rounded-xl shadow-lg scale-110 @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "grid", "bg-primary text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         width="24" height="24"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         stroke="currentColor"
+                                                         stroke-width="2"
+                                                         stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         class="lucide lucide-layout-grid w-5 h-5"
+                                                         aria-hidden="true">
+                                                        <rect width="7" height="7" x="3" y="3" rx="1"></rect>
+                                                        <rect width="7" height="7" x="14" y="3" rx="1"></rect>
+                                                        <rect width="7" height="7" x="14" y="14" rx="1"></rect>
+                                                        <rect width="7" height="7" x="3" y="14" rx="1"></rect>
+                                                    </svg>
+                                                </button>
+                                                <button @onclick="@(() => @VM.SetDisplay("list"))" class="p-3 rounded-xl @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "list", "bg-primary text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
+                                                    <svg xmlns="http://www.w3.org/2000/svg"
+                                                         width="24" height="24"
+                                                         viewBox="0 0 24 24"
+                                                         fill="none"
+                                                         stroke="currentColor"
+                                                         stroke-width="2"
+                                                         stroke-linecap="round"
+                                                         stroke-linejoin="round"
+                                                         class="lucide lucide-list w-5 h-5"
+                                                         aria-hidden="true">
+                                                        <path d="M3 5h.01"></path>
+                                                        <path d="M3 12h.01"></path>
+                                                        <path d="M3 19h.01"></path>
+                                                        <path d="M8 5h13"></path>
+                                                        <path d="M8 12h13"></path>
+                                                        <path d="M8 19h13"></path>
+                                                    </svg>
+                                                </button>
+                                            </div>
+                                        </div>
+                                        <div class="space-y-2  mb-2">
+                                            <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Currency</label>
+                                            <select @bind="@VM.AppSetting.Currency" disabled
+                                                    class="w-full bg-[#f1f4fa] border-none rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary transition-all">
+                                                @foreach (var currency in GlobalSettings.Currencies!)
+                                                {
+                                                    <option value="@currency.DisplayName">@currency.Name - @currency.DisplayName</option>
+                                                }
+                                            </select>
+                                        </div>
+                                        <div class="space-y-2 mb-5">
+                                            <DoubleComponent Id="tax" ReadOnly="true" Prefix="%" @bind-Item="@VM.AppSetting.Tax" Label="Tax" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                        </div>
+                                        <div class="flex-1 mb-5">
+                                            <h1 class="text-2xl font-headline font-extrabold text-gray tracking-tight">Sales Target</h1>
+                                            <p class="text-sm text-on-surface-variant">Seup daily, weekly, monthly and yearly targets.</p>
+                                        </div>
+                                        <div class="space-y-2">
+                                            <div class="flex gap-4">
+                                                <div class="flex-1">
+                                                    <DoubleComponent ReadOnly="true" Id="daily-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetDailySales" Label="Daily" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                                </div>
+                                                <div class="flex-1">
+                                                    <DoubleComponent ReadOnly="true" Id="weekly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetWeeklySales" Label="Weekly" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                                </div>
+                                                <div class="flex-1">
+                                                    <DoubleComponent ReadOnly="true" Id="montly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetMonthlySales" Label="Monthly" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                                </div>
+                                                <div class="flex-1">
+                                                    <DoubleComponent ReadOnly="true" Id="yearly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetYearlySales" Label="Yearly" PlaceHolder="" Style="bg-[#f1f4fa]" />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="bg-white p-3 space-y-3">
+                                    <div class="flex-1">
+                                        <div class="flex-1 mb-5">
+                                            <h1 class="text-2xl font-headline font-extrabold text-gray tracking-tight">Account and email configuration.</h1>
+                                            <p class="text-sm text-on-surface-variant">Setings to receive email notification.</p>
+                                        </div>
+                                        <div class="space-y-2  mb-2">
+                                            <TextComponent ReadOnly="true" Id="gmail-account" @bind-Item="@VM.AppSetting.GmailAccount" Label="GMAIL account" PlaceHolder="e.g. test@gmail.com" Style="bg-[#f1f4fa]" />
+                                        </div>
+                                        <div class="space-y-2 mb-2">
+                                            <SecretCodeComponent ReadOnly="true" Id="gmail-account" @bind-Item="@VM.AppSetting.AppPassword" Label="APP Passcode" PlaceHolder="e.g. 123-334-343-434" Style="bg-[#f1f4fa]" />
+                                        </div>
+                                        <div class="space-y-2 mb-3 p-1">
+                                            <CheckboxComponent Disabled="true" @bind-Item="@VM.AppSetting.ReceiveEmailNotification" Label="Receive email notification" SubLabel="Activate email sending." />
+                                        </div>
+
+                                        <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-[#dfe3e8]/30 space-y-6">
+                                            <div class="flex items-center space-x-4">
+                                                <div class="p-3 bg-primary/10 rounded-2xl text-primary">
+                                                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"></path><polyline points="14 2 14 8 20 8"></polyline><line x1="16" y1="13" x2="8" y2="13"></line><line x1="16" y1="17" x2="8" y2="17"></line><line x1="10" y1="9" x2="8" y2="9"></line></svg>
+                                                </div>
+                                                <h3 class="text-xl font-extrabold text-primary">How to get Gmail appcode?</h3>
+                                            </div>
+
+                                            <div class="space-y-0 text-sm text-[#40484c] leading-relaxed">
+                                                <p>
+                                                    Step 1. Got https://myaccount.google.com/ and login. 
+                                                </p>
+                                                <p>
+                                                    Step 2. Enable 2‑Step Verification.
+                                                </p>
+                                                <p>
+                                                    Step 3. Search for App Passwords.
+                                                </p>
+                                                <p>
+                                                    Step 4. Set JPay as the name of the app.
+                                                </p>
+                                                <p>Step 5. Copy the 16‑Digit Code</p>
+        
+                                            </div>
+
+                                            <div class="pt-4">
+                                                <div class="p-4 bg-[#f1f4fa] rounded-2xl border border-[#dfe3e8]/30">
+                                                    <p class="text-xs font-bold text-[#003345] uppercase tracking-widest mb-1">What is GMAIL appcode?</p>
+                                                    <p class="text-xs text-[#40484c]">
+                                                        Gmail app code will let you use gmail to send email notification to yourself.
+                                                    </p>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
-                        </div>
-                        <div class="space-y-1">
-                            <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Currency</label>
-                            <select @bind="@VM.AppSetting.Currency" disabled
-                                    class="w-full bg-[#f1f4fa] border-none rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary transition-all">
-                                @foreach (var currency in GlobalSettings.Currencies!)
-                                {
-                                    <option value="@currency.DisplayName">@currency.Name - @currency.DisplayName</option>
-                                }
-                            </select>
-                        </div>
-                        <div class="space-y-1">
-                            <DoubleComponent Id="tax" ReadOnly="true" Prefix="%" @bind-Item="@VM.AppSetting.Tax" Label="Tax" PlaceHolder="" Style="bg-[#f1f4fa]" />
-                        </div>
-
-                        <div class="space-y-1">
-                            <div class="flex gap-4">
-                                <div class="flex-1">
-                                    <DoubleComponent ReadOnly="true" Id="daily-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetDailySales" Label="Daily target" PlaceHolder="" Style="bg-[#f1f4fa]" />
-                                </div>
-                                <div class="flex-1">
-                                    <DoubleComponent ReadOnly="true" Id="weekly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetWeeklySales" Label="Weekly target" PlaceHolder="" Style="bg-[#f1f4fa]" />
-                                </div>
-                                <div class="flex-1">
-                                    <DoubleComponent ReadOnly="true" Id="montly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetMonthlySales" Label="Monthly target" PlaceHolder="" Style="bg-[#f1f4fa]" />
-                                </div>
-                                <div class="flex-1">
-                                    <DoubleComponent ReadOnly="true" Id="yearly-sales" Prefix="@VM.Session.AppSettings.Currency" @bind-Item="@VM.AppSetting.TargetYearlySales" Label="Yearly target" PlaceHolder="" Style="bg-[#f1f4fa]" />
-                                </div>
-                            </div>                           
                         </div>
                     </div>
 

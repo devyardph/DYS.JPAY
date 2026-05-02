@@ -1,4 +1,5 @@
 ﻿using DYS.JPay.Helpers;
+using DYS.JPay.Schedulers;
 using DYS.JPay.Services;
 using DYS.JPay.Shared.Shared.Data;
 using DYS.JPay.Shared.Shared.Entities;
@@ -31,7 +32,7 @@ namespace DYS.JPay
 
             // Add device-specific services used by the DYS.JPay.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V16.db");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V17.db");
             var dbContext = new DatabaseContext(dbPath);
 
             Task.Run(async () => await dbContext.InitializeAsync());
@@ -53,7 +54,10 @@ namespace DYS.JPay
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri($"http://{ip}:5000") });
             builder.Services.AddScoped<IRequestProvider, RequestProvider>();
             builder.Services.AddSingleton<IImageService, ImageService>();
-           
+
+            // Register DailyJob as a singleton
+            builder.Services.AddSingleton<DailyJob>();
+
             builder.Services.AddMauiBlazorWebView();
 
             //PEER TO PEER
@@ -73,7 +77,11 @@ namespace DYS.JPay
             builder.Logging.AddDebug();
 #endif
 
-            return builder.Build();
+            var app = builder.Build();
+            // Resolve and start
+            var job = app.Services.GetService<DailyJob>();
+
+            return app;
         }
     }
 }
