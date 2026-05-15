@@ -28,6 +28,9 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
         #region PROPERTIES
         [ObservableProperty]
         private AppSetting appSetting = new AppSetting();
+
+        [ObservableProperty]
+        private List<SelectDto> timeZones = new List<SelectDto>();
         #endregion
 
         #region FUNCTIONS
@@ -36,6 +39,15 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             IsBusy = true;
             var output = await _appSettingService.GetSettingAsync();
             if (output != null) { AppSetting = output; }
+            //timezone
+            TimeZones = TimeZoneInfo.GetSystemTimeZones()
+                       .Select(tz => new SelectDto {
+                           Id = tz.Id.ToLower().Replace("/", "-").Replace(" ", "-"),
+                           Name = tz.Id,
+                           DisplayName = tz.DisplayName
+                       })
+                       .ToList();
+
             IsBusy = false;
         }
         public async Task SaveAppSettings()

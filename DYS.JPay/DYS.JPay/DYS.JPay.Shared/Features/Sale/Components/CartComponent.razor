@@ -15,7 +15,7 @@
         </button>
     </div>
 
-    <div id="cart-items" class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-4 scroll-smooth">
+    <div id="cart-items" class="flex-1 overflow-y-auto no-scrollbar p-6 space-y-2 scroll-smooth">
         @if (OrderItems.Any())
         {
             @foreach (var orderItem in OrderItems)
@@ -23,18 +23,18 @@
                 <div class="flex items-center justify-between gap-0 p-1 rounded-xl transition-all duration-500" id="cart-@orderItem.Id">
                     <!-- Item Info -->
                     <div class="flex-1">
-                        <h4 class="font-bold text-sm text-on-surface">@orderItem.Title</h4>
+                        <h4 class="text-sm text-on-surface">@orderItem.Title</h4>
                         <p class="text-xs text-on-surface-variant">@Currency@orderItem.Price</p>
                     </div>
                     <!-- Quantity Controls -->
                     <div class="flex items-center gap-1 bg-surface-container-low rounded-lg p-1">
                         <button @onclick="@(() => @DecreaseOrder(orderItem))" class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-white text-on-surface-variant hover:text-primary transition-colors">-</button>
-                        <span class="text-sm font-bold w-4 text-center">@orderItem.Count</span>
+                        <span class="text-sm w-4 text-center">@orderItem.Count</span>
                         <button @onclick="@(() => IncreaseOrder(orderItem))" class="w-6 h-6 flex items-center justify-center rounded-md hover:bg-white text-on-surface-variant hover:text-primary transition-colors">+</button>
                     </div>
                     <!-- Price -->
                     <div class="text-right w-16">
-                        <p class="font-bold text-sm">@Currency@((orderItem.Price * @orderItem.Count)?.ToString("N2"))</p>
+                        <p class="text-sm">@Currency@((orderItem.Price * @orderItem.Count)?.ToString("N2"))</p>
                     </div>
                     <!-- Remove Button -->
                     <button class="text-error/70 hover:text-error p-1" @onclick="@(() => OnRemoveOrder(orderItem))">
@@ -57,9 +57,8 @@
             <div class="flex items-center justify-between text-sm mb-2">
                 <span class="text-on-surface-variant">Discount</span>
                 <div class="flex gap-2">
-                    <button onclick="setDiscount(0)" id="discount-0" class="px-2 py-1 rounded-md text-xs font-bold transition-colors bg-primary text-white">None</button>
-                    <button onclick="setDiscount(10)" id="discount-10" class="px-2 py-1 rounded-md text-xs font-bold transition-colors bg-surface-container-highest text-on-surface-variant hover:text-primary">10%</button>
-                    <button onclick="setDiscount(20)" id="discount-20" class="px-2 py-1 rounded-md text-xs font-bold transition-colors bg-surface-container-highest text-on-surface-variant hover:text-primary">20%</button>
+                    <button @onclick="@AddDisCountAsync" id="discount-set" class="px-2 py-1 rounded-md text-xs transition-colors bg-surface-container-highest text-on-surface-variant hover:text-primary">@Transaction.DiscountInPercentage%</button>
+                    <button id="discount-amount" class="py-1 rounded-md text-sm transition-colors  text-on-surface-variant hover:text-primary">@Currency@Transaction.DiscountAmount?.ToString("N2")</button>
                 </div>
             </div>
             <div class="flex justify-between text-sm text-on-surface-variant">
@@ -80,7 +79,7 @@
             </div>
         </div>
         <button disabled="@(!OrderItems.Any())" id="charge-btn" onclick="@ProcessOrderAsync" class="w-full ledger-gradient text-white py-4 rounded-xl font-bold shadow-lg active:scale-95 transition-all text-lg flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
-            Charge <span id="charge-amount">@Currency@Transaction.Total?.ToString("N2")</span>
+            Charge <span id="charge-amount">@Currency @Transaction.GrandTotal?.ToString("N2")</span>
             <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3"></path></svg>
         </button>
     </div>
@@ -122,4 +121,5 @@
     }
 
     public async Task ProcessOrderAsync() => await JS.InvokeVoidAsync("openModal", "payment-modal");
+    public async Task AddDisCountAsync() => await JS.InvokeVoidAsync("openModal", "discount-modal");
 }

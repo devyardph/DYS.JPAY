@@ -4,9 +4,8 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Dtos
 {
-    public class ProductDto
+    public class ProductDto: BaseEntityDto
     {
-        public Guid? Id { get; set; } 
         public Guid? CategoryId { get; set; }
         public string Name { get; set; }
         public string Code { get; set; }
@@ -18,6 +17,5 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public double? Price { get; set; }
         public bool? Featured { get; set; } = false;
         public bool Active { get; set; } = true;
-        public bool IsDeleted { get; set; } = false;
     }
 }

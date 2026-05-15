@@ -73,7 +73,7 @@
         <ChargeComponent @bind-Transaction="@VM.Transaction" ProcessPayment="@VM.ProcessPaymentAsync" Currency="@VM.Session.AppSettings.Currency" />
         <ResultComponent @bind-Transaction="@VM.Transaction" @bind-Orders="@VM.Orders" />
         <VariantsComponent Variants="@VM.Variants" Product="@VM.Product" Currency="@VM.Session.AppSettings.Currency" AddToOrder="VM.AddOrderAsync" />
-
+        <DiscountComponent @bind-Transaction="@VM.Transaction" DiscountChanged="@VM.TransactionChanged" Currency="@VM.Session.AppSettings.Currency" />
         <!-- Mobile Floating Cart Button -->
         <button id="mobile-cart-btn" onclick="toggleMobileCart()" class="lg:hidden fixed bottom-6 right-6 z-40 bg-primary text-white p-4 rounded-full shadow-2xl flex items-center justify-center hover:scale-105 active:scale-95 transition-all">
             <div class="relative">

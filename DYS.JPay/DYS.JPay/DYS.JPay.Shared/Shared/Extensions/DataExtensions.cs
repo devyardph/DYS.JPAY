@@ -120,5 +120,9 @@ namespace DYS.JPay.Shared.Shared.Extensions
            !string.IsNullOrEmpty(content.CustomerName) &&
            !string.IsNullOrEmpty(content.PaymentMode) &&
            !string.IsNullOrEmpty(content.ReferenceNo);
+
+        public static bool ValidContent(this EmailDto content) =>
+          !string.IsNullOrEmpty(content.Subject) &&
+          !string.IsNullOrEmpty(content.Email);
     }
 }

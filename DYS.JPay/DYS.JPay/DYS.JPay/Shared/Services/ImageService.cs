@@ -10,18 +10,42 @@ namespace DYS.JPay.Shared.Services
     public class ImageService: IImageService
     { 
         private readonly IPhotoService _photoService;
-        public ImageService(IPhotoService photoService)
+        private readonly IFilePickerService _filePickerService;
+        public ImageService(IPhotoService photoService, IFilePickerService filePickerService)
         {
             _photoService = photoService;
+            _filePickerService = filePickerService;
         }
         public async Task<(string tempPath, string photoPath)> PickAndResizeAsync(int targetSize)
         {
             try
             {
-                var result = await MediaPicker.PickPhotoAsync(new MediaPickerOptions
+                FileResult? result = null;
+                if (DeviceInfo.Platform == DevicePlatform.WinUI)
                 {
-                    Title = "Select a photo"
-                });
+                    await MainThread.InvokeOnMainThreadAsync(async () =>
+                    {
+
+                        var result = await FilePicker.Default.PickAsync(new PickOptions
+                        {
+                            PickerTitle = "Select a photo",
+                            FileTypes = new FilePickerFileType(new Dictionary<DevicePlatform, IEnumerable<string>>
+                            {
+                                { DevicePlatform.WinUI, new[] { ".jpg", ".jpeg", ".png" } },
+                                { DevicePlatform.Android, new[] { "image/*" } },
+                                { DevicePlatform.iOS, new[] { "public.image" } }
+                            })
+                        });
+                    });
+                }
+                else
+                {
+                    // Mobile/mac platforms
+                    result = await MediaPicker.Default.PickPhotoAsync(new MediaPickerOptions
+                    {
+                        Title = "Select a photo"
+                    });
+                }
 
                 if (result == null) return ("","");
 

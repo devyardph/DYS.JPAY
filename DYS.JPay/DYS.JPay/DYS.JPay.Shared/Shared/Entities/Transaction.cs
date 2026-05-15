@@ -13,9 +13,12 @@ namespace DYS.JPay.Shared.Shared.Entities
         public string ReferenceNo { get; set; }
         public double? AmountTendered { get; set; }
         public double? Total { get; set; }
+        public double? GrandTotal { get; set; }
         public double? SubTotal { get; set; }
         public double? Tax { get; set; }
         public double? TotalTax { get; set; }
+        public double? DiscountInPercentage { get; set; }
+        public double? DiscountAmount { get; set; }
         public double? Count { get; set; }
 
         public string PaymentStatus { get; set; } = GlobalSettings.PAID;

@@ -32,6 +32,10 @@ namespace DYS.JPay.Shared.Shared.Settings
         public const string INFO = "INFO";
         public const string ERROR = "ERROR";
 
+        public const string INSERTED = "INSERTED";
+        public const string UPDATED = "UPDATED";
+        public const string DELETED = "DELETED";
+
         public static List<SelectDto> Currencies = new List<SelectDto>()
 {
     new SelectDto() { Id="USD", Name="United States Dollar", DisplayName="$" },

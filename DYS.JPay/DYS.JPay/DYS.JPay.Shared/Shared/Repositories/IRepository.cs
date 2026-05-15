@@ -18,15 +18,17 @@ public interface IRepository<T> where T : BaseEntity, new()
     Task<int> UpdateAsync(T entity);
     Task<int> DeleteAsync(T entity);
     Task<PageDto<T>> GetPagedAsync(int pageIndex, int pageSize);
-    Task<PageDto<T>> GetPagedAsync(int pageIndex, int pageSize, string keyword = "", List<string> columns = null, bool showAll = false);
-    Task<PageDto<T>> GetPagedAsync(
-                int pageIndex,
-                int pageSize,
-                string keyword = "",
-                List<string> columns = null,
-                string sortColumn = null,
-                bool sortDescending = false);
+    Task<PageDto<T>> GetPagedAsync(int pageIndex,
+        int pageSize,
+        string keyword = "",
+        List<string> columns = null,
+        string sortColumn = null,
+        bool sortDescending = false,
+        bool showAll = false);
+
     Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null);
     Task<T> GetAsync(Expression<Func<T, bool>> predicate = null);
+
+    event EventHandler<RepositoryEventArgs<T>>? EntityChanged;
 }
 

@@ -1,6 +1,8 @@
 ﻿using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
+using DYS.JPay.Shared.Shared.Extensions;
 using DYS.JPay.Shared.Shared.Repositories;
+using DYS.JPay.Shared.Shared.Settings;
 using Mapster;
 using System;
 using System.Collections.Generic;
@@ -15,18 +17,49 @@ namespace DYS.JPay.Shared.Shared.Services
         Task<(Product product, List<Variant> variants)> GetProductWithVariantsByIdAsync(Guid id);
         Task<PageDto<Product>> GetProductsAsync(SearchDto search);
         Task<Product> SubmitProductAsync(ProductDto product);
+        Task<List<Product>> SubmitProductsAsync(List<ProductDto> products);
         Task<Product> SubmitProductWithVariantsAsync(ProductDto product, List<VariantDto> variants);
     }
     public class ProductService : BaseService,IProductService
     {
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Variant> _variantRepository;
+        private readonly IRepository<Logger> _loggerRepository;
+        private readonly SessionService _sessionService;
         public ProductService(
             IRepository<Product> productRepository, 
-            IRepository<Variant> variantRepository)
+            IRepository<Variant> variantRepository,
+            IRepository<Logger> loggerRepository,
+            SessionService sessionService)
         {
             _productRepository = productRepository;
             _variantRepository = variantRepository;
+            _loggerRepository = loggerRepository;
+            _sessionService = sessionService;
+
+            _productRepository.EntityChanged += (s, e) =>
+            {
+                var logger = new Logger
+                {
+                    Type = GlobalSettings.INFO,
+                    Message = $"{e.Action} entity of type {typeof(Product).Name}: {e.Entity.Name}",
+                    DateCreated = DateTime.UtcNow,
+                    ExecutedBy = _sessionService.CurrentUser?.Name ?? string.Empty
+                };
+                _loggerRepository.InsertAsync(logger);
+            };
+
+            _variantRepository.EntityChanged += (s, e) =>
+            {
+                var logger = new Logger
+                {
+                    Type = GlobalSettings.INFO,
+                    Message = $"{e.Action} entity of type {typeof(Variant).Name}:{JsonExtensions.Convert(e.Entity)}",
+                    DateCreated = DateTime.UtcNow,
+                    ExecutedBy = _sessionService.CurrentUser?.Name ?? string.Empty
+                };
+                _loggerRepository.InsertAsync(logger);
+            };
         }
 
         public async Task<List<Product>> GetProductsAsync() => await _productRepository.GetAllAsync();
@@ -52,6 +85,7 @@ namespace DYS.JPay.Shared.Shared.Services
                 {
                     item.Id = Guid.NewGuid();
                     await _productRepository.InsertAsync(item);
+
                 }
                 else
                 {
@@ -65,6 +99,12 @@ namespace DYS.JPay.Shared.Shared.Services
                 throw;
             }
          
+        }
+        public async Task<List<Product>> SubmitProductsAsync(List<ProductDto> products)
+        {
+            var items = products.Adapt<List<Product>>();
+            await _productRepository.InsertAsync(items);
+            return items;
         }
         public async Task<Product> SubmitProductWithVariantsAsync(ProductDto product, List<VariantDto> variants)
         {

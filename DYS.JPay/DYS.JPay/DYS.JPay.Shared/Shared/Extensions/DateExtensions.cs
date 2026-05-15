@@ -1,4 +1,5 @@
 ﻿using DYS.JPay.Shared.Shared.Dtos;
+using Newtonsoft.Json.Linq;
 using System.Globalization;
 
 namespace DYS.JPay.Shared.Shared.Extensions
@@ -14,6 +15,15 @@ namespace DYS.JPay.Shared.Shared.Extensions
             return dateTime;
         }
 
+        public static DateTime? ToLocalTime(this DateTime? utc,
+            string timeZone = "Asia/Manila")
+        {
+            if (utc == null) return null;
+            TimeZoneInfo location = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+            var date = TimeZoneInfo.ConvertTimeFromUtc(utc.Value, location);
+            return date;
+        }
+        
         public static string FormatDate(this DateTime? value, string format= "dd MMM yyyy", string timeZone = "Asia/Singapore")
 		{
             if (value == null) return string.Empty;

@@ -26,7 +26,7 @@
                         @if (IsProcessing)
                         {
                             <div class="w-24 h-24 flex items-center justify-center mx-auto mb-6">
-                                <svg class="animate-spin w-12 h-12 text-green-600" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                                <svg class="animate-spin w-12 h-12 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
                                     <!-- Outer ring -->
                                     <circle class="opacity-25" cx="12" cy="12" r="10"
                                             stroke="currentColor" stroke-width="4" fill="none"></circle>
@@ -39,6 +39,7 @@
                         }
                         else
                         {
+
                             @if (!string.IsNullOrEmpty(ImagePath))
                             {
                                 <img src="@ImagePath" alt="" class="rounded-xl w-full h-full object-cover" referrerpolicy="no-referrer">
@@ -157,8 +158,12 @@
 
     public async Task LoadImageAsync()
     {
-        if (!string.IsNullOrEmpty(Product?.ImageUrl))
-            ImagePath = await PhotoService.GetImageDataUriAsync(Product.TempImageUrl, Product.ImageUrl);
-        else ImagePath = string.Empty;
+        if (Product?.ImageUrl?.Contains("https") == true) ImagePath = Product.ImageUrl;
+        else
+        {
+            if (!string.IsNullOrEmpty(Product?.ImageUrl))
+                ImagePath = await PhotoService.GetImageDataUriAsync(Product.TempImageUrl, Product.ImageUrl);
+            else ImagePath = string.Empty;
+        }
     }
 }

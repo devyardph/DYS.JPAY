@@ -23,7 +23,7 @@
            
                     </div>
                     <div class="flex gap-3">
-                        <ButtonComponent Id="btn-completed" IsBusy="@VM.IsBusy" Click="@VM.DownloadReport" ActionText="Download CSV" Style="bg-primary text-white">
+                        <ButtonComponent Id="btn-completed" IsBusy="@VM.IsBusy" Click="@VM.OpenSendEmail" ActionText="Send to email" Style="bg-primary text-white">
                             <SVGIcon>
                                 <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
                             </SVGIcon>
@@ -154,7 +154,7 @@
                                                 @transaction.Count
                                             </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
-                                                @DataExtensions.GetTransactionDate(transaction).FormatDate("dd MMM yyyy hh:mmtt")
+                                                @DataExtensions.GetTransactionDate(transaction).ToLocalTime(timeZone: VM.Session.AppSettings.TimeZone).FormatDate("dd MMM yyyy hh:mmtt")
                                             </td>
                                             <td class="px-3 py-2">
                                                 <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[@DataExtensions.GetTransactionStatus(@transaction.Status)?.BackgroundColor] text-[@DataExtensions.GetTransactionStatus(@transaction.Status)?.TextColor]">@transaction.Status</span>
@@ -182,6 +182,8 @@
                     Currency="@VM.Session.AppSettings.Currency"/> 
             </Content>
         </OffCanvassComponent>
+        <EmailComponent Id="email-modal" Email="@VM.Email" IsBusy="VM.IsProcessing" SendReport="@VM.SendReport" />
+        <ResultComponent Id="result-modal" Notification="@VM.Notification"/>
     </PageContent>
 </PageComponent>
 
@@ -190,6 +192,7 @@
     {
         VM.Search.StartDate = DateTime.Now.StartOfMonth();
         VM.Search.EndDate = DateTime.Now.EndOfMonth();
+        VM.Email = new EmailDto() { Subject = "Sales Report", Email = VM.Session.CurrentUser.Email };
         await VM.SearchTransactionsAsync();
         await base.OnInitializedAsync();
     }

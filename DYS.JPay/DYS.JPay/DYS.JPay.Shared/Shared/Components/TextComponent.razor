@@ -1,6 +1,6 @@
 ﻿
 
-<label class="text-xs text-on-surface-variant uppercase tracking-wider pl-1">@Label</label>
+<label class="@LabelStyle text-xs text-on-surface-variant uppercase tracking-wider pl-1">@Label</label>
 <input id="@Id" readonly="@ReadOnly" @oninput="@OnTextChanged" @bind-value="@Item" type="text"  placeholder="@PlaceHolder" class="w-full px-5 py-2 @Style border-none rounded-2xl text-sm focus:ring-2 focus:ring-primary transition-all outline-none" />
 
 @code {
@@ -8,6 +8,8 @@
     public string Id { get; set; } ="text-1";
     [Parameter]
     public string Label { get; set; } = "Label here";
+    [Parameter]
+    public string LabelStyle { get; set; } = "";
     [Parameter]
     public string Style { get; set; } = "bg-surface-container-low";
     [Parameter]

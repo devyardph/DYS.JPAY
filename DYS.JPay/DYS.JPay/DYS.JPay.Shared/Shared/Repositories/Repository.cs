@@ -4,6 +4,7 @@ using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Repositories;
 using SQLite;
 using System.Linq.Expressions;
+using DYS.JPay.Shared.Shared.Settings;
 
 
 namespace DYS.JPay.Shared.Shared.Repositories;
@@ -16,7 +17,7 @@ namespace DYS.JPay.Shared.Shared.Repositories;
 public class Repository<T> : IRepository<T> where T : BaseEntity, new()
 {
     private readonly SQLiteAsyncConnection _connection;
-
+    public event EventHandler<RepositoryEventArgs<T>>? EntityChanged;
     public Repository(DatabaseContext context)
     {
         _connection = context.Connection;
@@ -24,10 +25,22 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
 
     public Task<T> GetByIdAsync(int id) => _connection.FindAsync<T>(id);
     public Task<List<T>> GetAllAsync() => _connection.Table<T>().ToListAsync();
-    public Task<int> InsertAsync(T entity) => _connection.InsertAsync(entity);
+    public Task<int> InsertAsync(T entity) {
+       var item= _connection.InsertAsync(entity);
+       EntityChanged?.Invoke(this, new RepositoryEventArgs<T>(entity, GlobalSettings.INSERTED));
+       return item;
+    }
     public Task<int> InsertAsync(List<T> entities) => _connection.InsertAllAsync(entities);
-    public Task<int> UpdateAsync(T entity) => _connection.UpdateAsync(entity);
-    public Task<int> DeleteAsync(T entity) => _connection.DeleteAsync(entity);
+    public Task<int> UpdateAsync(T entity) {
+        var item = _connection.UpdateAsync(entity);
+        EntityChanged?.Invoke(this, new RepositoryEventArgs<T>(entity, GlobalSettings.UPDATED));
+        return item;
+    }
+    public Task<int> DeleteAsync(T entity) {
+        var item = _connection.DeleteAsync(entity);
+        EntityChanged?.Invoke(this, new RepositoryEventArgs<T>(entity, GlobalSettings.DELETED));
+        return item;
+    }
 
     // Updated: return paging info
     public async Task<PageDto<T>> GetPagedAsync(int pageIndex, int pageSize)
@@ -49,7 +62,13 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
         };
     }
 
-    public async Task<PageDto<T>> GetPagedAsync(int pageIndex, int pageSize, string keyword = "", List<string> columns= null, bool showAll= false)
+    public async Task<PageDto<T>> GetPagedAsync(int pageIndex, 
+        int pageSize, 
+        string keyword = "", 
+        List<string> columns= null,
+        string sortColumn = null,
+        bool sortDescending = false,
+        bool showAll= false)
     {
         var query = _connection.Table<T>();
 
@@ -79,6 +98,19 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
                all = all.Where(query => query.IsDeleted == false).ToList();
             }
 
+            // Apply sorting if requested
+            if (!string.IsNullOrEmpty(sortColumn))
+            {
+                var prop = typeof(T).GetProperty(sortColumn);
+                if (prop != null)
+                {
+                    all = sortDescending
+                        ? all.OrderByDescending(x => prop.GetValue(x)).ToList()
+                        : all.OrderBy(x => prop.GetValue(x)).ToList();
+                }
+            }
+
+
             var totalCount = all.Count;
             var index = pageIndex >0 ? pageIndex - 1 : pageIndex;
             var results = all.Skip(index).Take(pageSize).ToList();
@@ -93,7 +125,20 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
         }
         else
         {
+
             var all = await query.ToListAsync();
+            // Apply sorting if requested
+            if (!string.IsNullOrEmpty(sortColumn))
+            {
+                var prop = typeof(T).GetProperty(sortColumn);
+                if (prop != null)
+                {
+                    all = sortDescending
+                        ? all.OrderByDescending(x => prop.GetValue(x)).ToList()
+                        : all.OrderBy(x => prop.GetValue(x)).ToList();
+                }
+            }
+
             if (showAll == false) all = all.Where(query => query.IsDeleted == false).ToList();
             var totalCount = all.Count();
             var results = all.Skip((pageIndex - 1) * pageSize).Take(pageSize).ToList();
@@ -106,72 +151,8 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
                 PageSize = pageSize
             };
         }
-
     }
-    public async Task<PageDto<T>> GetPagedAsync(
-                int pageIndex,
-                int pageSize,
-                string keyword = "",
-                List<string> columns = null,
-                string sortColumn = null,
-                bool sortDescending = false)
-    {
-        var query = _connection.Table<T>();
-
-        List<T> all;
-
-        if (!string.IsNullOrWhiteSpace(keyword) && columns != null && columns.Any())
-        {
-            // Load all records first
-            all = await query.ToListAsync();
-
-            // Filter in-memory
-            all = all.Where(entity =>
-            {
-                foreach (var col in columns)
-                {
-                    var prop = typeof(T).GetProperty(col);
-                    if (prop != null)
-                    {
-                        var value = prop.GetValue(entity)?.ToString();
-                        if (!string.IsNullOrEmpty(value) &&
-                            value.Contains(keyword, StringComparison.OrdinalIgnoreCase))
-                            return true;
-                    }
-                }
-                return false;
-            }).ToList();
-        }
-        else
-        {
-            all = await query.ToListAsync();
-        }
-
-        // Apply sorting if requested
-        if (!string.IsNullOrEmpty(sortColumn))
-        {
-            var prop = typeof(T).GetProperty(sortColumn);
-            if (prop != null)
-            {
-                all = sortDescending
-                    ? all.OrderByDescending(x => prop.GetValue(x)).ToList()
-                    : all.OrderBy(x => prop.GetValue(x)).ToList();
-            }
-        }
-
-        var totalCount = all.Count;
-        var index = pageIndex > 0 ? pageIndex - 1 : pageIndex;
-        var results = all.Skip(index * pageSize).Take(pageSize).ToList();
-
-        return new PageDto<T>
-        {
-            Results = results,
-            TotalCount = totalCount,
-            PageIndex = pageIndex,
-            PageSize = pageSize
-        };
-    }
-
+   
     public async Task<List<T>> GetAllAsync(Expression<Func<T, bool>> predicate = null)
     {
         var query = _connection.Table<T>();
@@ -190,5 +171,17 @@ public class Repository<T> : IRepository<T> where T : BaseEntity, new()
     }
 
 
+}
+
+public class RepositoryEventArgs<T> : EventArgs
+{
+    public T Entity { get; }
+    public string Action { get; }
+
+    public RepositoryEventArgs(T entity, string action)
+    {
+        Entity = entity;
+        Action = action;
+    }
 }
 

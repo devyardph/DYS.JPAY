@@ -40,6 +40,8 @@
 	<string>This app needs access to save photos.</string>
 	<key>NSPhotoLibraryUsageDescription</key>
 	<string>This app needs access to read photos.</string>
+	<key>NSCameraUsageDescription</key>
+	<string>App needs access to camera</string>
 	<key>UIBackgroundModes</key>
 	<array>
 		<string>fetch</string>

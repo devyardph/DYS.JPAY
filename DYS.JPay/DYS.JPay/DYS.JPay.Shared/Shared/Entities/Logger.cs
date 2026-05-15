@@ -8,8 +8,7 @@ namespace DYS.JPay.Shared.Shared.Entities
     {
         public string Type { get; set; }
         public string Message { get; set; }
-        public string ExxecutedBy { get; set; }
-        public DateTime? DateExecuted { get; set; } = DateTime.UtcNow;
+        public string ExecutedBy { get; set; }
     }
 
 }

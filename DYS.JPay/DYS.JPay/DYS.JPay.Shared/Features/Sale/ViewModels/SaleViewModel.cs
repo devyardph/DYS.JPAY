@@ -116,6 +116,10 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                 Transaction.Tax = Session.AppSettings.Tax;
                 Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
                 Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
+
+                var discountAmount = Transaction.Total * (Transaction.DiscountInPercentage / 100);
+                Transaction.DiscountAmount = Math.Round(discountAmount ?? 0, 2);
+                Transaction.GrandTotal = Transaction.Total - Transaction.DiscountAmount;
                 PendingCartId = $"cart-{id}";
             }
         }
@@ -205,7 +209,22 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             Transaction.Tax = Session.AppSettings.Tax;
             Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
             Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
+            var discountAmount = Transaction.Total * (Transaction.DiscountInPercentage / 100);
+            Transaction.DiscountAmount = Math.Round(discountAmount ?? 0, 2);
+            Transaction.GrandTotal = Transaction.Total - Transaction.DiscountAmount;
         }
+
+        public void TransactionChanged()
+        {
+            Transaction.Total = Orders?.Sum(query => query.Product.Price * query.Count);
+            Transaction.Tax = Session.AppSettings.Tax;
+            Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
+            Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
+            var discountAmount = Transaction.Total * (Transaction.DiscountInPercentage / 100);
+            Transaction.DiscountAmount = Math.Round(discountAmount ?? 0, 2);
+            Transaction.GrandTotal = Transaction.Total - Transaction.DiscountAmount;
+        }
+
         public void OnDisplayChanged(string display) {
             var settings = Session.AppSettings;
             settings.Display = display;

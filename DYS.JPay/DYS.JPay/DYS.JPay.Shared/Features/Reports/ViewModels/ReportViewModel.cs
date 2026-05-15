@@ -42,6 +42,8 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
         private TransactionDto transaction = new TransactionDto();
         [ObservableProperty]
         private List<Order> orders = new List<Order>();
+        [ObservableProperty]
+        private EmailDto email = new EmailDto();
         #endregion
 
         #region FUNCTIONS
@@ -54,7 +56,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
          
             if (output is not null)
             {
-                Transactions = output.Adapt<List<TransactionDto>>();
+                Transactions = output.OrderByDescending(query => query.DateCreated).Adapt<List<TransactionDto>>();
                 var completed = output.Where(o => o.Status == GlobalSettings.COMPLETED).Sum(query => query.Total);
                 var pending = output.Where(o => o.Status == GlobalSettings.NEW || o.Status == GlobalSettings.PREPARING).Sum(query => query.Total);
                 var cancelled = output.Where(o => o.Status == GlobalSettings.CANCELLED).Sum(query => query.Total);
@@ -73,18 +75,23 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             await _jsRuntime.InvokeVoidAsync("openOffcanvas", "report-overlay", "report-component");
         }
 
-        public async Task DownloadReport()
+        public async Task OpenSendEmail() => await _jsRuntime.InvokeVoidAsync("openModal", "email-modal");
+
+        public async Task SendReport()
         {
-            if (Transactions.Any())
+            IsProcessing = true;
+            Notification = new NotificationDto();
+            var output = await _schedulerService.RunDailyExport(Email, Transactions);
+            Notification = new NotificationDto
             {
-                //var bytes = CsvHelpers.ExportToCsv(Transactions);
-                //var base64 = Convert.ToBase64String(bytes);
-                //await _jsRuntime.InvokeVoidAsync("downloadFile", "export.csv", "text/csv", base64);
-            }
-
-            await _schedulerService.RunDailyExport();
+                Success = output.Success,
+                Description = output.Message
+            };
+            await _jsRuntime.InvokeVoidAsync("closeModal", "email-modal");
+            await _jsRuntime.InvokeVoidAsync("openModal", "result-modal");
+           
+            IsProcessing = false;
         }
-
         #endregion
 
     }

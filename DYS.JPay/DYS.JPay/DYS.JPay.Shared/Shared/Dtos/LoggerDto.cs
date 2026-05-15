@@ -4,12 +4,11 @@ using System.Collections.Generic;
 using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Dtos
-{  public class LoggerDto
+{  public class LoggerDto: BaseEntityDto
     {
         public string Type { get; set; }
         public string Message { get; set; }
-        public string ExxecutedBy { get; set; }
-        public DateTime? DateExecuted { get; set; } = DateTime.UtcNow;
+        public string ExecutedBy { get; set; }
     }
 
 }

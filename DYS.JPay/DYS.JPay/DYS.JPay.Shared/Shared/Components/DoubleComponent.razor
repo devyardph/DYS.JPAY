@@ -21,12 +21,15 @@
     public bool ReadOnly { get; set; } = false;
     [Parameter]
     public EventCallback<double?> ItemChanged { get; set; }
+    [Parameter]
+    public EventCallback<ChangeEventArgs> ItemTriggered { get; set; }
 
     public void OnTextChanged(ChangeEventArgs e)
     {
         if (double.TryParse(e.Value?.ToString(), out var text))
             ItemChanged.InvokeAsync(text);
         else ItemChanged.InvokeAsync(null);
+        ItemTriggered.InvokeAsync(e);
     }
 
 }

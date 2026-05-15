@@ -5,18 +5,22 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Dtos
 {
-    public class TransactionDto
+    public class TransactionDto:BaseEntityDto
     {
-        public Guid? Id { get; set; }
         public string Cashier { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
         public string PaymentMode { get; set; } = string.Empty;
         public string ReferenceNo { get; set; } = string.Empty;
         public double? AmountTendered { get; set; }
         public double? Total { get; set; }
+        public double? GrandTotal { get; set; }
         public double? SubTotal { get; set; }
         public double? Tax { get; set; }
         public double? TotalTax { get; set; }
+
+        public double? DiscountInPercentage { get; set; } = 0;
+        public double? DiscountAmount { get; set; } = 0.00;
+
         public double? Count { get; set; }
         public string PaymentStatus { get; set; } = GlobalSettings.PAID;
         public string Status { get; set; } = GlobalSettings.NEW;

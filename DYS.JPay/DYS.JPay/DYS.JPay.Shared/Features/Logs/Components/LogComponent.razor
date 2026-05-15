@@ -16,10 +16,26 @@
 <div class="flex-1 overflow-y-auto p-6 no-scrollbar">
     <form id="canvass-form" onsubmit="event.preventDefault(); closeOffcanvas();" class="space-y-3">
         <div class="space-y-1">
-            <TextComponent Id="tyoe" @bind-Item="@Logger.Type" Label="Type" PlaceHolder="e.g. full name" />
+            <div class="space-y-1">
+                <div class="border rounded-2xl text-sm bg-gray-50 whitespace-normal break-words  p-3">
+                    @Logger.Type
+                </div>
+            </div>
         </div>
         <div class="space-y-1">
-            <LabelComponent Id="message" Item="@Logger.Message" Label="Message" />
+            <div class="border rounded-2xl text-sm bg-gray-50 whitespace-normal break-words  p-3">
+                @Logger.Message
+            </div>
+        </div>
+        <div class="space-y-1">
+            <div class="border rounded-2xl text-sm bg-gray-50 whitespace-normal break-words  p-3">
+                @Logger.ExecutedBy
+            </div>
+        </div>
+        <div class="space-y-1">
+            <div class="border rounded-2xl text-sm bg-gray-50 whitespace-normal break-words  p-3">
+                @Logger.DateCreated.ToLocalTime().FormatDate("dd MMM yyyy hh:mmtt")
+            </div>
         </div>
     </form>
 </div>

@@ -49,7 +49,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
             Transactions = new PageDto<TransactionDto>();
             Search.CurrentPage = currentPage;
             Search.PageSize = 10;
-            Search.SortColumn = "Date";
+            Search.SortColumn = "DateCreated";
             Search.Columns = new List<string>() { $"CustomerName", "PaymentMode", "ReferenceNo","Status" };
             var output = await _transactionService.GetTransactionsAsync(Search);
             if (output is not null)

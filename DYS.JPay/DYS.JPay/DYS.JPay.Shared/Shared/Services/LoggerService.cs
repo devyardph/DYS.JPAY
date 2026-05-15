@@ -26,6 +26,8 @@ namespace DYS.JPay.Shared.Shared.Services
                  search.PageSize,
                  search.Keyword,
                  search.Columns,
+                 sortColumn: "DateCreated",
+                 sortDescending: true,
                  showAll: false);
 
         public async Task<int> SaveAsync(Logger logger) =>

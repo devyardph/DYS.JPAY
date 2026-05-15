@@ -1,6 +1,8 @@
 ﻿using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
+using DYS.JPay.Shared.Shared.Extensions;
 using DYS.JPay.Shared.Shared.Repositories;
+using DYS.JPay.Shared.Shared.Settings;
 using Mapster;
 using System.Linq.Expressions;
 namespace DYS.JPay.Shared.Shared.Services
@@ -15,10 +17,28 @@ namespace DYS.JPay.Shared.Shared.Services
     public class UserService : BaseService, IUserService
     {
         private readonly IRepository<User> _userRepository;
+        private readonly IRepository<Logger> _loggerRepository;
+        private readonly SessionService _sessionService;
 
-        public UserService(IRepository<User> userRepository)
+        public UserService(IRepository<User> userRepository,
+            IRepository<Logger> loggerRepository,
+            SessionService sessionService)
         {
             _userRepository = userRepository;
+            _loggerRepository = loggerRepository;
+            _sessionService = sessionService;
+
+            _userRepository.EntityChanged += (s, e) =>
+            {
+                var logger = new Logger
+                {
+                    Type = GlobalSettings.INFO,
+                    Message = $"{e.Action} entity of type {typeof(User).Name}:  {JsonExtensions.Convert(e.Entity)}",
+                    DateCreated = DateTime.UtcNow,
+                    ExecutedBy = _sessionService.CurrentUser?.Name ?? string.Empty
+                };
+                _loggerRepository.InsertAsync(logger);
+            };
         }
 
         public async Task<PageDto<User>> GetUsersAsync(SearchDto search)  =>

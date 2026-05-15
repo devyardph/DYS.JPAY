@@ -4,9 +4,8 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Dtos
 {
-    public class UserDto 
+    public class UserDto :BaseEntityDto
     {
-        public Guid? Id { get; set; }
         public string Name { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
@@ -14,7 +13,6 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public string Role { get; set; } // e.g., "Admin", "Cashier"
         public DateTime? CreatedAt { get; set; } = DateTime.UtcNow;
         public bool Active { get; set; } = true;
-        public bool IsDeleted { get; set; } = false;
     }
 
 }

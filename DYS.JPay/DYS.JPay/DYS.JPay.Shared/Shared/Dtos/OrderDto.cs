@@ -4,9 +4,8 @@ using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Dtos
 {
-    public class OrderDto
+    public class OrderDto : BaseEntityDto
     {
-        public Guid? Id { get; set; }
         public Guid? TransactionId { get; set; }
         public ProductDto Product { get; set; } = new ProductDto();
         public VariantDto Variant { get; set; } = new VariantDto();

@@ -52,7 +52,7 @@ namespace DYS.JPay.Shared.Shared.Data
                     Username = "owner",
                     Code = "",   // default 6-digit login code
                     Role = GlobalSettings.OWNER,
-                    CreatedAt = DateTime.UtcNow
+                    DateCreated = DateTime.UtcNow
                 };
 
                 await _connection.InsertAsync(admin);
@@ -72,7 +72,7 @@ namespace DYS.JPay.Shared.Shared.Data
                     Username = "admin",
                     Code = "102986",   // default 6-digit login code
                     Role = GlobalSettings.ADMIN,
-                    CreatedAt = DateTime.UtcNow
+                    DateCreated = DateTime.UtcNow
                 };
 
                 await _connection.InsertAsync(admin);

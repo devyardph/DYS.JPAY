@@ -31,7 +31,7 @@ namespace DYS.JPay
 
             // Add device-specific services used by the DYS.JPay.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V17.db");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V22.db");
             var dbContext = new DatabaseContext(dbPath);
 
             Task.Run(async () => await dbContext.InitializeAsync());
@@ -53,9 +53,7 @@ namespace DYS.JPay
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri($"http://{ip}:5000") });
             builder.Services.AddScoped<IRequestProvider, RequestProvider>();
             builder.Services.AddSingleton<IImageService, ImageService>();
-
-            // Register DailyJob as a singleton
-            //builder.Services.AddSingleton<SchedulerService>();
+            
 
             builder.Services.AddMauiBlazorWebView();
 
@@ -68,6 +66,7 @@ namespace DYS.JPay
 #elif WINDOWS
                 builder.Services.AddSingleton<IPeerService, DYS.JPay.Platforms.Windows.PeerService>();
                 builder.Services.AddSingleton<IPhotoService, DYS.JPay.Platforms.Windows.PhotoService>();
+                builder.Services.AddSingleton<IFilePickerService, DYS.JPay.Platforms.Windows.FilePickerService>();
 #endif
 
 

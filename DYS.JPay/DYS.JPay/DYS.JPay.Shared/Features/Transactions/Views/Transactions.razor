@@ -112,7 +112,7 @@
                                                 @transaction.Count
                                             </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
-                                                @DataExtensions.GetTransactionDate(transaction).FormatDate("dd MMM yyyy hh:mmtt")
+                                                @DataExtensions.GetTransactionDate(transaction).ToLocalTime().FormatDate("dd MMM yyyy hh:mmtt")
                                             </td>
                                             <td class="px-3 py-2">
                                                 <span class="px-3 py-1 rounded-full text-[10px] font-bold bg-[@DataExtensions.GetTransactionStatus(@transaction.Status)?.BackgroundColor] text-[@DataExtensions.GetTransactionStatus(@transaction.Status)?.TextColor]">@transaction.Status</span>

@@ -22,5 +22,6 @@ namespace DYS.JPay.Shared.Shared.Entities
         public string GmailAccount { get; set; }
         public string AppPassword { get; set; }
         public bool ReceiveEmailNotification { get; set; } = true;
+        public string TimeZone { get; set; }
     }
 }

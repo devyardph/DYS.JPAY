@@ -27,7 +27,7 @@ namespace DYS.JPay.Shared.Shared.Services
         private readonly IRepository<Transaction> _transactionRepository;
         private readonly IRepository<Order> _orderRepository;
         private readonly IRepository<Logger> _loggerRepository;
-
+        private readonly SessionService _sessionService;
         /// <summary>
         /// TRANSACTION SERVICE CONSTRUCTOR
         /// </summary>
@@ -36,11 +36,25 @@ namespace DYS.JPay.Shared.Shared.Services
         public TransactionService(
             IRepository<Transaction> transactionRepository,
             IRepository<Order> orderRepository,
-            IRepository<Logger> loggerRepository)
+            IRepository<Logger> loggerRepository,
+            SessionService sessionService)
         {
             _transactionRepository = transactionRepository;
             _orderRepository = orderRepository;
             _loggerRepository = loggerRepository;
+            _sessionService = sessionService;
+
+            _transactionRepository.EntityChanged += (s, e) =>
+            {
+                var logger = new Logger
+                {
+                    Type = GlobalSettings.INFO,
+                    Message = $"{e.Action} entity of type {typeof(Transaction).Name}: {JsonExtensions.Convert(e.Entity)}",
+                    DateCreated = DateTime.UtcNow,
+                    ExecutedBy = _sessionService.CurrentUser?.Name ?? string.Empty
+                };
+                _loggerRepository.InsertAsync(logger);
+            };
         }
 
         public async Task<List<Transaction>> GetAllTransactionsAsync(Expression<Func<Transaction, bool>> predicate) =>
@@ -71,15 +85,6 @@ namespace DYS.JPay.Shared.Shared.Services
                 }
 
                 await _orderRepository.InsertAsync(items);
-
-                var log = new Logger
-                {
-                    Id = Guid.NewGuid(),
-                    Type = GlobalSettings.INFO,
-                    Message = $"Transaction {transaction.Id} placed with {items.Count} orders.",
-                    DateExecuted = DateTime.UtcNow
-                };
-                await _loggerRepository.InsertAsync(log);
             }
             catch (Exception ex)
             {
@@ -88,7 +93,7 @@ namespace DYS.JPay.Shared.Shared.Services
                     Id = Guid.NewGuid(),
                     Type = GlobalSettings.ERROR,
                     Message = $"Transaction {transaction.Id} error. {ex.Message}",
-                    DateExecuted = DateTime.UtcNow
+                    DateCreated = DateTime.UtcNow
                 };
                 await _loggerRepository.InsertAsync(log);
             }
