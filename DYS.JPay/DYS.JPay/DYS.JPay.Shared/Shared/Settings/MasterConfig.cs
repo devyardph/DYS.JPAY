@@ -28,6 +28,12 @@ namespace DYS.JPay.Shared.Shared.Settings
 
             TypeAdapterConfig<Logger, LoggerDto>.NewConfig();
             TypeAdapterConfig<LoggerDto, Logger>.NewConfig();
+
+            TypeAdapterConfig<Promotion, PromotionDto>.NewConfig();
+            TypeAdapterConfig<PromotionDto, Promotion>.NewConfig();
+
+            TypeAdapterConfig<PromotionItem, PromotionItemDto>.NewConfig();
+            TypeAdapterConfig<PromotionItemDto, PromotionItem>.NewConfig();
         }
     }
 

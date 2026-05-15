@@ -36,6 +36,10 @@ namespace DYS.JPay.Shared.Shared.Settings
         public const string UPDATED = "UPDATED";
         public const string DELETED = "DELETED";
 
+        public const string RUNNING = "RUNNING";
+        public const string EXPIRED = "EXPIRED";
+        public const string UPCOMING = "UPCOMING";
+
         public static List<SelectDto> Currencies = new List<SelectDto>()
 {
     new SelectDto() { Id="USD", Name="United States Dollar", DisplayName="$" },

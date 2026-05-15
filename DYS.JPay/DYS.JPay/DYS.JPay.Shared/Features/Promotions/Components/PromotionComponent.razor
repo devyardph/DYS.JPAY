@@ -1,0 +1,100 @@
+﻿@using DYS.JPay.Shared.Shared.Entities
+@inject IJSRuntime JS
+@inject IPhotoService PhotoService
+
+<div class="flex items-center justify-between p-6 border-b border-outline-variant/10 bg-surface-container-low/30">
+    <div>
+        <h2 id="offcanvas-title" class="text-2xl font-headline font-extrabold text-primary">
+            @BooleanExtensions.GetConditionalString(Promotion.Id.HasValue, "Edit promotion", "New promotion")
+        </h2>
+        <p id="offcanvas-subtitle" class="text-sm text-on-surface-variant mt-1">
+            @BooleanExtensions.GetConditionalString(Promotion.Id.HasValue, "Edit existing promotion.", "Create new promotion listing.")
+        </p>
+    </div>
+    <button @onclick="@OnCancelAsync" class="p-2 hover:bg-surface-container-highest rounded-full transition-colors text-on-surface-variant">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+</div>
+
+<div class="flex-1 overflow-y-auto display-6 pr-6 pl-6 no-scrollbar">
+    <form id="canvass-form" class="space-y-3">
+        <div class="space-y-1.5">
+            <TextComponent Id="name" @bind-Item="@Promotion.Name" Label="Promotion Name" PlaceHolder="e.g. Summer sale" />
+        </div>
+        <div class="space-y-1.5">
+            <TextAreaComponent Id="description" @bind-Item="@Promotion.Description" Label="Description" PlaceHolder="e.g. add name" />
+        </div>
+        <div class="space-y-1.5">
+            <div class="flex gap-3">
+                <div class="flex-1">
+                    <DateComponent Id="start-date" Style="bg-surface-container-low" @bind-Date="@Promotion.StartDate" Label="Start Date" />
+                </div>
+                <div class="flex-1">
+                    <DateComponent Id="end-date" Style="bg-surface-container-low" @bind-Date="@Promotion.EndDate" Label="End Date" />
+                </div>
+            </div>
+        </div>
+        <div class="space-y-1.5">
+           <AlertComponent Notification="@Notification"/>
+        </div>
+    </form>
+</div>
+
+<div class="p-6 border-t border-outline-variant/10 bg-surface-container-lowest flex gap-3 mb-5">
+    <ButtonComponent  Id="btn-cancel" Click="@OnCancelAsync" ActionText="Cancel" Style="bg-surface-container-highest text-on-surface border-t border-outline-variant/10" />
+    <ButtonComponent Id="btn-promotion" IsBusy="@IsBusy" Click="@OnSaveAsync" ActionText="@ActionText" Style="@ActionStyle" />
+</div>
+
+@code {
+    [Parameter]
+    public string Currency { get; set; } = string.Empty;
+    [Parameter]
+    public string ActionText { get; set; } = "Save promotion";
+    [Parameter]
+    public string ActionStyle { get; set; } = "bg-primary text-white";
+    [Parameter]
+    public bool IsBusy { get; set; } = false;
+    [Parameter]
+    public bool IsProcessing { get; set; } = false;
+    [Parameter]
+    public PromotionDto Promotion { get; set; } = new PromotionDto();
+    [Parameter]
+    public NotificationDto Notification { get; set; } = new NotificationDto();
+    [Parameter]
+    public EventCallback<PromotionDto> PromotionChanged { get; set; }
+    [Parameter]
+    public EventCallback Save { get; set; }
+    public string ImagePath { get; set; } = string.Empty;
+
+
+
+    public async Task OnSaveAsync()
+    {
+        await PromotionChanged.InvokeAsync(Promotion);
+        await Save.InvokeAsync();
+        await JS.InvokeVoidAsync("trigger", "btn-search");
+        await Initialize();
+    }
+
+    public async Task OnCancelAsync()
+    {
+        await JS.InvokeVoidAsync("closeOffcanvas", "promotion-overlay", "promotion-component");
+        await JS.InvokeVoidAsync("trigger", "btn-search");
+        await Initialize();
+    }
+
+    public async Task Initialize()
+    {
+        ActionText = "Save promotion";
+        ActionStyle = "bg-primary text-white";
+    }
+
+    public async Task ConfirmDeletionAsync(bool delete)
+    {
+        if (delete) {
+            ActionText = "Confirm deletion";
+            ActionStyle = "bg-red-500 text-white";
+        }
+        else await Initialize();
+    }
+}

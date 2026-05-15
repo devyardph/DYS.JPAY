@@ -124,5 +124,35 @@ namespace DYS.JPay.Shared.Shared.Extensions
         public static bool ValidContent(this EmailDto content) =>
           !string.IsNullOrEmpty(content.Subject) &&
           !string.IsNullOrEmpty(content.Email);
+
+
+        public static StatusDto GetPromotionStatus(PromotionDto promotion)
+        {
+            var status = new StatusDto();
+            var now = DateTime.Now;
+            var startDate = promotion.StartDate.ToLocalTime();
+            var endDate = promotion.EndDate.ToLocalTime();
+
+            if (now < startDate)
+            {
+                status.Title = GlobalSettings.UPCOMING;
+                status.TextColor = "#8a6d3b";       // brownish text
+                status.BackgroundColor = "#fff3cd"; // soft yellow background
+                return status;
+            }
+
+            if (now >= startDate && now <= endDate)
+            {
+                status.Title = GlobalSettings.RUNNING;
+                status.TextColor = "#155724";       // dark green text
+                status.BackgroundColor = "#d4edda"; // light green background
+                return status;
+            }
+
+            status.Title = GlobalSettings.EXPIRED;
+            status.TextColor = "#721c24";       // dark red text
+            status.BackgroundColor = "#f8d7da"; // light red background
+            return status;
+        }
     }
 }

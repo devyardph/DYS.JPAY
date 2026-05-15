@@ -1,0 +1,54 @@
+﻿@inject IJSRuntime JS
+
+<div id="email-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 ease-in-out">
+    <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-lg w-full shadow-2xl transform scale-95 transition-transform duration-300" id="email-modal-content">
+        <!-- email -->
+        <div class="mb-6">
+          
+            <div class="space-y-2">
+                <div class="space-y-2">
+                    <TextComponent LabelStyle="text-[10px] text-[#40484c]" Style="bg-[#f1f4fa] py-4" Id="subject" @bind-Item="@Email!.Subject" Label="Subject" PlaceHolder="e.g.Sales report" />
+                </div>
+                <div class="space-y-2">
+                    <TextComponent LabelStyle="text-[10px] text-[#40484c]" Style="bg-[#f1f4fa] py-4" Id="email" @bind-Item="@Email!.Email" Label="Email" PlaceHolder="e.g. email@gmail.com" />
+                </div>
+            </div>
+
+        </div>
+
+        <!-- Confirm Button -->
+        <div class="flex gap-4 mt-8">
+            <button @onclick="@CloseAsync" class="px-6 py-3 rounded-2xl font-bold text-on-surface-variant bg-surface-container-highest hover:bg-outline-variant/20 transition-all">
+                Cancel
+            </button>
+            <ButtonComponent Disabled="@(!Email.ValidContent())" Id="btn-send-email" IsBusy="@IsBusy" Click="@OnSendReport" ActionText="Send email" ProgressText="Sending email..">
+                <SVGIcon>
+                    <svg class="w-6 h-6 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+                    </svg>
+                </SVGIcon>
+            </ButtonComponent>
+        </div>
+      
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "email-modal";
+    [Parameter]
+    public bool IsBusy { get; set; } = false;
+    [Parameter]
+    public EmailDto Email { get; set; } = new EmailDto() { Subject = "Sales report" };
+    [Parameter]
+    public EventCallback SendReport { get; set; }
+
+    public async Task OnSendReport() => await SendReport.InvokeAsync();
+
+    public async Task CloseAsync()
+    {
+        await JS.InvokeVoidAsync("closeModal", "email-modal");
+    }
+
+}

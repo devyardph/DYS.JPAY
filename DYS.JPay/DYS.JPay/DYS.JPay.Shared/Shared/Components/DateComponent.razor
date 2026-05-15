@@ -1,0 +1,24 @@
+﻿<div>
+    <label class="block text-xs text-on-surface-variant uppercase tracking-wider text-[#40484c] mb-2">@Label</label>
+    <input id="@Id" @oninput="@OnTextChanged" @bind-value="@Date" type="date" class="@Style w-full border-none rounded-xl px-3 py-2 text-sm shadow-sm focus:ring-1 focus:ring-[#003345]">
+</div>
+
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "date";
+    [Parameter]
+    public string Label { get; set; } = "Date name";
+    [Parameter]
+    public string Style { get; set; } = "bg-white";
+    [Parameter]
+    public DateTime? Date { get; set; }
+    [Parameter]
+    public EventCallback<DateTime?> DateChanged { get; set; }
+
+    public void OnTextChanged(ChangeEventArgs e)
+    {
+        DateTime? text = e.Value != null ? Convert.ToDateTime(e.Value) : null;
+        DateChanged.InvokeAsync(text);
+    }
+}

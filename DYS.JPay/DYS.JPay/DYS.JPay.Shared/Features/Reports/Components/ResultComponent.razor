@@ -1,0 +1,45 @@
+﻿@inject IJSRuntime JS
+@inject NavigationManager NavigationManager
+
+<div id="result-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300">
+    <div class="bg-surface-container-lowest rounded-3xl p-8 max-w-sm w-full shadow-2xl text-center transform scale-95 transition-transform duration-300" id="result-modal-content">
+        @if(Notification.Success == true)
+        {
+            <div class="w-24 h-24 bg-green-100 text-green-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pop scale-0">
+                <svg class="w-12 h-12" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path class="animate-check" stroke-linecap="round" stroke-linejoin="round" stroke-width="3" d="M5 13l4 4L19 7"></path></svg>
+            </div>
+        }
+        else
+        {
+            <div class="w-24 h-24 text-red-600 rounded-full flex items-center justify-center mx-auto mb-6 animate-pop scale-0">
+                <svg class="w-24 h-24" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <!-- Face circle -->
+                    <circle cx="12" cy="12" r="10" stroke-width="2" />
+                    <!-- Eyes -->
+                    <circle cx="9" cy="10" r="1" fill="currentColor" />
+                    <circle cx="15" cy="10" r="1" fill="currentColor" />
+                    <!-- Sad mouth -->
+                    <path d="M9 16c1.5-1 4.5-1 6 0" stroke-width="2" stroke-linecap="round" />
+                </svg>
+            </div>
+        }
+        <h2 class="text-2xl font-headline font-bold text-on-surface mb-2">@Notification?.Title</h2>
+        <p class="text-on-surface-variant mb-8">@Notification?.Description</p>
+        <button @onclick="@Complete" class="w-full ledger-gradient text-white py-3 rounded-xl font-bold shadow-lg hover:shadow-xl transition-all">
+            Close
+        </button>
+    
+    </div>
+</div>
+
+@code {
+    [Parameter]
+    public string Id { get; set; } = "result-modal";
+    [Parameter]
+    public NotificationDto Notification { get; set; } = new NotificationDto();
+
+    public async Task Complete()
+    {
+        await JS.InvokeVoidAsync("closeModal", "result-modal");
+    }
+}
