@@ -31,7 +31,7 @@ namespace DYS.JPay
 
             // Add device-specific services used by the DYS.JPay.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V22.db");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V23.db");
             var dbContext = new DatabaseContext(dbPath);
 
             Task.Run(async () => await dbContext.InitializeAsync());

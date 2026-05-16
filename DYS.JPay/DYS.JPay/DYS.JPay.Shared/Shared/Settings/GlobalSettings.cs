@@ -36,7 +36,7 @@ namespace DYS.JPay.Shared.Shared.Settings
         public const string UPDATED = "UPDATED";
         public const string DELETED = "DELETED";
 
-        public const string RUNNING = "RUNNING";
+        public const string ONGOING = "ON-GOING";
         public const string EXPIRED = "EXPIRED";
         public const string UPCOMING = "UPCOMING";
 

@@ -36,11 +36,25 @@
                     <!-- Product Info -->
                     <div class="flex-1">
                         <h3 class="font-bold text-on-surface mb-1">@variant.Name</h3>
-                        <p class="text-xs text-on-surface-variant uppercase tracking-wider">@variant.Name</p>
+                        @if (variant.DiscountedPrice > 0 && variant.DiscountedPrice != variant.Price)
+                        {
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wider line-through">@Currency@variant.Price</p>
+                        }
+                        else
+                        {
+                            <p class="text-xs text-on-surface-variant uppercase tracking-wider">@Currency@variant.Price</p>
+                        }
                     </div>
 
                     <!-- Price -->
-                    <p class="text-primary font-headline font-bold text-lg">@Currency@variant.Price?.ToString("N2")</p>
+                    @if (variant.DiscountedPrice > 0)
+                    {
+                        <p class="text-primary font-headline font-bold text-lg">@Currency@variant.DiscountedPrice?.ToString("N2")</p>
+                    }
+                    else
+                    {
+                       <p class="text-primary font-headline font-bold text-lg">@Currency@variant.Price?.ToString("N2")</p>
+                    }
 
                     <!-- Add Button -->
                     <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center

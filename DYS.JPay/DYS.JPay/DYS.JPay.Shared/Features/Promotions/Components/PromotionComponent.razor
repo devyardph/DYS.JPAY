@@ -37,6 +37,9 @@
         <div class="space-y-1.5">
            <AlertComponent Notification="@Notification"/>
         </div>
+        <div class="space-y-2">
+            <CheckboxComponent Visible="@(Promotion.Id != null)" ItemTriggered="@ConfirmDeletionAsync" @bind-Item="@Promotion.IsDeleted" Label="Soft delete" SubLabel="Permanently delete promotion." />
+        </div>
     </form>
 </div>
 

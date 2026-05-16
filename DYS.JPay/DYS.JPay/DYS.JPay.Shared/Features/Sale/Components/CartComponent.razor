@@ -24,7 +24,16 @@
                     <!-- Item Info -->
                     <div class="flex-1">
                         <h4 class="text-sm text-on-surface">@orderItem.Title</h4>
-                        <p class="text-xs text-on-surface-variant">@Currency@orderItem.Price</p>
+                        <p class="text-xs text-on-surface-variant">
+                            @if (orderItem.DiscountedPrice > 0 && orderItem.DiscountedPrice != orderItem.Price)
+                            {
+                                @Currency@orderItem.DiscountedPrice
+                            }
+                            else
+                            {
+                                @Currency@orderItem.Price
+                            }
+                        </p>
                     </div>
                     <!-- Quantity Controls -->
                     <div class="flex items-center gap-1 bg-surface-container-low rounded-lg p-1">
@@ -34,7 +43,14 @@
                     </div>
                     <!-- Price -->
                     <div class="text-right w-16">
-                        <p class="text-sm">@Currency@((orderItem.Price * @orderItem.Count)?.ToString("N2"))</p>
+                        @if (orderItem.DiscountedPrice > 0 && orderItem.DiscountedPrice != orderItem.Price)
+                        {
+                            <p class="text-sm">@Currency@((orderItem.DiscountedPrice * @orderItem.Count)?.ToString("N2"))</p>
+                        }
+                        else
+                        {
+                            <p class="text-sm">@Currency@((orderItem.Price * @orderItem.Count)?.ToString("N2"))</p>
+                        }
                     </div>
                     <!-- Remove Button -->
                     <button class="text-error/70 hover:text-error p-1" @onclick="@(() => OnRemoveOrder(orderItem))">

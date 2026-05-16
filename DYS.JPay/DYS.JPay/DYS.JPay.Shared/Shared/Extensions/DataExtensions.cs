@@ -116,10 +116,18 @@ namespace DYS.JPay.Shared.Shared.Extensions
             !string.IsNullOrEmpty(content.StoreDescription) &&
             !string.IsNullOrEmpty(content.Currency);
 
-        public static bool ValidContent(this TransactionDto content) =>
-           !string.IsNullOrEmpty(content.CustomerName) &&
-           !string.IsNullOrEmpty(content.PaymentMode) &&
-           !string.IsNullOrEmpty(content.ReferenceNo);
+        public static bool ValidContent(this TransactionDto content)
+        {
+            if (content.PaymentMode == GlobalSettings.CASH)
+            {
+                return content.AmountTendered.HasValue && !string.IsNullOrEmpty(content.CustomerName);
+            }
+            else if (content.PaymentMode == GlobalSettings.CREDIT)
+            {
+                return !string.IsNullOrEmpty(content.ReferenceNo);
+            }
+            return false;
+        }
 
         public static bool ValidContent(this EmailDto content) =>
           !string.IsNullOrEmpty(content.Subject) &&
@@ -143,7 +151,7 @@ namespace DYS.JPay.Shared.Shared.Extensions
 
             if (now >= startDate && now <= endDate)
             {
-                status.Title = GlobalSettings.RUNNING;
+                status.Title = GlobalSettings.ONGOING;
                 status.TextColor = "#155724";       // dark green text
                 status.BackgroundColor = "#d4edda"; // light green background
                 return status;

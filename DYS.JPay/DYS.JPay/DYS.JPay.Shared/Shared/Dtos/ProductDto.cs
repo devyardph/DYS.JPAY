@@ -15,6 +15,7 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public string TempImageUrl { get; set; }
         public string ImageUrl { get; set; }
         public double? Price { get; set; }
+        public double? DiscountedPrice { get; set; }
         public bool? Featured { get; set; } = false;
         public bool Active { get; set; } = true;
     }

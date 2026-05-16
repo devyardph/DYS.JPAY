@@ -26,7 +26,21 @@
                     <!-- Item Info -->
                     <div class="flex-1">
                         <h4 class="font-bold text-sm text-on-surface">@order.Name</h4>
-                        <p class="text-xs text-on-surface-variant">@Currency@order.Price</p>
+                        @if (order.DiscountedPrice > 0 && order.Price != order.DiscountedPrice)
+                        {
+                            <p class="text-xs text-on-surface-variant line-through">
+                                @Currency@order.Price
+                            </p>
+                            <p class="text-xs text-on-surface-variant">
+                                @Currency@order.DiscountedPrice
+                            </p>
+                        }
+                        else
+                        {
+                            <p class="text-xs text-on-surface-variant">
+                                @Currency@order.Price
+                            </p>
+                        }
                     </div>
                     <!-- Price -->
                     <div class="text-right w-16">

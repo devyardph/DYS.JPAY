@@ -15,8 +15,18 @@
                     </div>
                 </div>
                 <h3 class="font-bold text-on-surface leading-tight mb-1">@product.Name</h3>
-                <p class="text-primary font-black mt-auto">@Currency@product.Price?.ToString("N2")</p>
+                @if (product.DiscountedPrice > 0 && product.Price != product.DiscountedPrice)
+                {
+                    <p class="text-primary font-black mt-auto line-through">@Currency@product.Price?.ToString("N2")</p>
+                    <p class="text-primary font-black mt-auto">@Currency@product.DiscountedPrice?.ToString("N2")</p>
+                }
+                else
+                {
+                    <p class="text-primary font-black mt-auto">@Currency@product.Price?.ToString("N2")</p>
+                    <p class="text-primary font-black mt-auto">@Currency@product.DiscountedPrice?.ToString("N2")</p>
+                }
             </button>
+
         }
     </div>
 }
@@ -32,10 +42,6 @@ else if(Display == "list")
 
                 <!-- Product Image -->
                 <div class="w-16 h-16 rounded-xl overflow-hidden bg-surface-container-low shrink-0">
-                 @*    <img alt="@product.Name"
-                         src="@DataExtensions.GenerateImagePath(product.ImageUrl)"
-                         class="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
-                         referrerpolicy="no-referrer" /> *@
                     <ImageComponent ImageUrl="@product.ImageUrl" TempImageUrl="@product.TempImageUrl" Style="group-hover:scale-110 transition-transform duration-300" />
                 </div>
 
@@ -46,7 +52,15 @@ else if(Display == "list")
                 </div>
 
                 <!-- Price -->
-                <p class="text-primary font-headline font-bold text-lg">@Currency@product.Price?.ToString("N2")</p>
+                @if (product.DiscountedPrice > 0 && product.Price != product.DiscountedPrice)
+                {
+                    <p class="text-primary font-headline font-bold text-lg line-through">@Currency@product.Price?.ToString("N2")</p>
+                    <p class="text-primary font-headline font-bold text-lg">@Currency@product.DiscountedPrice?.ToString("N2")</p>
+                }
+                else
+                {
+                    <p class="text-primary font-headline font-bold text-lg">@Currency@product.Price?.ToString("N2")</p>
+                }
 
                 <!-- Add Button -->
                 <div class="w-10 h-10 rounded-full bg-surface-container-low flex items-center justify-center

@@ -7,14 +7,7 @@ using DYS.JPay.Shared.Shared.Settings;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Mapster;
 using Microsoft.AspNetCore.Components;
-using Microsoft.AspNetCore.Components.Routing;
-using Microsoft.Extensions.Configuration;
 using Microsoft.JSInterop;
-using System;
-using System.Collections.Generic;
-using System.Data.Common;
-using System.Text;
-using System.Text.Json.Serialization;
 
 namespace DYS.JPay.Shared.Features.Products.ViewModels
 {
@@ -23,6 +16,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         public readonly ICategoryService _categoryService;
         public readonly IProductService _productService;
         public readonly ITransactionService _transactionService;
+        public readonly IPromotionService _promotionService;
         public readonly IPeerService _peerService;
 
         public SaleViewModel(NavigationManager navigationManager,
@@ -31,12 +25,14 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             ICategoryService categoryService,
             IProductService productService,
             ITransactionService transactionService,
+            IPromotionService promotionService,
             IPeerService peerService,
             SessionService sessionService) : base(navigationManager, jsRuntime, sessionService)
         {
             _categoryService = categoryService;
             _productService = productService;
             _transactionService = transactionService;
+            _promotionService = promotionService;
             _peerService = peerService;;
         }
 
@@ -61,20 +57,41 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         private string pendingCartId = string.Empty;
         [ObservableProperty]
         private SearchDto search = new SearchDto();
+        [ObservableProperty]
+        private PromotionDto promotion = new PromotionDto();
+        [ObservableProperty]
+        private List<PromotionItemDto> promotionItems = new List<PromotionItemDto>();
         #endregion
 
         #region FUNCTIONS
         public async Task InitiazeCategoriesAndProductsAsync()
         {
             IsBusy = true;
-            var categoryOutput = await _categoryService.GetCategoriesAsync();
-            if (categoryOutput is not null) {
-                Categories = categoryOutput.Where(query => query.IsDeleted == false)
+            var categories = await _categoryService.GetCategoriesAsync();
+            if (categories is not null) {
+                Categories = categories.Where(query => query.IsDeleted == false)
                             .Select(query => new SelectDto() { Id = query.Id.ToString(), Name = query.Name }).ToList();
             }
-            var productOutput = await _productService.GetProductsAsync();
-            if (productOutput is not null) {
-                Products = productOutput.Adapt<List<ProductDto>>();
+            //GET CURRENT PROMOTION
+            var now = DateTime.UtcNow.LocalTime();
+            var promotion = await _promotionService.GetPromotionAsync(query => now >= query.StartDate && now <= query.EndDate);
+            if (promotion != null) {
+                Promotion = promotion.Adapt<PromotionDto>();
+                var promotionItems = await _promotionService.GetPromotionItemsByPromotionIdAsync(Promotion.Id);
+                PromotionItems = promotionItems.Adapt<List<PromotionItemDto>>();
+            }
+
+            //GET ALL PRODUCTS
+            var products = await _productService.GetProductsAsync();
+            if (products is not null)
+            {
+                Products = new List<ProductDto>();
+                foreach (var product in products) {
+                    var promo = PromotionItems.FirstOrDefault(query => query.ProductId == product.Id && query.VariationId == null);
+                    var p = product.Adapt<ProductDto>();
+                    p.DiscountedPrice = promo?.DiscountedPrice;
+                    Products.Add(p);
+                }
                 MenuProducts = Products;
             }
             IsBusy = false;
@@ -85,7 +102,14 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             var items = await _productService.GetProductWithVariantsByIdAsync(product.Id ?? Guid.Empty);
             if (items.variants.Any())
             {
-                Variants = items.variants.Adapt<List<VariantDto>>();
+                Variants = new List<VariantDto>();
+                foreach (var variant in items.variants)
+                {
+                    var promo = PromotionItems.FirstOrDefault(query => query.ProductId == product.Id && query.VariationId == variant.Id);
+                    var v = variant.Adapt<VariantDto>();
+                    v.DiscountedPrice = promo?.DiscountedPrice;
+                    Variants.Add(v);
+                }
                 Product = product;
                 await _jsRuntime.InvokeVoidAsync("openModal", "variants-modal");
             }
@@ -107,19 +131,13 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                         Id = newId,
                         Title= product.Name,
                         Price = product.Price,
+                        DiscountedPrice = product.DiscountedPrice,
                         Product = product, 
                         Count = count
                     });
                     id = newId.ToString();
                 }
-                Transaction.Total = Orders?.Sum(query => query.Price * query.Count);
-                Transaction.Tax = Session.AppSettings.Tax;
-                Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
-                Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
-
-                var discountAmount = Transaction.Total * (Transaction.DiscountInPercentage / 100);
-                Transaction.DiscountAmount = Math.Round(discountAmount ?? 0, 2);
-                Transaction.GrandTotal = Transaction.Total - Transaction.DiscountAmount;
+                TransactionChanged();
                 PendingCartId = $"cart-{id}";
             }
         }
@@ -143,31 +161,24 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                     Variant= item.Variant, 
                     Title =$"{item.Product.Name}-{item.Variant.Name}",
                     Price = item.Variant.Price,
+                    DiscountedPrice = item.Variant.DiscountedPrice,
                     Count = count });
                 id = newId.ToString();
             }
-            Transaction.Total = Orders?.Sum(query => query.Price * query.Count);
-            Transaction.Tax = Session.AppSettings.Tax;
-            Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
-            Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
+            TransactionChanged();
             PendingCartId = $"cart-{id}";
             await _jsRuntime.InvokeVoidAsync("closeModal", "variants-modal");
         }
         public async Task ProcessPaymentAsync()
         {
-            var total = Orders.Sum(query => query.Count * query.Price);
             var count = Orders.Sum(query => query.Count);
-            var transaction = new Transaction { 
-                DateOrdered = DateTime.UtcNow, 
-                CustomerName = Transaction.CustomerName, 
-                PaymentMode = Transaction.PaymentMode,
-                ReferenceNo =  Transaction.ReferenceNo, 
-                Total = total, 
-                Count = count,
-                PaymentStatus = GlobalSettings.PAID,
-                Status = GlobalSettings.NEW,
-                Cashier = Session.CurrentUser.Name
-            };
+            var transaction = Transaction;
+            transaction.DateOrdered = DateTime.UtcNow;
+            transaction.Count = count;
+            transaction.PaymentStatus = GlobalSettings.PAID;
+            transaction.Status = GlobalSettings.NEW;
+            transaction.Cashier = Session.CurrentUser.Name;
+
             var items = new List<Order>();
             foreach (var item in Orders!)
             {
@@ -178,6 +189,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                     VariantId = item.Variant.Id,
                     Name = item.Title,
                     Price = item.Price,
+                    DiscountedPrice = item.DiscountedPrice,
                     Quantity = item.Count
                 });
             }
@@ -185,7 +197,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             //SEND VIA PEER TO PEER
             var cart = new CartDto
             {
-                Transaction = transaction.Adapt<TransactionDto>(),
+                Transaction = transaction,
                 Orders = items
             };
 
@@ -205,18 +217,23 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         public void OrderChanged(OrderDto order)
         {
             if (order.Count == 0) Orders?.RemoveAll(query => query.Id == order.Id);
-            Transaction.Total = Orders?.Sum(query => query.Product.Price * query.Count);
-            Transaction.Tax = Session.AppSettings.Tax;
-            Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
-            Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
-            var discountAmount = Transaction.Total * (Transaction.DiscountInPercentage / 100);
-            Transaction.DiscountAmount = Math.Round(discountAmount ?? 0, 2);
-            Transaction.GrandTotal = Transaction.Total - Transaction.DiscountAmount;
+            TransactionChanged();
         }
-
         public void TransactionChanged()
         {
-            Transaction.Total = Orders?.Sum(query => query.Product.Price * query.Count);
+            double? total = 0;
+            foreach (var order in Orders)
+            {
+                if (order.DiscountedPrice > 0 &&
+                    order.Price != order.DiscountedPrice)
+                {
+                    total += (order.DiscountedPrice * order.Count);
+                }
+                else {
+                    total += (order.Price * order.Count);
+                }
+            }
+            Transaction.Total = total;
             Transaction.Tax = Session.AppSettings.Tax;
             Transaction.TotalTax = (Session.AppSettings.Tax / 100) * Transaction.Total;
             Transaction.SubTotal = Transaction.Total - Transaction.TotalTax;
@@ -224,7 +241,6 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             Transaction.DiscountAmount = Math.Round(discountAmount ?? 0, 2);
             Transaction.GrandTotal = Transaction.Total - Transaction.DiscountAmount;
         }
-
         public void OnDisplayChanged(string display) {
             var settings = Session.AppSettings;
             settings.Display = display;
@@ -237,7 +253,6 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             MenuProducts = string.IsNullOrEmpty(category.Id) ? Products :
                            Products.Where(p => p.CategoryId == new Guid(Category.Id)).ToList();
         }
-
         public void SearchProducts(ChangeEventArgs e)
         {
             var key = e.Value?.ToString();

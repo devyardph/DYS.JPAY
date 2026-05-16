@@ -6,6 +6,7 @@ using DYS.JPay.Shared.Shared.Settings;
 using Mapster;
 using System;
 using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Text;
 
 namespace DYS.JPay.Shared.Shared.Services
@@ -13,18 +14,12 @@ namespace DYS.JPay.Shared.Shared.Services
     public interface IPromotionService : IBaseService
     {
         Task<List<Product>> GetProductsAsync();
-        Task<Product> GetProductByIdAsync(Guid id);
-        Task<(Product product, List<Variant> variants)> GetProductWithVariantsByIdAsync(Guid id);
-        Task<PageDto<Product>> GetProductsAsync(SearchDto search);
-        Task<Product> SubmitProductAsync(ProductDto product);
-        Task<List<Product>> SubmitProductsAsync(List<ProductDto> products);
-        Task<Product> SubmitProductWithVariantsAsync(ProductDto product, List<VariantDto> variants);
-
-
         Task<PageDto<Promotion>> GetPromotionsAsync(SearchDto search);
+        Task<Promotion> GetPromotionAsync(Expression<Func<Promotion, bool>> predicate = null);
         Task<List<PromotionItem>> GetPromotionItemsByPromotionIdAsync(Guid? promotionId);
         Task<OutputDto<PromotionDto>> SubmitPromotionAsync(PromotionDto promotion);
         Task<OutputDto<List<PromotionItemDto>>> SubmitPromotionItemsAsync(List<PromotionItemDto> promotions);
+        Task<int> DeletePromotionAsync(Guid? id);
     }
     public class PromotionService : BaseService, IPromotionService
     {
@@ -75,103 +70,18 @@ namespace DYS.JPay.Shared.Shared.Services
         }
 
         public async Task<List<Product>> GetProductsAsync() => await _productRepository.GetAllAsync();
-        public async Task<Product> GetProductByIdAsync(Guid id) => await _productRepository.GetAsync(query => query.Id == id);
-        public async Task<(Product product, List<Variant> variants)> GetProductWithVariantsByIdAsync(Guid id) {
-            var product = await _productRepository.GetAsync(query => query.Id == id);
-            var variants = await _variantRepository.GetAllAsync(query => query.ProductId == id);
-            return (product, variants);
-        }
-        public async Task<PageDto<Product>> GetProductsAsync(SearchDto search)  =>
-             await _productRepository.GetPagedAsync(search.CurrentPage, 
-                 search.PageSize, 
-                 search.Keyword, 
-                 search.Columns, 
-                 showAll: false);
-        public async Task<Product> SubmitProductAsync(ProductDto product)
-        {
-            try
-            {
-                var item = product.Adapt<Product>();
-                if (product.Id == Guid.Empty ||
-                    product.Id == null)
-                {
-                    item.Id = Guid.NewGuid();
-                    await _productRepository.InsertAsync(item);
-
-                }
-                else
-                {
-                    await _productRepository.UpdateAsync(item);
-                }
-                return item;
-            }
-            catch (Exception ex)
-            {
-                var a = ex.Message;
-                throw;
-            }
-         
-        }
-        public async Task<List<Product>> SubmitProductsAsync(List<ProductDto> products)
-        {
-            var items = products.Adapt<List<Product>>();
-            await _productRepository.InsertAsync(items);
-            return items;
-        }
-        public async Task<Product> SubmitProductWithVariantsAsync(ProductDto product, List<VariantDto> variants)
-        {
-            var item = product.Adapt<Product>();
-            if (product.Id == Guid.Empty ||
-                product.Id == null)
-            {
-                item.Id = Guid.NewGuid();
-                await _productRepository.InsertAsync(item);
-                //ADD NEW VARIANTS
-                var newVariants = new List<Variant>();
-                foreach (var variant in variants)
-                {
-                    var newVariant = variant.Adapt<Variant>();
-                    newVariant.ProductId = item.Id;
-                    newVariants.Add(newVariant);
-                }
-                await _variantRepository.InsertAsync(newVariants);
-            }
-            else
-            {
-                var existingVariants = await _variantRepository.GetAllAsync(query => query.ProductId == item.Id);
-                foreach (var variant in variants)
-                {
-                    var existingVariant = existingVariants.FirstOrDefault(query => query.Id == variant.Id);
-                    if(existingVariant != null)
-                    {
-                        // Update existing variant
-                        existingVariant = variant.Adapt(existingVariant);
-                        await _variantRepository.UpdateAsync(existingVariant);
-                    }
-                    else
-                    {
-                        // Insert new variant
-                        var newVariant = variant.Adapt<Variant>();
-                        newVariant.ProductId = item.Id;
-                        await _variantRepository.InsertAsync(newVariant);
-                    }   
-                }
-            }
-            return item;
-        }
-
-
-
         public async Task<PageDto<Promotion>> GetPromotionsAsync(SearchDto search) =>
           await _promotionRepository.GetPagedAsync(search.CurrentPage,
               search.PageSize,
               search.Keyword,
               search.Columns,
+              search.SortColumn,
+              sortDescending: true,
               showAll: false);
-
+        public async Task<Promotion> GetPromotionAsync(Expression<Func<Promotion, bool>> predicate = null) =>
+          await _promotionRepository.GetAsync(predicate);
         public async Task<List<PromotionItem>> GetPromotionItemsByPromotionIdAsync(Guid? promotionId) =>
          await _promotionItemRepository.GetAllAsync(query => query.PromotionId == promotionId);
-
         public async Task<OutputDto<PromotionDto>> SubmitPromotionAsync(PromotionDto promotion)
         {
 
@@ -240,12 +150,14 @@ namespace DYS.JPay.Shared.Shared.Services
                 foreach (var item in items)
                 {
                     var promo = await _promotionItemRepository.GetAsync(query => query.Id == item.Id || 
-                    (query.PromotionId == item.PromotionId && query.ProductId == item.ProductId));
+                    (query.PromotionId == item.PromotionId && 
+                     query.ProductId == item.ProductId &&
+                     query.VariationId == item.VariationId));
                     if (promo == null)
                     {
                         await _promotionItemRepository.InsertAsync(item);
                     }
-                    else await _promotionItemRepository.UpdateAsync(promo);
+                    else await _promotionItemRepository.UpdateAsync(item);
                 }
                 output.Success = true;
                 output.Entity = promotions;
@@ -256,6 +168,18 @@ namespace DYS.JPay.Shared.Shared.Services
                 output.Message = ex.Message;
             }
             return output;
+        }
+        public async Task<int> DeletePromotionAsync(Guid? id)
+        {
+            var promotion = await _promotionRepository.GetAsync(query => query.Id == id);
+            if (promotion != null)
+            {
+                var promotionItems = await _promotionItemRepository.GetAllAsync(query => query.PromotionId == id);
+                foreach (var promotionItem in promotionItems)
+                    await _promotionItemRepository.DeleteAsync(promotionItem);
+                return await _promotionRepository.DeleteAsync(promotion);
+            }
+            return 0;
         }
     }
 

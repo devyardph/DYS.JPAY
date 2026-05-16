@@ -63,6 +63,7 @@ namespace DYS.JPay.Shared.Features.Promotions.ViewModels
             Search.CurrentPage = currentPage;
             Search.PageSize = 20;
             Search.Columns = new List<string>() { $"Name","Description"};
+            Search.SortColumn = "StartDate";
             var output = await _promotionService.GetPromotionsAsync(Search);
             if (output is not null)
             {
@@ -82,10 +83,20 @@ namespace DYS.JPay.Shared.Features.Promotions.ViewModels
         {
             IsBusy = true;
             Notification = new NotificationDto();
-            var output = await _promotionService.SubmitPromotionAsync(Promotion);
-            if (output.Success)
-                await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "promotion-overlay", "promotion-component");
-            else Notification = new NotificationDto() { Description = output.Message, Success = output.Success };
+            if (Promotion.IsDeleted == false)
+            {
+                var output = await _promotionService.SubmitPromotionAsync(Promotion);
+                if (output.Success)
+                    await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "promotion-overlay", "promotion-component");
+                else Notification = new NotificationDto() { Description = output.Message, Success = output.Success };
+            }
+            else {
+                var output = await _promotionService.DeletePromotionAsync(Promotion.Id);
+                if (output > 0)
+                    await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "promotion-overlay", "promotion-component");
+                else Notification = new NotificationDto() { Description = "Error in deleting promotion.", Success = false };
+            }
+
             IsBusy = false;
         }
 
@@ -120,16 +131,39 @@ namespace DYS.JPay.Shared.Features.Promotions.ViewModels
                 var promoItems = new List<PromotionItemDto>();
                 foreach (var product in products)
                 {
-                    promoItems.Add(new PromotionItemDto()
+                    var group = await _productService.GetProductWithVariantsByIdAsync(product.Id);
+                    if (group.variants.Any())
                     {
-                        Id = Guid.NewGuid(),
-                        PromotionId = Promotion.Id,
-                        ProductId = product.Id,
-                        ProductName = product.Name,
-                        ActualPrice = product.Price,
-                        DiscountedPrice = product.Price,
-                        IsDeleted = false
-                    });
+                        foreach (var variant in group.variants)
+                        {
+                            promoItems.Add(new PromotionItemDto()
+                            {
+                                Id = Guid.NewGuid(),
+                                PromotionId = Promotion.Id,
+                                ProductId = product.Id,
+                                ProductName = $"{product.Name}-{variant.Name}",
+                                VariationId = variant.Id,
+                                VariationName = variant.Name,
+                                ActualPrice = variant.Price,
+                                DiscountedPrice = variant.Price,
+                                IsDeleted = false
+                            });
+                        }
+                    }
+                    else
+                    {
+                        promoItems.Add(new PromotionItemDto()
+                        {
+                            Id = Guid.NewGuid(),
+                            PromotionId = Promotion.Id,
+                            ProductId = product.Id,
+                            ProductName = product.Name,
+                            ActualPrice = product.Price,
+                            DiscountedPrice = product.Price,
+                            IsDeleted = false
+                        });
+                    }
+
                 }
                 PromotionItems = promoItems;
             }

@@ -10,7 +10,8 @@ namespace DYS.JPay.Shared.Shared.Dtos
         public ProductDto Product { get; set; } = new ProductDto();
         public VariantDto Variant { get; set; } = new VariantDto();
         public string Title { get; set; } = string.Empty;
-        public double? Price { get; set; } 
+        public double? Price { get; set; }
+        public double? DiscountedPrice { get; set; }
         public int Count { get; set; } = 1;
         public double Total { get; set; }
     }
