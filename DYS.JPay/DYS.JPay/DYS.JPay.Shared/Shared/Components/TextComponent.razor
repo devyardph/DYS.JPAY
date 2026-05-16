@@ -20,11 +20,14 @@
     public bool ReadOnly { get; set; } = false;
     [Parameter]
     public EventCallback<string> ItemChanged { get; set; }
+    [Parameter]
+    public EventCallback ItemTriggered { get; set; }
 
     public void OnTextChanged(ChangeEventArgs e)
     {
         var text = e.Value != null ? e.Value.ToString() : string.Empty;
         ItemChanged.InvokeAsync(text);
+        ItemTriggered.InvokeAsync();
     }
 
 }

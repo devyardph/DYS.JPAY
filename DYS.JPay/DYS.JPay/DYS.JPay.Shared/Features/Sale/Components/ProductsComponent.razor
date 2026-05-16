@@ -23,7 +23,9 @@
                 else
                 {
                     <p class="text-primary font-black mt-auto">@Currency@product.Price?.ToString("N2")</p>
+                    @if (@product.DiscountedPrice > 0) { 
                     <p class="text-primary font-black mt-auto">@Currency@product.DiscountedPrice?.ToString("N2")</p>
+                    }
                 }
             </button>
 
