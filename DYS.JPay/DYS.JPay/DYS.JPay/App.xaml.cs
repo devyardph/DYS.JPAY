@@ -101,8 +101,8 @@ namespace DYS.JPay
         else
         {
             // Normal launch — register the scheduled task
-            DYS.JPay.Platforms.Windows.BackgroundService
-                .RegisterDailyEmailTask();
+            //DYS.JPay.Platforms.Windows.BackgroundService
+              //  .RegisterDailyEmailTask();
         }
 #endif
 

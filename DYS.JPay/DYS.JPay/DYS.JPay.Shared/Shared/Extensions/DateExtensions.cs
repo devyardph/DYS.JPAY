@@ -1,6 +1,7 @@
 ﻿using DYS.JPay.Shared.Shared.Dtos;
 using Newtonsoft.Json.Linq;
 using System.Globalization;
+using TimeZoneConverter;
 
 namespace DYS.JPay.Shared.Shared.Extensions
 {
@@ -9,17 +10,21 @@ namespace DYS.JPay.Shared.Shared.Extensions
         public static DateTime GetCurrentDateInUTC() => DateTime.UtcNow;
         public static DateTime GetCurrentDate() => DateTime.Now;
         public static DateTimeOffset LocalTime(this DateTime now, 
-            string timeZone = "New Zealand Standard Time")
+            string timeZone = "")
         {
-            DateTime dateTime = TimeZoneInfo.ConvertTimeBySystemTimeZoneId(now, timeZone);
-            return dateTime;
+            var localZone = TimeZoneInfo.Local;
+            var tzone = !string.IsNullOrEmpty(timeZone) ? timeZone : localZone.Id;
+            var tz = TZConvert.GetTimeZoneInfo(tzone);
+            return TimeZoneInfo.ConvertTime(now, tz);
         }
 
         public static DateTime? ToLocalTime(this DateTime? utc,
-            string timeZone = "Asia/Manila")
+            string timeZone = "")
         {
             if (utc == null) return null;
-            TimeZoneInfo location = TimeZoneInfo.FindSystemTimeZoneById("Asia/Manila");
+            var localZone = TimeZoneInfo.Local;
+            var tzone = !string.IsNullOrEmpty(timeZone) ? timeZone : localZone.Id;
+            TimeZoneInfo location = TimeZoneInfo.FindSystemTimeZoneById(tzone);
             var date = TimeZoneInfo.ConvertTimeFromUtc(utc.Value, location);
             return date;
         }

@@ -8,11 +8,11 @@ using DYS.JPay.Shared.Shared.ViewModels;
 using Mapster;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace DYS.JPay.Shared.Features.Onboarding.ViewModels
+
+namespace DYS.JPay.Shared.Features.Test.ViewModels
 {
-    public partial class OnboardingViewModel : BaseViewModel
+    public partial class TestViewModel : BaseViewModel
     {
         private readonly IAppSettingService _appSettingService;
         private readonly IUserService _userService;
@@ -20,13 +20,12 @@ namespace DYS.JPay.Shared.Features.Onboarding.ViewModels
         private readonly ICategoryService _categoryService;
         private readonly IImageService _imageService;
         private readonly IAccountService _accountService;
-        public OnboardingViewModel(NavigationManager navigationManager,
+        public TestViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             IAppSettingService appSettingService,
             IUserService userService,
             IProductService productService,
             ICategoryService categoryService,
-            IImageService imageService,
             IAccountService accountService,
             SessionService sessionService) 
             : base(navigationManager, jsRuntime, sessionService)
@@ -35,7 +34,6 @@ namespace DYS.JPay.Shared.Features.Onboarding.ViewModels
             _userService = userService;
             _productService = productService;
             _categoryService = categoryService;
-            _imageService = imageService;
             _accountService = accountService;
         }
 
@@ -61,8 +59,6 @@ namespace DYS.JPay.Shared.Features.Onboarding.ViewModels
                     AppSetting.StoreDescription = "Pop up mart.";
                 }
                 //CHECK IF ALREADY SETUP OR NOT
-                if(AppSetting.Setup) 
-                    _navigationManager.NavigateTo("/login", forceLoad: false);
             }
             IsBusy = false;
         }
@@ -184,7 +180,7 @@ namespace DYS.JPay.Shared.Features.Onboarding.ViewModels
                 ImageUrl = "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&q=80&w=200&h=200",
                 Featured = false
             });
-          
+
             await _productService.SubmitProductsAsync(products);
             IsBusy = false;
         }

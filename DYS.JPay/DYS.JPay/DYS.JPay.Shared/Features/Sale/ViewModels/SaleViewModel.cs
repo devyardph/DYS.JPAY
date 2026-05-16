@@ -26,14 +26,14 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             IProductService productService,
             ITransactionService transactionService,
             IPromotionService promotionService,
-            IPeerService peerService,
+            //IPeerService peerService,
             SessionService sessionService) : base(navigationManager, jsRuntime, sessionService)
         {
             _categoryService = categoryService;
             _productService = productService;
             _transactionService = transactionService;
             _promotionService = promotionService;
-            _peerService = peerService;;
+            //_peerService = peerService;;
         }
 
         #region PROPERTIES
@@ -204,7 +204,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             //SAVE TO CURRENT DEVICE
             await _transactionService.PlaceTransactionAsync(cart);
             //PASS TO OTHER MAIN DEVICE
-            _peerService.SendOrder(JsonExtensions.Convert(cart));
+            //_peerService.SendOrder(JsonExtensions.Convert(cart));
 
             await _jsRuntime.InvokeVoidAsync("closeModal", "charge-modal");
             await _jsRuntime.InvokeVoidAsync("openModal", "result-modal");

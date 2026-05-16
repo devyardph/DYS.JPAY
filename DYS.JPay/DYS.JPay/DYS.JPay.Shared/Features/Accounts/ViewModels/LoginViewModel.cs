@@ -22,7 +22,7 @@ namespace DYS.JPay.Shared.Features.Accounts.ViewModels
 
         #region PROPERTIES
         [ObservableProperty]
-        private LoginDto profile = new LoginDto() { Username="admin", Passcode="102986" };
+        private LoginDto profile = new LoginDto() { Username="", Passcode="" };
         #endregion
         public LoginViewModel(
           NavigationManager navigationManager,

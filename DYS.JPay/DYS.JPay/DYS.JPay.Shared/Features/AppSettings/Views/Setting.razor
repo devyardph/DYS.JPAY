@@ -93,7 +93,7 @@
                                                 }
                                             </select>
                                         </div>
-                                        <div class="space-y-2  mb-2">
+                                      @*   <div class="space-y-2  mb-2">
                                             <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Time zone</label>
                                             <select @bind="@VM.AppSetting.TimeZone" disabled
                                                     class="w-full bg-[#f1f4fa] border-none rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary transition-all">
@@ -102,7 +102,7 @@
                                                     <option value="@zone.Id">@zone.Name</option>
                                                 }
                                             </select>
-                                        </div>
+                                        </div> *@
                                         <div class="space-y-2 mb-5">
                                             <LabelComponent Id="tax" Item="@($"{VM.AppSetting.Tax?.ToString()}%")" Label="Tax" Style="bg-[#f1f4fa] rounded-2xl" />
                                         </div>

@@ -10,11 +10,9 @@ namespace DYS.JPay.Shared.Services
     public class ImageService: IImageService
     { 
         private readonly IPhotoService _photoService;
-        private readonly IFilePickerService _filePickerService;
-        public ImageService(IPhotoService photoService, IFilePickerService filePickerService)
+        public ImageService(IPhotoService photoService)
         {
             _photoService = photoService;
-            _filePickerService = filePickerService;
         }
         public async Task<(string tempPath, string photoPath)> PickAndResizeAsync(int targetSize)
         {

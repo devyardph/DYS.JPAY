@@ -34,8 +34,10 @@ namespace DYS.JPay.Shared.Shared.Services
 
         public async Task<User> LoginAsync(string username, string code)
         {
-            var users = await _repo.GetAllAsync();
-            return users.FirstOrDefault(u => u.Username == username && u.Code == code);
+            var user = await _repo.GetAsync(u => 
+            u.Username!.ToLower() == username!.ToLower() && u.Code == code 
+            && u.IsDeleted == false);
+            return user;
         }
 
         public async Task GetAllAsync()

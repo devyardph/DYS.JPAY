@@ -73,7 +73,7 @@ namespace DYS.JPay.Shared.Shared.Data
                 {
                     Name = "admin",
                     Username = "admin",
-                    Code = "102986",   // default 6-digit login code
+                    Code = "111111",   // default 6-digit login code
                     Role = GlobalSettings.ADMIN,
                     DateCreated = DateTime.UtcNow
                 };
@@ -95,12 +95,6 @@ namespace DYS.JPay.Shared.Shared.Data
                 Id = new Guid("7e4c9b8f-2d1a-4f6e-9c3b-1a5d8e7f4b23"),
                 Name = "Pastry",
             });
-            categories.Add(new Category
-            {
-                Id = new Guid("a9d3f7c2-5e1b-4c8d-9f2a-7b6e1d4f5c34"),
-                Name = "Merch",
-            });
-
 
             var entities = await _connection.Table<Category>().ToListAsync();
             if (!entities.Any())
@@ -111,21 +105,12 @@ namespace DYS.JPay.Shared.Shared.Data
         private async Task SeedProducts()
         {
             var products = new List<Product>();
+
             products.Add(new Product
             {
                 Id = Guid.NewGuid(),
                 CategoryId = new Guid("c2f8a7d1-4b3e-4f9a-9a1c-8e2d6b9f3a12"),
                 Type = "Coffee",
-                Name = "Espresso",
-                Price = 5.55,
-                ImageUrl = "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&q=80&w=200&h=200",
-                Featured = false
-            });
-            products.Add(new Product
-            {
-                Id = Guid.NewGuid(),
-                CategoryId = new Guid("c2f8a7d1-4b3e-4f9a-9a1c-8e2d6b9f3a12"),
-                Type = "Pastries",
                 Name = "Latte",
                 Price = 4.55,
                 ImageUrl = "https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&q=80&w=200&h=200",
@@ -145,7 +130,7 @@ namespace DYS.JPay.Shared.Shared.Data
             {
                 Id = Guid.NewGuid(),
                 CategoryId= new Guid("7e4c9b8f-2d1a-4f6e-9c3b-1a5d8e7f4b23"),
-                Type = "Coffee",
+                Type = "Pastry",
                 Name = "Turkey sandwich",
                 Price = 7.55,
                 ImageUrl = "https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&q=80&w=200&h=200",
@@ -165,32 +150,14 @@ namespace DYS.JPay.Shared.Shared.Data
             {
                 Id = Guid.NewGuid(),
                 CategoryId = new Guid("7e4c9b8f-2d1a-4f6e-9c3b-1a5d8e7f4b23"),
-                Type = "Tea",
-                Name = "Espresso",
-                Price = 5.55,
-                ImageUrl = "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&q=80&w=200&h=200",
-                Featured = false
-            });
-            products.Add(new Product
-            {
-                Id = Guid.NewGuid(),
-                CategoryId = new Guid("7e4c9b8f-2d1a-4f6e-9c3b-1a5d8e7f4b23"),
                 Type = "Coffee",
                 Name = "Espresso",
                 Price = 5.55,
                 ImageUrl = "https://images.unsplash.com/photo-1607958996333-41aef7caefaa?auto=format&fit=crop&q=80&w=200&h=200",
                 Featured = false
             });
-            products.Add(new Product
-            {
-                Id = Guid.NewGuid(),
-                CategoryId = new Guid("7e4c9b8f-2d1a-4f6e-9c3b-1a5d8e7f4b23"),
-                Type = "Pastries",
-                Name = "Latte",
-                Price = 4.55,
-                ImageUrl = "https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&q=80&w=200&h=200",
-                Featured = false
-            });
+          
+ 
 
             var entities = await _connection.Table<Product>().ToListAsync();
 

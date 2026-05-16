@@ -31,7 +31,7 @@ namespace DYS.JPay
 
             // Add device-specific services used by the DYS.JPay.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V25.db");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V29.db");
             var dbContext = new DatabaseContext(dbPath);
 
             Task.Run(async () => await dbContext.InitializeAsync());
@@ -78,6 +78,8 @@ namespace DYS.JPay
             var app = builder.Build();
             // Resolve and start
             var job = app.Services.GetService<SchedulerService>();
+
+
 
             return app;
         }
