@@ -1,0 +1,15 @@
+﻿@using DYS.JPay.Shared.Shared.Settings
+@using Microsoft.AspNetCore.Components.Authorization
+
+<AuthorizeView Roles="@Roles">
+        <Authorized>
+            @Content
+        </Authorized>
+</AuthorizeView>
+
+@code {
+    [Parameter]
+    public string Roles { get; set; } = $"{GlobalSettings.ADMIN},{GlobalSettings.OWNER},{GlobalSettings.CASHIER}";
+    [Parameter]
+    public RenderFragment? Content { get; set; } 
+}
