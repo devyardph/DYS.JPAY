@@ -58,7 +58,7 @@ namespace DYS.JPay.Shared.Shared.Services
             var now = DateTime.UtcNow;
             var startDate = now.StartOfDay();
             var endDate = now.EndOfDay();
-            var promotion = await _transactionService.GetAllTransactionsAsync(query =>
+            var transactions = await _transactionService.GetAllTransactionsAsync(query =>
                 query.DateCreated <= endDate &&
                 query.DateCreated >= startDate);
 
