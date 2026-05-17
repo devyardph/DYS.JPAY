@@ -55,11 +55,12 @@ namespace DYS.JPay.Shared.Shared.Services
             };
             await _loggerService.SaveAsync(info);
 
-            var now = DateTime.UtcNow.ToLocalTime();
-            var transactions = await _transactionService.GetAllTransactionsAsync(query =>
-                     query.DateCreated.ToLocalTime() >= now.StartOfDay() && 
-                     query.DateCreated.ToLocalTime() <= now.EndOfDay());
-
+            var now = DateTime.UtcNow;
+            var startDate = now.StartOfDay();
+            var endDate = now.EndOfDay();
+            var promotion = await _transactionService.GetAllTransactionsAsync(query =>
+                query.DateCreated <= endDate &&
+                query.DateCreated >= startDate);
 
             var template = await _resourceService.ReadFileAsync("wwwroot/templates/daily_sales_report.html");
             var setting = await _appSettingService.GetSettingAsync();

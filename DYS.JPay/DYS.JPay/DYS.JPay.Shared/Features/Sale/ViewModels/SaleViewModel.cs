@@ -73,8 +73,14 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
                             .Select(query => new SelectDto() { Id = query.Id.ToString(), Name = query.Name }).ToList();
             }
             //GET CURRENT PROMOTION
-            var now = DateTime.UtcNow.LocalTime();
-            var promotion = await _promotionService.GetPromotionAsync(query => now >= query.StartDate.StartDay() && now <= query.EndDate.EndOfDay());
+            var now = DateTime.UtcNow;
+            var startDate = now.StartOfDay();
+            var endDate = now.EndOfDay();
+
+            var promotion = await _promotionService.GetPromotionAsync(query =>
+                query.StartDate <= endDate &&
+                query.EndDate >= startDate);
+
             if (promotion != null) {
                 Promotion = promotion.Adapt<PromotionDto>();
                 var promotionItems = await _promotionService.GetPromotionItemsByPromotionIdAsync(Promotion.Id);
