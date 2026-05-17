@@ -196,7 +196,7 @@
     {
         VM.Search.StartDate = DateTime.Now.StartOfMonth();
         VM.Search.EndDate = DateTime.Now.EndOfMonth();
-        VM.Email = new EmailDto() { Subject = "Sales Report", Email = VM.Session.CurrentUser.Email };
+        VM.Email = new EmailDto() { Subject = "Generated Sales Report", Email = VM.Session.CurrentUser.Email };
         await VM.SearchTransactionsAsync();
         await base.OnInitializedAsync();
     }

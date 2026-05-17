@@ -12,7 +12,7 @@ namespace DYS.JPay
 
         public override bool FinishedLaunching(UIApplication application, NSDictionary? launchOptions)
         {
-            //BGTaskScheduler.Shared.Register("com.devyard.jpay.dailyemailreport", null, HandleDailyEmailTask);
+            BGTaskScheduler.Shared.Register("com.devyard.jpay.dailyemailreport", null, HandleDailyEmailTask);
             return base.FinishedLaunching(application, launchOptions);
         }
 

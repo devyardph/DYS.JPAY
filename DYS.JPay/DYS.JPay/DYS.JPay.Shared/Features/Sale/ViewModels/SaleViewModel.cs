@@ -74,7 +74,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             }
             //GET CURRENT PROMOTION
             var now = DateTime.UtcNow.LocalTime();
-            var promotion = await _promotionService.GetPromotionAsync(query => now >= query.StartDate && now <= query.EndDate);
+            var promotion = await _promotionService.GetPromotionAsync(query => now >= query.StartDate.StartDay() && now <= query.EndDate.EndOfDay());
             if (promotion != null) {
                 Promotion = promotion.Adapt<PromotionDto>();
                 var promotionItems = await _promotionService.GetPromotionItemsByPromotionIdAsync(Promotion.Id);

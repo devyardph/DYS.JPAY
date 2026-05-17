@@ -7,13 +7,15 @@ using DYS.JPay.Shared.Shared.Settings;
 using System.ComponentModel.Design;
 using System.Text;
 using System.Transactions;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace DYS.JPay.Shared.Shared.Services
 {
     public interface ISchedulerService: IBaseService
     {
         Task<ResponseDto> RunDailyExport(CancellationToken cancellationToken = default);
-        Task<ResponseDto> RunDailyExport(EmailDto email,
+        Task<ResponseDto> GenerateSalesReport(EmailDto email,
+                                         SearchReportDto parameter,
                                          List<TransactionDto> transactions,
                                          CancellationToken cancellationToken = default);
     }
@@ -23,16 +25,22 @@ namespace DYS.JPay.Shared.Shared.Services
        
         private readonly IAppSettingService _appSettingService;
         private readonly ILoggerService _loggerService;
+        private readonly ITransactionService _transactionService;
+        private readonly IUserService _userService;
         private readonly IResourceService _resourceService;
         private readonly SessionService _sessionService;
         public SchedulerService(
             IAppSettingService appSettingService,
             ILoggerService loggerService,
+            ITransactionService transactionService,
             IResourceService resourceService,
+            IUserService userService,
             SessionService sessionService)
         {
             _appSettingService = appSettingService;
             _loggerService = loggerService;
+            _transactionService = transactionService;
+            _userService = userService;
             _resourceService = resourceService;
             _sessionService = sessionService;
         }
@@ -47,29 +55,57 @@ namespace DYS.JPay.Shared.Shared.Services
             };
             await _loggerService.SaveAsync(info);
 
-            var data = new List<TransactionDto>();
-            var bytes = CsvHelpers.ExportToCsv(data);
-            //var base64 = Convert.ToBase64String(bytes);
+            var now = DateTime.UtcNow.ToLocalTime();
+            var transactions = await _transactionService.GetAllTransactionsAsync(query =>
+                     query.DateCreated.ToLocalTime() >= now.StartOfDay() && 
+                     query.DateCreated.ToLocalTime() <= now.EndOfDay());
 
-            string today = DateTime.Now.ToString("yyyyMMdd");
-            //string filePath = Path.Combine(FileSystem.AppDataDirectory, $"sales_{today}.csv");
 
+            var template = await _resourceService.ReadFileAsync("wwwroot/templates/daily_sales_report.html");
             var setting = await _appSettingService.GetSettingAsync();
             var sender = setting.GmailAccount;
             var password = setting.AppPassword;
             var emailNotificationEnabled = setting.ReceiveEmailNotification;
 
+            template = template.Replace("#store-name#", setting?.StoreName);
+            template = template.Replace("#store-branch#", setting?.Branch);
+            template = template.Replace("#store-counter#", setting?.Counter);
+            template = template.Replace("#date#", now.ToString("dd MMM yyyy"));
+
+            var content = new StringBuilder();
+            foreach (var transaction in transactions)
+            {
+                content.Append("<tr style='border-bottom:1px solid #eee;'>");
+                content.Append($"<td align='left'>{transaction.Code}</td>");
+                content.Append($"<td align='left'>{transaction.CustomerName}</td>");
+                content.Append($"<td align='center'>{transaction.Count}</td>");
+                content.Append($"<td align='right'>{setting?.Currency}{transaction.GrandTotal?.ToString("N2")}</td>");
+                content.Append($"<td align='left'>{transaction.DateCreated.FormatDate("dd-MM-yy hh:mmtt")}</td>");
+                content.Append($"<td align='center'>{transaction.Status}</td>");
+                content.Append("</tr>");
+            }
+
+            template = template.Replace("#transaction-items#", content.ToString());
+            template = template.Replace("#grand-total#", $"{setting?.Currency}{transactions?.Sum(query => query.GrandTotal ?? 0).ToString("N2")}");
+            template = template.Replace("#completed#", transactions?.Where(query => query.Status == GlobalSettings.COMPLETED).Count().ToString());
+            template = template.Replace("#pending#", transactions?.Where(query => query.Status == GlobalSettings.PREPARING).Count().ToString());
+            template = template.Replace("#cancelled#", transactions?.Where(query => query.Status == GlobalSettings.CANCELLED).Count().ToString());
+            var bytes = CsvHelpers.ExportToCsv(transactions ?? new List<Entities.Transaction>());
+
+            var owner = await _userService.GetUserAsync(query => query.Role == GlobalSettings.OWNER);
+
             if (emailNotificationEnabled &&
                 !string.IsNullOrEmpty(sender) &&
-                !string.IsNullOrEmpty(password))
+                !string.IsNullOrEmpty(password) &&
+                !string.IsNullOrEmpty(owner?.Email))
             {
                 var emailSent = await EmailService.SendEmailAsync(
-                    "jfvaleroso.smart@gmail.com",
-                    $"Daily Sales Report {today}",
-                    "Attached is the daily sales CSV.", sender, password,
-                    bytes,
-                    cancellationToken
-                );
+                   $"{owner?.Email?.Trim()}",
+                   $"Daily Sales Report : {now.FormatDate("dd MMM yyyy")}",
+                   $"{template}", sender, password,
+                   bytes,
+                   cancellationToken
+               );
 
                 output.Success = emailSent.Success;
                 output.Message = emailSent.Message;
@@ -92,7 +128,8 @@ namespace DYS.JPay.Shared.Shared.Services
             return output;
         }
 
-        public async Task<ResponseDto> RunDailyExport(EmailDto email,
+        public async Task<ResponseDto> GenerateSalesReport(EmailDto email,
+                                                      SearchReportDto parameter,
                                                       List<TransactionDto> transactions, 
                                                       CancellationToken cancellationToken = default)
         {
@@ -100,20 +137,14 @@ namespace DYS.JPay.Shared.Shared.Services
             var info = new Logger()
             {
                 Type = GlobalSettings.INFO,
-                Message = "Daily Sales Report triggered."
+                Message = "Manually generated sales report."
             };
             await _loggerService.SaveAsync(info);
 
             var bytes = CsvHelpers.ExportToCsv(transactions);
 
             string today = DateTime.Now.ToString("yyyyMMdd");
-
-            // Namespace + folder + filename
-            //string basePath = AppContext.BaseDirectory;
-            //string filePath = Path.Combine(basePath, "wwwroot", "template", "daily_sales_report.html");
-            //var template = await File.ReadAllTextAsync(filePath);
-
-            var template = await _resourceService.ReadFileAsync("wwwroot/templates/daily_sales_report.html");
+            var template = await _resourceService.ReadFileAsync("wwwroot/templates/generated_sales_report.html");
 
             var setting = await _appSettingService.GetSettingAsync();
             var sender = setting.GmailAccount;
@@ -123,6 +154,8 @@ namespace DYS.JPay.Shared.Shared.Services
             template = template.Replace("#store-name#", setting?.StoreName);
             template = template.Replace("#store-branch#", setting?.Branch);
             template = template.Replace("#store-counter#", setting?.Counter);
+            template = template.Replace("#start-date#", parameter?.StartDate.ToLocalTime().FormatDate("MMM dd yyyy"));
+            template = template.Replace("#end-date#", parameter?.EndDate.ToLocalTime().FormatDate("MMM dd yyyy"));
 
             var content = new StringBuilder();
             foreach (var transaction in transactions)
@@ -148,7 +181,7 @@ namespace DYS.JPay.Shared.Shared.Services
             {
                 var emailSent = await EmailService.SendEmailAsync(
                     $"{email.Email.Trim()}",
-                    $"{email.Subject} {today}",
+                    $"{email.Subject}",
                     $"{template}", sender, password,
                     bytes,
                     cancellationToken

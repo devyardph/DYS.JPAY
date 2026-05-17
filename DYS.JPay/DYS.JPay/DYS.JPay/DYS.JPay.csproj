@@ -105,13 +105,20 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Content Remove="wwwroot\templates\daily_sales_report.html" />
+  </ItemGroup>
+
+  <ItemGroup>
     <EmbeddedResource Include="wwwroot\templates\daily_sales_report.html">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
+    <EmbeddedResource Include="wwwroot\templates\generated_sales_report.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </EmbeddedResource>
   </ItemGroup>
 
   <ItemGroup>
-    <None Include="wwwroot\templates\daily_sales_report.html" />
+    <None Include="wwwroot\templates\generated_sales_report.html" />
   </ItemGroup>
 
   <ItemGroup>

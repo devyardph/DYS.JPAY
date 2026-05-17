@@ -81,7 +81,7 @@ namespace DYS.JPay.Shared.Features.Orders.ViewModels
         {
             IsProcessing = true;
             Notification = new NotificationDto();
-            var output = await _schedulerService.RunDailyExport(Email, Transactions);
+            var output = await _schedulerService.GenerateSalesReport(Email, Search, Transactions);
             Notification = new NotificationDto
             {
                 Success = output.Success,
