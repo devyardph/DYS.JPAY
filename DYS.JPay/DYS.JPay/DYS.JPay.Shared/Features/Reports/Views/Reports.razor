@@ -86,6 +86,7 @@
                             <thead>
                                 <tr class="bg-[#f1f4fa]">
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Customer name</th>
+                                    <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">TXN Code</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Payment mode</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Total</th>
                                     <th class="px-4 py-4 text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Count</th>
@@ -143,6 +144,9 @@
                                                         <p class="text-xs text-gray-500">@transaction.Cashier</p>
                                                     </div>
                                                 </div>
+                                            </td>
+                                            <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
+                                                @transaction.Code
                                             </td>
                                             <td class="px-3 py-2 text-sm font-medium text-[#181c20]">
                                                 @transaction.PaymentMode?.ToUpper()

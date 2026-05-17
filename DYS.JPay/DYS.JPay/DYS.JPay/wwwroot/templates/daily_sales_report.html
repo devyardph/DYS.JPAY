@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Daily Sales Transactions</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Modern font -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet">
+</head>
+<body style="margin:0; padding:10px; background-color:#f4f6f8; font-family:'Inter', 'Segoe UI', Arial, sans-serif;">
+    <table width="100%" cellpadding="0" cellspacing="0" style="max-width:690px; margin:auto; background:#ffffff; border-radius:8px; box-shadow:0 2px 6px rgba(0,0,0,0.1); overflow:hidden;">
+        <!-- Header -->
+        <tr>
+            <td style="background:#4A154B; color:#ffffff; padding:20px; text-align:center;">
+                <h1 style="margin:0; font-size:25px; font-weight:600;">Daily Sales Report</h1>
+                <small>#store-name# - #store-branch# - #store-counter#</small>
+            </td>
+
+        </tr>
+        <!-- Body -->
+        <tr>
+            <td style="padding:24px; color:#333333; font-size:15px; line-height:1.6;">
+                <p style="margin:0 0 12px;">Hi Team,</p>
+                <p style="margin:0 0 20px;">Here’s the summary of today’s transactions:</p>
+
+                <!-- Transactions Table -->
+                <table width="100%" cellpadding="5" cellspacing="0" style="border-collapse:collapse; margin-top:12px; font-size:14px;">
+                    <thead>
+                        <tr style="background:#f2f4f7; border-bottom:2px solid #e0e0e0;">
+                            <th align="left">TXN Code</th>
+                            <th align="left">Customer</th>
+                            <th align="center">Qty</th>
+                            <th align="right">Amount</th>
+                            <th align="left">Date</th>
+                            <th align="center">Status</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        #transaction-items#
+                    </tbody>
+                </table>
+
+                <!-- Totals -->
+                <table width="100%" cellpadding="5" cellspacing="0" style="border-collapse:collapse; margin-top:20px; background:#f9fafb; border-radius:6px; font-size:14px;">
+                    <tr style="border-bottom:1px solid #e0e0e0;">
+                        <td>Total Sales</td>
+                        <td align="right" style="font-weight:bolder">#grand-total#</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #e0e0e0;">
+                        <td>Completed</td>
+                        <td align="right" style="font-weight: bolder">#completed#</td>
+                    </tr>
+                    <tr style="border-bottom:1px solid #e0e0e0;">
+                        <td>Pending</td>
+                        <td align="right" style="font-weight: bolder">#pending#</td>
+                    </tr>
+                    <tr>
+                        <td>Cancelled</td>
+                        <td align="right" style="font-weight: bolder">#cancelled#</td>
+                    </tr>
+                </table>
+
+                <p style="margin-top:20px;">The detailed CSV report is attached for your review.</p>
+                <p style="margin-top:20px;">Best regards,<br><strong>JPay</strong></p>
+            </td>
+        </tr>
+        <!-- Footer -->
+       
+    </table>
+</body>
+</html>

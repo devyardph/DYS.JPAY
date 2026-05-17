@@ -11,9 +11,6 @@ using DYS.JPay.Shared.Shared.Settings;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
-using Microsoft.Maui.LifecycleEvents;
-using SQLite;
-using System.Runtime.ConstrainedExecution;
 
 namespace DYS.JPay
 {
@@ -53,7 +50,7 @@ namespace DYS.JPay
             builder.Services.AddScoped(sp => new HttpClient { BaseAddress = new Uri($"http://{ip}:5000") });
             builder.Services.AddScoped<IRequestProvider, RequestProvider>();
             builder.Services.AddSingleton<IImageService, ImageService>();
-            
+            builder.Services.AddSingleton<IResourceService, ResourceService>();
 
             builder.Services.AddMauiBlazorWebView();
 

@@ -10,6 +10,8 @@ namespace DYS.JPay.Shared.Shared.Entities
         public string StoreName { get; set; }
         public string StoreDescription { get; set; }
         public string Currency { get; set; }
+        public string Branch { get; set; }
+        public string Counter { get; set; }
         public string Display { get; set; } // grid or list
         public bool Default { get; set; } = false;
         public double? Tax { get; set; }
@@ -18,10 +20,9 @@ namespace DYS.JPay.Shared.Shared.Entities
         public double? TargetWeeklySales { get; set; }
         public double? TargetMonthlySales { get; set; }
         public double? TargetYearlySales { get; set; }
-
         public string GmailAccount { get; set; }
         public string AppPassword { get; set; }
         public bool ReceiveEmailNotification { get; set; } = true;
-        public string TimeZone { get; set; }
+
     }
 }

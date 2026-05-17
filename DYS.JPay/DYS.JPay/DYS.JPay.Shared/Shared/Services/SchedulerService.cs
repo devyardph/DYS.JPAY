@@ -1,8 +1,12 @@
 ﻿using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
+using DYS.JPay.Shared.Shared.Extensions;
 using DYS.JPay.Shared.Shared.Helpers;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.Settings;
+using System.ComponentModel.Design;
+using System.Text;
+using System.Transactions;
 
 namespace DYS.JPay.Shared.Shared.Services
 {
@@ -19,14 +23,17 @@ namespace DYS.JPay.Shared.Shared.Services
        
         private readonly IAppSettingService _appSettingService;
         private readonly ILoggerService _loggerService;
+        private readonly IResourceService _resourceService;
         private readonly SessionService _sessionService;
         public SchedulerService(
             IAppSettingService appSettingService,
             ILoggerService loggerService,
+            IResourceService resourceService,
             SessionService sessionService)
         {
             _appSettingService = appSettingService;
             _loggerService = loggerService;
+            _resourceService = resourceService;
             _sessionService = sessionService;
         }
 
@@ -101,10 +108,39 @@ namespace DYS.JPay.Shared.Shared.Services
 
             string today = DateTime.Now.ToString("yyyyMMdd");
 
+            // Namespace + folder + filename
+            //string basePath = AppContext.BaseDirectory;
+            //string filePath = Path.Combine(basePath, "wwwroot", "template", "daily_sales_report.html");
+            //var template = await File.ReadAllTextAsync(filePath);
+
+            var template = await _resourceService.ReadFileAsync("wwwroot/templates/daily_sales_report.html");
+
             var setting = await _appSettingService.GetSettingAsync();
             var sender = setting.GmailAccount;
             var password = setting.AppPassword;
             var emailNotificationEnabled = setting.ReceiveEmailNotification;
+
+            template = template.Replace("#store-name#", setting?.StoreName);
+            template = template.Replace("#store-branch#", setting?.Branch);
+            template = template.Replace("#store-counter#", setting?.Counter);
+
+            var content = new StringBuilder();
+            foreach (var transaction in transactions)
+            {
+                content.Append("<tr style='border-bottom:1px solid #eee;'>");
+                content.Append($"<td align='left'>{transaction.Code}</td>");
+                content.Append($"<td align='left'>{transaction.CustomerName}</td>");
+                content.Append($"<td align='center'>{transaction.Count}</td>");
+                content.Append($"<td align='right'>{setting?.Currency}{transaction.GrandTotal?.ToString("N2")}</td>");
+                content.Append($"<td align='left'>{transaction.DateCreated.FormatDate("dd-MM-yy hh:mmtt")}</td>");
+                content.Append($"<td align='center'>{transaction.Status}</td>");
+                content.Append("</tr>");
+            }
+            template = template.Replace("#transaction-items#", content.ToString());
+            template = template.Replace("#grand-total#", $"{setting?.Currency}{transactions?.Sum(query => query.GrandTotal ?? 0).ToString("N2")}");
+            template = template.Replace("#completed#", transactions?.Where(query => query.Status == GlobalSettings.COMPLETED).Count().ToString());
+            template = template.Replace("#pending#", transactions?.Where(query => query.Status == GlobalSettings.PREPARING).Count().ToString());
+            template = template.Replace("#cancelled#", transactions?.Where(query => query.Status == GlobalSettings.CANCELLED).Count().ToString());
 
             if (emailNotificationEnabled &&
                 !string.IsNullOrEmpty(sender) &&
@@ -113,7 +149,7 @@ namespace DYS.JPay.Shared.Shared.Services
                 var emailSent = await EmailService.SendEmailAsync(
                     $"{email.Email.Trim()}",
                     $"{email.Subject} {today}",
-                    $"{email.Subject}", sender, password,
+                    $"{template}", sender, password,
                     bytes,
                     cancellationToken
                 );
@@ -125,6 +161,7 @@ namespace DYS.JPay.Shared.Shared.Services
                 info.Type = emailSent.Success ? GlobalSettings.INFO : GlobalSettings.ERROR;
                 info.Message = emailSent.Message;
                 info.ExecutedBy = _sessionService.CurrentUser.Username;
+                info.DateCreated = DateTime.UtcNow;
             }
             else
             {
@@ -133,6 +170,7 @@ namespace DYS.JPay.Shared.Shared.Services
                 info = new Logger();
                 info.Type = GlobalSettings.ERROR;
                 info.Message = output.Message;
+                info.DateCreated = DateTime.UtcNow;
                 info.ExecutedBy = _sessionService.CurrentUser.Username;
             }
             await _loggerService.SaveAsync(info);

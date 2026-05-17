@@ -15,11 +15,17 @@
 
 <div class="flex-1 overflow-y-auto px-6 py-3 no-scrollbar">
     <form id="canvass-form" class="space-y-3">
-        <div class="space-y-1.5">
+        <div class="space-y-1">
             <TextComponent Id="name" @bind-Item="@AppSetting.StoreName" Label="Store Name" PlaceHolder="e.g. store name" Style="bg-[#f1f4fa]" />
         </div>
-        <div class="space-y-1.5">
+        <div class="space-y-1">
             <TextAreaComponent Id="description" @bind-Item="@AppSetting.StoreDescription" Label="Store Description" PlaceHolder="e.g. store description" Style="bg-[#f1f4fa]" />
+        </div>
+        <div class="space-y-1">
+            <TextComponent Id="branch" @bind-Item="@AppSetting.Branch" Label="Store Branch" PlaceHolder="e.g. store branch" Style="bg-[#f1f4fa]" />
+        </div>
+        <div class="space-y-1">
+            <TextComponent Id="counter" @bind-Item="@AppSetting.Counter" Label="Counter no." PlaceHolder="e.g. counter 1" Style="bg-[#f1f4fa]" />
         </div>
         <div class="space-y-1">
             <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Product display settings</label>

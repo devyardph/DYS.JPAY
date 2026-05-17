@@ -7,6 +7,7 @@ namespace DYS.JPay.Shared.Shared.Dtos
 {
     public class TransactionDto:BaseEntityDto
     {
+        public string Code { get; set; }
         public string Cashier { get; set; } = string.Empty;
         public string CustomerName { get; set; } = string.Empty;
         public string PaymentMode { get; set; } = string.Empty;

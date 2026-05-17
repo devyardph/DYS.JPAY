@@ -74,6 +74,8 @@ namespace DYS.JPay.Shared.Shared.Services
             transaction.Id = Guid.NewGuid();
             try
             {
+                var code = transaction.Id.GenerateUniqueCode();
+                transaction.Code = code;
                 await _transactionRepository.InsertAsync(transaction);
                 var items = new List<Order>();
                 foreach (var order in cart.Orders)
@@ -128,6 +130,8 @@ namespace DYS.JPay.Shared.Shared.Services
             }
             item.Status = status;
             item.Note = note;
+            var code = item.Id.GenerateUniqueCode();
+            item.Code = code;
             await _transactionRepository.UpdateAsync(item);
             return item;
         }

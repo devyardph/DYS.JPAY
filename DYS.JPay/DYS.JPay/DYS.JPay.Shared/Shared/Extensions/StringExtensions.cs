@@ -900,5 +900,12 @@ namespace DYS.JPay.Shared.Shared.Extensions
         {
             return !string.IsNullOrEmpty(text) ? text.Substring(0, 1) : string.Empty;
         }
+
+        public static string GenerateUniqueCode(this Guid id)
+        {
+            // Take first 8 characters of the GUID for brevity
+            string code = id.ToString("N").Substring(0, 8).ToUpper();
+            return $"TXN-{code}";
+        }
     }
 }
