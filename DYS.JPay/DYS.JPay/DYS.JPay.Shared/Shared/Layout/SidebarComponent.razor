@@ -1,4 +1,5 @@
 ﻿@using DYS.JPay.Shared.Shared.Services
+@using DYS.JPay.Shared.Shared.Settings
 @using DYS.JPay.Shared.Shared.ViewModels
 @inject IJSRuntime JS
 @inject NavigationManager NavigationManager
@@ -21,34 +22,44 @@
     </div>
 
     <nav class="flex-1 space-y-2 px-4">
-        <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("", "/"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Point of Sale">
-            <svg xmlns="http://www.w3.org/2000/svg"
-                 width="24" height="24" viewBox="0 0 24 24"
-                 fill="none" stroke="currentColor" stroke-width="3"
-                 stroke-linecap="round" stroke-linejoin="round"
-                 class="w-5 h-5 shrink-0">
-                <path d="M12 5v14M5 12h14"></path>
-            </svg>
+        <ContentComponent Roles="@($"{GlobalSettings.ADMIN},{GlobalSettings.OWNER},{GlobalSettings.CASHIER}")">
+            <Content>
+                <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("", "/"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Point of Sale">
+                    <svg xmlns="http://www.w3.org/2000/svg"
+                         width="24" height="24" viewBox="0 0 24 24"
+                         fill="none" stroke="currentColor" stroke-width="3"
+                         stroke-linecap="round" stroke-linejoin="round"
+                         class="w-5 h-5 shrink-0">
+                        <path d="M12 5v14M5 12h14"></path>
+                    </svg>
+                    <span class="sidebar-text whitespace-nowrap">Create order</span>
+                </a>
+            </Content>
+        </ContentComponent>
+        <ContentComponent Roles="@($"{GlobalSettings.ADMIN},{GlobalSettings.OWNER},{GlobalSettings.CASHIER}")">
+            <Content>
+                 <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("dashboard", "/dashboard"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "dashboard", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Dashboard">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
+                    <span class="sidebar-text whitespace-nowrap">Dashboard</span>
+                </a>
+            </Content>
+        </ContentComponent>
+        <ContentComponent Roles="@($"{GlobalSettings.ADMIN},{GlobalSettings.OWNER}")">
+               <Content>
+                <a href="javascript:void(0)"
+                   @onclick="@(() => NavigationToPath1("categories", "/categories"))"
+                   class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "categories", "shadow-sm bg-white/10 text-white", "text-white/70")"
+                   title="Categories">
 
-            <span class="sidebar-text whitespace-nowrap">Create order</span>
-        </a>
-        <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("dashboard", "/dashboard"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "dashboard", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Dashboard">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path></svg>
-            <span class="sidebar-text whitespace-nowrap">Dashboard</span>
-        </a>
-        <a href="javascript:void(0)"
-           @onclick="@(() => NavigationToPath1("categories", "/categories"))"
-           class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "categories", "shadow-sm bg-white/10 text-white", "text-white/70")"
-           title="Categories">
+                    <!-- Changed SVG icon to a grid layout -->
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M3 7h5l2 2h11v9a2 2 0 01-2 2H3a2 2 0 01-2-2V7z" />
+                    </svg>
 
-            <!-- Changed SVG icon to a grid layout -->
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M3 7h5l2 2h11v9a2 2 0 01-2 2H3a2 2 0 01-2-2V7z" />
-            </svg>
-
-            <span class="sidebar-text whitespace-nowrap">Categories</span>
-        </a>
+                    <span class="sidebar-text whitespace-nowrap">Categories</span>
+                </a>
+           
 
         <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("products", "/products"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "products", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Products">
             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 10h18M7 15h1m4 0h1m-7 4h12a3 3 0 003-3V8a3 3 0 00-3-3H6a3 3 0 00-3 3v8a3 3 0 003 3z"></path></svg>
@@ -64,36 +75,49 @@
             </svg>
             <span class="sidebar-text whitespace-nowrap">Promotions</span>
         </a>
-
-        <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("transactions", "/transactions"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "transactions", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Transactions">
+            </Content>
+        </ContentComponent>
+        <ContentComponent Roles="@($"{GlobalSettings.ADMIN},{GlobalSettings.OWNER},{GlobalSettings.CASHIER}")">
+        <Content>
+            <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("transactions", "/transactions"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "transactions", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Transactions">
             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
             <span class="sidebar-text whitespace-nowrap">Transactions</span>
         </a>
         <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("reports", "/reports"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "reports", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Reports">
             <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
             <span class="sidebar-text whitespace-nowrap">Reports</span>
-        </a>
-        <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("users", "/users"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "users", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Users">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
-            <span class="sidebar-text whitespace-nowrap">Users</span>
-        </a>
-        <a href="javascript:void(0)"
-           @onclick="@(() => NavigationToPath1("logs", "/logs"))"
-           class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group
-            @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "logs", "shadow-sm bg-white/10 text-white", "text-white/70")"
-           title="Logs">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <!-- Terminal/console style -->
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
-                      d="M4 4h16v16H4V4zm3 5l3 3-3 3m6 3h4" />
-            </svg>
-            <span class="sidebar-text whitespace-nowrap">Logs</span>
-        </a>
+                </a>
+            </Content>
+        </ContentComponent>
+        <ContentComponent Roles="@($"{GlobalSettings.ADMIN},{GlobalSettings.OWNER}")">
+           <Content>
+                <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("users", "/users"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "users", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Users">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z"></path></svg>
+                    <span class="sidebar-text whitespace-nowrap">Users</span>
+                </a>
+                <a href="javascript:void(0)"
+                   @onclick="@(() => NavigationToPath1("logs", "/logs"))"
+                   class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group
+                    @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "logs", "shadow-sm bg-white/10 text-white", "text-white/70")"
+                   title="Logs">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <!-- Terminal/console style -->
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                              d="M4 4h16v16H4V4zm3 5l3 3-3 3m6 3h4" />
+                    </svg>
+                    <span class="sidebar-text whitespace-nowrap">Logs</span>
+                </a>
+           </Content>
+        </ContentComponent>
+        <ContentComponent Roles="@($"{GlobalSettings.ADMIN},{GlobalSettings.OWNER},{GlobalSettings.CASHIER}")">
+            <Content>
+                <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("settings", "/settings"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "settings", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Settings">
+                    <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
+                    <span class="sidebar-text whitespace-nowrap">Settings</span>
+                </a>
 
-        <a href="javascript:void(0)" @onclick="@(() => NavigationToPath1("settings", "/settings"))" class="nav-link w-full flex items-center space-x-3 px-4 py-3 rounded-xl transition-all duration-200 font-headline font-semibold text-white/70 hover:text-white hover:bg-white/10 group @BooleanExtensions.GetConditionalString(VM.ActiveMenu == "settings", "shadow-sm bg-white/10 text-white", "text-white/70")" title="Settings">
-            <svg class="w-5 h-5 shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z"></path><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z"></path></svg>
-            <span class="sidebar-text whitespace-nowrap">Settings</span>
-        </a>
+            </Content>
+        </ContentComponent>
     </nav>
 
     <div class="space-y-2 border-t border-white/10 pt-4 px-4 mb-auto">

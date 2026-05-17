@@ -17,12 +17,16 @@
                         <h1 class="text-3xl font-headline font-extrabold text-primary tracking-tight">General settings</h1>
                         <p class="text-sm text-on-surface-variant">Store settings configuration.</p>
                     </div>
-                    <div class="flex gap-3">
-                        <a href="javascript:void(0)" @onclick="@(() => VM.OpenSetting(VM.Session.AppSettings))" class="px-4 py-2 bg-primary text-white rounded-2xl shadow-lg active:scale-95 transition-all flex items-center gap-2">
-                            <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
-                            <span>Change setting</span>
-                        </a>
-                    </div>
+                    <ContentComponent Roles="@($"{GlobalSettings.ADMIN},{GlobalSettings.OWNER}")">
+                        <Content>
+                            <div class="flex gap-3">
+                                <a href="javascript:void(0)" @onclick="@(() => VM.OpenSetting(VM.Session.AppSettings))" class="px-4 py-2 bg-primary text-white rounded-2xl shadow-lg active:scale-95 transition-all flex items-center gap-2">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14" /><path d="M12 5v14" /></svg>
+                                    <span>Change setting</span>
+                                </a>
+                            </div>
+                        </Content>
+                    </ContentComponent>
                 </div>
 
                 <div class="p-10 bg-surface-container-lowest rounded-2xl border border-outline-variant/10 shadow-sm overflow-hidden">
@@ -51,7 +55,7 @@
                                         <div class="space-y-2  mb-2">
                                             <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Product display settings</label>
                                             <div class="flex gap-2">
-                                                <button @onclick="@(() => @VM.SetDisplay("grid"))" class="p-3 rounded-xl shadow-lg scale-110 @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "grid", "bg-primary text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
+                                                <button class="p-3 rounded-xl shadow-lg scale-110 @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "grid", "bg-primary text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          width="24" height="24"
                                                          viewBox="0 0 24 24"
@@ -68,7 +72,7 @@
                                                         <rect width="7" height="7" x="3" y="14" rx="1"></rect>
                                                     </svg>
                                                 </button>
-                                                <button @onclick="@(() => @VM.SetDisplay("list"))" class="p-3 rounded-xl @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "list", "bg-primary text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
+                                                <button class="p-3 rounded-xl @BooleanExtensions.GetConditionalString(VM.AppSetting.Display == "list", "bg-primary text-white", "bg-[#f1f4fa] text-[#40484c] hover:bg-[#dfe3e8]")">
                                                     <svg xmlns="http://www.w3.org/2000/svg"
                                                          width="24" height="24"
                                                          viewBox="0 0 24 24"
@@ -113,8 +117,8 @@
                                             <LabelComponent Id="tax" Item="@($"{VM.AppSetting.Tax?.ToString()}%")" Label="Tax" Style="bg-[#f1f4fa] rounded-2xl" />
                                         </div>
                                         <div class="flex-1 mb-5">
-                                            <h1 class="text-2xl font-headline font-extrabold text-gray tracking-tight">Sales Target</h1>
-                                            <p class="text-sm text-on-surface-variant">Seup daily, weekly, monthly and yearly targets.</p>
+                                            <h1 class="text-2xl font-headline font-extrabold text-gray tracking-tight">Sales Target in @VM.AppSetting.Currency</h1>
+                                            <p class="text-sm text-on-surface-variant">Setup daily, weekly, monthly and yearly targets.</p>
                                         </div>
                                         <div class="space-y-2">
                                             <div class="flex gap-4">
@@ -173,7 +177,7 @@
                                                 <div class="p-4 bg-[#f1f4fa] rounded-2xl border border-[#dfe3e8]/30">
                                                     <p class="text-xs font-bold text-[#003345] uppercase tracking-widest mb-1">What is GMAIL appcode?</p>
                                                     <p class="text-xs text-[#40484c]">
-                                                        Gmail app code will let you use gmail to send email notification to yourself.
+                                                        Gmail app code will let you use gmail to send email notification.
                                                     </p>
                                                 </div>
                                             </div>
