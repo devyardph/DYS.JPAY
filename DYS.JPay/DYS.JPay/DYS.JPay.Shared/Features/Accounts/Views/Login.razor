@@ -3,7 +3,7 @@
 @using DYS.JPay.Shared.Features.Accounts.ViewModels
 @using DYS.JPay.Shared.Shared.Services
 @using Microsoft.AspNetCore.Authorization
-@inject LoginViewModel LoginVM
+@inject LoginViewModel VM
 
 
 
@@ -17,15 +17,17 @@
 
             <form class="space-y-4">
                 <div class="space-y-1.5">
-                    <TextComponent Id="username" @bind-Item="@LoginVM.Profile.Username" Label="Username" PlaceHolder="e.g. admin" />
+                    <TextComponent Id="username" @bind-Item="@VM.Profile.Username" Label="Username" PlaceHolder="e.g. admin" />
                 </div>
                 <div class="space-y-1.5">
-                    <PasscodeComponent Id="passcode" @bind-Item="@LoginVM.Profile.Passcode" Label="6-Digit Code" PlaceHolder="••••••" />
+                    <PasscodeComponent Id="passcode" @bind-Item="@VM.Profile.Passcode" Label="6-Digit Code" PlaceHolder="••••••" />
                 </div>
-                <button type="button" @onclick="@LoginVM.BasicLogin" class="w-full active:scale-95 bg-primary hover:bg-primary/90 text-white font-bold py-3 rounded-xl transition-colors shadow-md mt-2">Sign In</button>
+                 <div class="space-y-1.5">
+                    <ButtonComponent Disabled="@(!VM.Profile.ValidContent())" Id="btn-login" IsBusy="@VM.IsBusy" Click="@VM.BasicLogin" ActionText="Sign in" Style="bg-primary text-white w-full" />
+                </div>
             </form>
 
-          <NotificationComponent Notification="@LoginVM.Notification"/>
+          <NotificationComponent Notification="@VM.Notification"/>
         </div>
 
     </div>

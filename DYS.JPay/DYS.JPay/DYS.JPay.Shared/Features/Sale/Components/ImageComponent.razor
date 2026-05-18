@@ -45,7 +45,8 @@ else
 
     public async Task LoadImageAsync()
     {
-        if (ImageUrl.Contains("https")) ImagePath = ImageUrl;
+        if (string.IsNullOrEmpty(ImageUrl)) ImagePath = "";
+        else if (ImageUrl.Contains("https")) ImagePath = ImageUrl;
         else 
         { 
         if (!string.IsNullOrEmpty(ImageUrl) && !string.IsNullOrEmpty(TempImageUrl))

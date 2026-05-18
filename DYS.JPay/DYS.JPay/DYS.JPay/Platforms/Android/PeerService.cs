@@ -1,57 +1,99 @@
-﻿using Android.Content;
-using Android.Net.Wifi.P2p;
-using DYS.JPay.Shared.Shared.Services;
-using Java.IO;
-using System;
+﻿using System;
 using System.Collections.Generic;
-using System.Text;
-using static Android.Net.Wifi.P2p.WifiP2pManager;
+using System.IO;
+using System.Threading.Tasks;
+using Java.Net; // Android sockets
+using Java.IO;
+using DYS.JPay.Shared.Shared.Services;  // Java I/O
 
 namespace DYS.JPay.Platforms.Android
 {
-    public class PeerService : Java.Lang.Object, IPeerService, WifiP2pManager.IChannelListener
+
+    public class PeerService : IPeerService
     {
-        private WifiP2pManager _manager;
-        private WifiP2pManager.Channel _channel;
+        private ServerSocket _serverSocket;
+        private readonly List<Socket> _clients = new();
 
         public event Action<string> OrderReceived;
         public event Action<int> PeersUpdated;
         public event Action<List<string>> PeerNamesUpdated;
 
-        public PeerService(Context context)
+        public PeerService()
         {
-            _manager = (WifiP2pManager)context.GetSystemService(Context.WifiP2pService);
-            _channel = _manager.Initialize(context, context.MainLooper, this);
-
-  //          _manager.DiscoverPeers(_channel, new ActionListener(
-  //    onSuccess: () => Console.WriteLine("Peer discovery started."),
-  //    onFailure: reason => Console.WriteLine($"Peer discovery failed: {reason}")
-  //));
+            //Task.Run(() => StartServer());
         }
 
-        public void OnChannelDisconnected()
+        private async Task StartServer()
         {
-            // handle channel lost
+            try
+            {
+                _serverSocket = new ServerSocket(5000); // listen on port 5000
+
+                while (true)
+                {
+                    var client = await _serverSocket.AcceptAsync(); // wait for connection
+                    _clients.Add(client);
+
+                    PeersUpdated?.Invoke(_clients.Count);
+                    PeerNamesUpdated?.Invoke(_clients.ConvertAll(c => c.RemoteSocketAddress.ToString()));
+
+                    Task.Run(() => HandleClient(client));
+                }
+            }
+            catch (Exception ex)
+            {
+                //Android.Util.Log.Error("PeerService", $"Server error: {ex.Message}");
+            }
+        }
+
+        private async Task HandleClient(Socket client)
+        {
+            try
+            {
+                //using var reader = new BufferedReader(new InputStreamReader(client.InputStream));
+                //string line;
+                //while ((line = await reader.ReadLineAsync()) != null)
+                //{
+                //    OrderReceived?.Invoke(line);
+                //}
+            }
+            catch (Exception ex)
+            {
+                //Android.Util.Log.Error("PeerService", $"Client error: {ex.Message}");
+            }
         }
 
         public void SendOrder(string orderJson)
         {
-            // Typically use a socket connection once peers are connected
-            // Example: send via OutputStream of a WifiP2pSocket
+            foreach (var client in _clients)
+            {
+                try
+                {
+                    //using var writer = new PrintWriter(client.OutputStream, true);
+                    //writer.Println(orderJson);
+                }
+                catch (Exception ex)
+                {
+                    //Android.Util.Log.Error("PeerService", $"Send error: {ex.Message}");
+                }
+            }
         }
 
         public void UpdateOrder(string content)
         {
-            //var statusJson = $"{{\"orderId\":\"{orderId}\",\"status\":\"{status}\"}}";
-
-            // Example: send via OutputStream of a connected socket
-            //if (_socket != null && _socket.OutputStream != null)
-            //{
-            //    var writer = new OutputStreamWriter(_socket.OutputStream);
-            //    writer.WriteLine(statusJson);
-            //    writer.Flush();
-            //}
+            foreach (var client in _clients)
+            {
+                try
+                {
+                    //using var writer = new PrintWriter(client.OutputStream, true);
+                    //writer.Println(content);
+                }
+                catch (Exception ex)
+                {
+                    //Android.Util.Log.Error("PeerService", $"Update error: {ex.Message}");
+                }
+            }
         }
-
     }
+
 }

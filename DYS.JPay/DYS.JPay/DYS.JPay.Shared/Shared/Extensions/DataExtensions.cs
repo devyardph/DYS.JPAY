@@ -111,10 +111,14 @@ namespace DYS.JPay.Shared.Shared.Extensions
             !string.IsNullOrEmpty(content.Email) &&
             !string.IsNullOrEmpty(content.Code);
 
-        public static bool ValidContent(this AppSetting content) => 
+        public static bool ValidContent(this AppSetting content) =>
             !string.IsNullOrEmpty(content.StoreName) &&
             !string.IsNullOrEmpty(content.StoreDescription) &&
             !string.IsNullOrEmpty(content.Currency);
+
+       public static bool ValidContent(this LoginDto content) =>
+            !string.IsNullOrEmpty(content.Username) &&
+            !string.IsNullOrEmpty(content.Passcode);
 
         public static bool ValidContent(this TransactionDto content)
         {

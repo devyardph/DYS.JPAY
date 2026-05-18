@@ -18,14 +18,14 @@ namespace DYS.JPay.Shared.Features.Promotions.ViewModels
         public readonly IProductService _productService;
         public readonly ICategoryService _categoryService;
         public readonly IPromotionService _promotionService;
-        public readonly IImageService _imageService;
+        public readonly IFileService _imageService;
         public PromotionsViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             SessionService sessionService,
             IProductService patientService,
             ICategoryService categoryService,
             IPromotionService promotionService,
-            IImageService imageService) 
+            IFileService imageService) 
             : base(navigationManager, jsRuntime, sessionService)
         {
             _productService = patientService;

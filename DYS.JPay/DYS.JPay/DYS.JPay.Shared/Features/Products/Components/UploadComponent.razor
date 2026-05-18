@@ -1,0 +1,146 @@
+﻿@inject IJSRuntime JS
+
+<div class="flex items-center justify-between p-6 border-b border-outline-variant/10 bg-surface-container-low/30">
+    <div>
+        <h2 id="offcanvas-title" class="text-2xl font-headline font-extrabold text-primary">
+            Batch upload
+        </h2>
+        <p id="offcanvas-subtitle" class="text-sm text-on-surface-variant mt-1">
+           Upload product list in csv.
+        </p>
+    </div>
+    <button @onclick="@OnCancelAsync" class="p-2 hover:bg-surface-container-highest rounded-full transition-colors text-on-surface-variant">
+        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"></path></svg>
+    </button>
+</div>
+
+<div class="flex-1 overflow-y-auto display-6 pr-6 pl-6 no-scrollbar">
+    <form id="canvass-form" class="space-y-2">
+        <div class="space-y-1">
+            <button type="button" @onclick="@FileUploaded" class="w-full">
+                @if (IsProcessing)
+                {
+                    <div class="w-24 h-24 flex items-center justify-center mx-auto mb-6">
+                        <svg class="animate-spin w-12 h-12 text-primary" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24">
+                            <circle class="opacity-25" cx="12" cy="12" r="10"
+                                    stroke="currentColor" stroke-width="4" fill="none"></circle>
+                            <path class="opacity-75" fill="currentColor"
+                                  d="M12 2a10 10 0 0 1 10 10h-4a6 6 0 0 0-6-6V2z"></path>
+                        </svg>
+                    </div>
+                }
+                else
+                {
+                    <div class="flex items-center justify-center w-full">
+                        <div for="dropzone-file"
+                               class="flex flex-col items-center justify-center w-full h-25 border-2 border-dashed rounded-xl cursor-pointer
+                            bg-gray-50 hover:bg-gray-100 border-gray-300">
+                            <div class="flex flex-col items-center justify-center pt-5 pb-6">
+                                <svg class="w-10 h-10 mb-3 text-gray-400"
+                                     fill="none" stroke="currentColor" stroke-width="2"
+                                     viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M4 16v2a2 2 0 002 2h12a2 2 0 002-2v-2M7 9l5-5 5 5M12 4v12" />
+                                </svg>
+                                <p class="mb-2 text-sm text-gray-500">
+                                    <span class="font-semibold">Click to upload</span> or drag and drop
+                                </p>
+                                <p class="text-xs text-gray-400">CSV, XLSX</p>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </button>
+          
+        </div>
+         <div class="space-y-1">
+            <div class="overflow-x-auto">
+                @if (Products.Any())
+                {
+                    <table class="min-w-full border-collapse border border-gray-200 text-sm">
+                        <thead class="bg-gray-100">
+                            <tr>
+                                <th class="px-2 py-1 border border-gray-200 text-left font-medium">Name</th>
+                                <th class="px-2 py-1 border border-gray-200 text-left font-medium">Code</th>
+                                <th class="px-2 py-1 border border-gray-200 text-left font-medium">Type</th>
+                                <th class="px-2 py-1 border border-gray-200 text-left font-medium">Price</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach (var product in Products!)
+                            {
+                                <tr class="hover:bg-gray-50">
+                                    <td class="px-2 py-1 border border-gray-200">@product.Name</td>
+                                    <td class="px-2 py-1 border border-gray-200">@product.Code</td>
+                                    <td class="px-2 py-1 border border-gray-200">@product.Type</td>
+                                    <td class="px-2 py-1 border border-gray-200">@product.Price?.ToString("N2")</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                }
+            </div>
+         </div>
+         <div class="space-y-1">
+            <AlertComponent Notification="@Notification" />
+        </div>
+    </form>
+</div>
+
+<div class="p-6 border-t border-outline-variant/10 bg-surface-container-lowest flex gap-3 mb-5">
+    <ButtonComponent  Id="btn-cancel" Click="@OnCancelAsync" ActionText="Cancel" Style="bg-surface-container-highest text-on-surface border-t border-outline-variant/10" />
+    <ButtonComponent  Id="btn-product" IsBusy="@IsBusy" Click="@OnSaveAsync" ActionText="@ActionText" Style="@ActionStyle" />
+</div>
+
+@code {
+    [Parameter]
+    public string Currency { get; set; } = string.Empty;
+    [Parameter]
+    public string ActionText { get; set; } = "Save products";
+    [Parameter]
+    public string ActionStyle { get; set; } = "bg-primary text-white";
+    [Parameter]
+    public bool IsBusy { get; set; } = false;
+    [Parameter]
+    public bool IsProcessing { get; set; } = false;
+    [Parameter]
+    public NotificationDto Notification { get; set; } = new NotificationDto();
+    [Parameter]
+    public List<ProductTemplateDto> Products { get; set; } = new List<ProductTemplateDto>();
+    [Parameter]
+    public EventCallback<List<ProductTemplateDto>> ProductsChanged { get; set; }
+    [Parameter]
+    public EventCallback FileUploaded { get; set; }
+    [Parameter]
+    public EventCallback Save { get; set; }
+
+    public async Task OnSaveAsync()
+    {
+        await ProductsChanged.InvokeAsync(Products);
+        await Save.InvokeAsync();
+        await JS.InvokeVoidAsync("trigger", "btn-search");
+        await Initialize();
+    }
+
+    public async Task OnCancelAsync()
+    {
+        await JS.InvokeVoidAsync("closeOffcanvas", "upload-overlay", "upload-component");
+        await JS.InvokeVoidAsync("trigger", "btn-search");
+        await Initialize();
+    }
+
+    public async Task Initialize()
+    {
+        ActionText = "Save products";
+        ActionStyle = "bg-primary text-white";
+    }
+
+    public async Task ConfirmDeletionAsync(bool delete)
+    {
+        if (delete) {
+            ActionText = "Confirm deletion";
+            ActionStyle = "bg-red-500 text-white";
+        }
+        else await Initialize();
+    }
+}

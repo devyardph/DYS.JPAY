@@ -92,5 +92,5 @@ namespace DYS.JPay.Platforms.iOS
             return await tcs.Task;
         }
 
-        }
+    }
 }

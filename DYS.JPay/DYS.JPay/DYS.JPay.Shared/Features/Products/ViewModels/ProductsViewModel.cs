@@ -20,18 +20,18 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
 
         public readonly IProductService _productService;
         public readonly ICategoryService _categoryService;
-        public readonly IImageService _imageService;
+        public readonly IFileService _fileService;
         public ProductsViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             SessionService sessionService,
             IProductService patientService,
             ICategoryService categoryService,
-            IImageService imageService) 
+            IFileService fileService) 
             : base(navigationManager, jsRuntime, sessionService)
         {
             _productService = patientService;
             _categoryService = categoryService;
-            _imageService = imageService;
+            _fileService = fileService;
         }
 
         #region PROPERTIES
@@ -41,6 +41,8 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         private List<CategoryDto> categories = new List<CategoryDto>();
         [ObservableProperty]
         private List<VariantDto> variants = new List<VariantDto>();
+        [ObservableProperty]
+        private List<ProductTemplateDto> productTemplates = new List<ProductTemplateDto>();
         [ObservableProperty]
         private SearchDto search = new SearchDto();
 
@@ -103,10 +105,38 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             IsBusy = false;
         }
 
+        public async Task SubmitProductsAsync()
+        {
+            IsBusy = true;
+            var products = new List<ProductDto>();
+            foreach (var template in ProductTemplates)
+            {
+                var product = new ProductDto();
+                product.Id = Guid.NewGuid();
+                product.Name = template.Name;
+                product.Code = template.Code;
+                product.Description = template.Description;
+                product.Price = template.Price;
+                product.Active = template.Active ?? false;
+                product.Barcode = template.Barcode;
+                product.Type = template.Type;
+                products.Add(product);
+            }
+            await _productService.SubmitProductsAsync(products);
+            await _jsRuntime.InvokeVoidAsync("closeOffcanvas", "upload-overlay", "upload-component");
+            IsBusy = false;
+        }
+
         public async Task OpenProduct(ProductDto? product) {
             Product = product ?? new ProductDto();
             await _jsRuntime.InvokeVoidAsync("openOffcanvas","product-overlay","product-component");
             await ProductComponent.LoadImageAsync();
+        }
+
+        public async Task OpenBatchUpload()
+        {
+            ProductTemplates = new List<ProductTemplateDto>();
+            await _jsRuntime.InvokeVoidAsync("openOffcanvas", "upload-overlay", "upload-component");
         }
 
         public async Task OpenVariant(ProductDto? product)
@@ -121,11 +151,22 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         public async Task UploadImageAsync()
         {
             IsProcessing = true;
-            var output = await _imageService.PickAndResizeAsync(500);
+            var output = await _fileService.PickAndResizeAsync(500);
             Product.TempImageUrl = output.tempPath;
             Product.ImageUrl = output.photoPath;
             IsProcessing = false;
             await ProductComponent.LoadImageAsync();
+        }
+
+        public async Task UploadFileAsync()
+        {
+            IsProcessing = true;
+            Notification = new NotificationDto();
+            var output = await _fileService.GetFileAsync();
+            Notification.Success = output.Success;
+            Notification.Description = output.Message;
+            ProductTemplates = output.Entity ?? new List<ProductTemplateDto>();
+            IsProcessing = false;
         }
         #endregion
 

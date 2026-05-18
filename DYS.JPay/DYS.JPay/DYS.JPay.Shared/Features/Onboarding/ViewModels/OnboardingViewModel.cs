@@ -18,7 +18,7 @@ namespace DYS.JPay.Shared.Features.Onboarding.ViewModels
         private readonly IUserService _userService;
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
-        private readonly IImageService _imageService;
+        private readonly IFileService _imageService;
         private readonly IAccountService _accountService;
         public OnboardingViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
@@ -26,7 +26,7 @@ namespace DYS.JPay.Shared.Features.Onboarding.ViewModels
             IUserService userService,
             IProductService productService,
             ICategoryService categoryService,
-            IImageService imageService,
+            IFileService imageService,
             IAccountService accountService,
             SessionService sessionService) 
             : base(navigationManager, jsRuntime, sessionService)

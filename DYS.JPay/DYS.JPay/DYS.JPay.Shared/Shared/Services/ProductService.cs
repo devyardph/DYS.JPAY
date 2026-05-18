@@ -22,16 +22,19 @@ namespace DYS.JPay.Shared.Shared.Services
     }
     public class ProductService : BaseService,IProductService
     {
+        private readonly IRepository<Category> _categoryRepository;
         private readonly IRepository<Product> _productRepository;
         private readonly IRepository<Variant> _variantRepository;
         private readonly IRepository<Logger> _loggerRepository;
         private readonly SessionService _sessionService;
         public ProductService(
+            IRepository<Category> categoryRepository,
             IRepository<Product> productRepository, 
             IRepository<Variant> variantRepository,
             IRepository<Logger> loggerRepository,
             SessionService sessionService)
         {
+            _categoryRepository = categoryRepository;
             _productRepository = productRepository;
             _variantRepository = variantRepository;
             _loggerRepository = loggerRepository;
@@ -102,8 +105,35 @@ namespace DYS.JPay.Shared.Shared.Services
         }
         public async Task<List<Product>> SubmitProductsAsync(List<ProductDto> products)
         {
+            var categories = products.Select(query => query.Type);
+            foreach (var category in categories)
+            {
+                var c = await _categoryRepository.GetAsync(query =>
+                            query.Name!.ToLower() == category!.ToLower());
+                if (c == null)
+                {
+                    await _categoryRepository.InsertAsync(new Category() { Name = category });
+                }
+            }
+            foreach (var p in products)
+            {
+                var c = await _categoryRepository.GetAsync(query => query.Name.ToLower() == p.Type.ToLower());
+                if (c != null) p.CategoryId = c.Id;
+            }
             var items = products.Adapt<List<Product>>();
-            await _productRepository.InsertAsync(items);
+            //ADD OR UPDATE
+            foreach (var item in items)
+            {
+                var product = await _productRepository.GetAsync(query => 
+                  (query.Name!.ToLower() == item.Name!.ToLower()) ||
+                  (query.Id == item.Id) ||
+                  (query.Code!.ToLower()! == item.Code!.ToLower()) 
+                );
+
+                if (product == null)
+                    await _productRepository.InsertAsync(item);
+                else await _productRepository.UpdateAsync(product);
+            }
             return items;
         }
         public async Task<Product> SubmitProductWithVariantsAsync(ProductDto product, List<VariantDto> variants)

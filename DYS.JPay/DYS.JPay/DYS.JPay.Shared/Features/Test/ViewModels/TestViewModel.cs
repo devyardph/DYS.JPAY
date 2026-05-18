@@ -18,7 +18,7 @@ namespace DYS.JPay.Shared.Features.Test.ViewModels
         private readonly IUserService _userService;
         private readonly IProductService _productService;
         private readonly ICategoryService _categoryService;
-        private readonly IImageService _imageService;
+        private readonly IFileService _imageService;
         private readonly IAccountService _accountService;
         public TestViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
