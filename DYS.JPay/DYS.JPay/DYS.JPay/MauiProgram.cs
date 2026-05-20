@@ -28,7 +28,7 @@ namespace DYS.JPay
 
             // Add device-specific services used by the DYS.JPay.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-V29.db");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-v1.20260519.db");
             var dbContext = new DatabaseContext(dbPath);
 
             Task.Run(async () => await dbContext.InitializeAsync());
@@ -51,6 +51,8 @@ namespace DYS.JPay
             builder.Services.AddScoped<IRequestProvider, RequestProvider>();
             builder.Services.AddSingleton<IFileService, FileService>();
             builder.Services.AddSingleton<IResourceService, ResourceService>();
+            //builder.Services.AddSingleton<IReceiptService, ReceiptService>();
+
 
             builder.Services.AddMauiBlazorWebView();
 
@@ -58,13 +60,16 @@ namespace DYS.JPay
 #if IOS
                 builder.Services.AddSingleton<IPeerService,  DYS.JPay.Platforms.iOS.PeerService>();
                 builder.Services.AddSingleton<IPhotoService, DYS.JPay.Platforms.iOS.PhotoService>();
+               
 #elif ANDROID
             builder.Services.AddSingleton<IPeerService, DYS.JPay.Platforms.Android.PeerService>();
             builder.Services.AddSingleton<IPhotoService, DYS.JPay.Platforms.Android.PhotoService>();
+          
 #elif WINDOWS
                 builder.Services.AddSingleton<IPeerService, DYS.JPay.Platforms.Windows.PeerService>();
                 builder.Services.AddSingleton<IPhotoService, DYS.JPay.Platforms.Windows.PhotoService>();
                 builder.Services.AddSingleton<IFilePickerService, DYS.JPay.Platforms.Windows.FilePickerService>();
+              
 #endif
 
 

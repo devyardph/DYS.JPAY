@@ -7,6 +7,21 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="wwwroot\static-html-3\**" />
+    <Compile Remove="wwwroot\static-html\**" />
+    <Compile Remove="wwwroot\web\**" />
+    <Content Remove="wwwroot\static-html-3\**" />
+    <Content Remove="wwwroot\static-html\**" />
+    <Content Remove="wwwroot\web\**" />
+    <EmbeddedResource Remove="wwwroot\static-html-3\**" />
+    <EmbeddedResource Remove="wwwroot\static-html\**" />
+    <EmbeddedResource Remove="wwwroot\web\**" />
+    <None Remove="wwwroot\static-html-3\**" />
+    <None Remove="wwwroot\static-html\**" />
+    <None Remove="wwwroot\web\**" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Compile Remove="Shared\Services\TransactionAPIService.cs" />
   </ItemGroup>
 

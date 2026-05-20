@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+
+<html class="light" lang="en">
+<head>
+    <meta charset="utf-8" />
+    <meta content="width=device-width, initial-scale=1.0" name="viewport" />
+    <title>JPay | The Smartest POS for Modern Business</title>
+    <script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;600;700&amp;family=Hanken+Grotesk:wght@400;600&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet" />
+    <script id="tailwind-config">
+    tailwind.config = {
+        darkMode: "class",
+        theme: {
+          extend: {
+            "colors": {
+                    "surface-container-low": "#f2f3f6",
+                    "error": "#ba1a1a",
+                    "surface-bright": "#f8f9fc",
+                    "inverse-on-surface": "#f0f1f4",
+                    "tertiary-fixed": "#92f4e3",
+                    "surface-variant": "#e1e2e5",
+                    "on-surface": "#191c1e",
+                    "on-secondary": "#ffffff",
+                    "on-primary": "#ffffff",
+                    "surface": "#f8f9fc",
+                    "surface-dim": "#d9dadd",
+                    "secondary-fixed-dim": "#92d0e6",
+                    "surface-container": "#edeef1",
+                    "on-secondary-container": "#26697c",
+                    "tertiary-fixed-dim": "#76d7c7",
+                    "on-secondary-fixed-variant": "#004e60",
+                    "on-secondary-fixed": "#001f28",
+                    "on-tertiary": "#ffffff",
+                    "on-primary-fixed": "#370139",
+                    "on-error-container": "#93000a",
+                    "background": "#f8f9fc",
+                    "inverse-primary": "#f6afef",
+                    "secondary": "#23667a",
+                    "on-tertiary-fixed-variant": "#005047",
+                    "tertiary-container": "#00322c",
+                    "on-background": "#191c1e",
+                    "primary-container": "#4a154b",
+                    "on-error": "#ffffff",
+                    "outline": "#80737d",
+                    "primary-fixed": "#ffd6f8",
+                    "primary-fixed-dim": "#f6afef",
+                    "surface-container-lowest": "#ffffff",
+                    "surface-tint": "#844981",
+                    "secondary-container": "#a8e6fd",
+                    "secondary-fixed": "#b5ebff",
+                    "surface-container-high": "#e7e8eb",
+                    "surface-container-highest": "#e1e2e5",
+                    "tertiary": "#001b17",
+                    "inverse-surface": "#2e3133",
+                    "on-primary-fixed-variant": "#693168",
+                    "on-tertiary-container": "#3da293",
+                    "outline-variant": "#d2c2cd",
+                    "on-primary-container": "#be7db9",
+                    "error-container": "#ffdad6",
+                    "on-surface-variant": "#4f434c",
+                    "primary": "#300033",
+                    "on-tertiary-fixed": "#00201c"
+            },
+            "borderRadius": {
+                    "DEFAULT": "0.25rem",
+                    "lg": "0.5rem",
+                    "xl": "0.75rem",
+                    "full": "9999px"
+            },
+            "spacing": {
+                    "margin-mobile": "20px",
+                    "margin-desktop": "64px",
+                    "stack-lg": "32px",
+                    "gutter": "24px",
+                    "container-max": "1280px",
+                    "stack-sm": "8px",
+                    "stack-md": "16px"
+            },
+            "fontFamily": {
+                    "body-md": ["Hanken Grotesk"],
+                    "body-lg": ["Hanken Grotesk"],
+                    "display-lg": ["Manrope"],
+                    "headline-lg-mobile": ["Manrope"],
+                    "headline-lg": ["Manrope"],
+                    "numeric-data": ["Manrope"],
+                    "headline-md": ["Manrope"],
+                    "label-sm": ["Hanken Grotesk"]
+            },
+            "fontSize": {
+                    "body-md": ["16px", {"lineHeight": "1.5", "fontWeight": "400"}],
+                    "body-lg": ["18px", {"lineHeight": "1.6", "fontWeight": "400"}],
+                    "display-lg": ["48px", {"lineHeight": "1.1", "letterSpacing": "-0.02em", "fontWeight": "700"}],
+                    "headline-lg-mobile": ["24px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "headline-lg": ["32px", {"lineHeight": "1.2", "fontWeight": "700"}],
+                    "numeric-data": ["20px", {"lineHeight": "1", "fontWeight": "700"}],
+                    "headline-md": ["24px", {"lineHeight": "1.3", "fontWeight": "600"}],
+                    "label-sm": ["12px", {"lineHeight": "1", "letterSpacing": "0.05em", "fontWeight": "600"}]
+            }
+          },
+        },
+      }</script>
+    <style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+            display: inline-block;
+            vertical-align: middle;
+        }
+
+        .glass-card {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .soft-shadow {
+            box-shadow: 0 20px 40px -10px rgba(48, 0, 51, 0.06);
+        }
+    </style>
+</head>
+<body class="bg-background text-on-background font-body-md selection:bg-primary-fixed-dim selection:text-primary">
+    
+    <!-- TopAppBar -->
+    <header class="fixed top-0 left-0 w-full z-50 flex justify-between items-center px-margin-mobile md:px-margin-desktop h-20 bg-surface-container-lowest shadow-sm border-b border-outline-variant">
+        <div class="flex items-center gap-stack-lg">
+            <a href="#home-section" class="text-headline-md font-headline-md font-bold text-primary">JPay</a>
+            <nav class="hidden md:flex gap-stack-md">
+                <a class="font-body-md text-body-md text-primary font-bold hover:text-primary transition-colors" href="#feature-section">Features</a>
+                <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#pricing-section">Pricing</a>
+                <a class="font-body-md text-body-md text-on-surface-variant hover:text-primary transition-colors" href="#contact-section">Contact us</a>
+            </nav>
+        </div>
+        <div class="flex items-center gap-stack-md">
+        <!--<button class="hidden sm:block font-body-md text-body-md text-primary font-semibold hover:text-primary-container transition-colors">Log In</button>-->
+            <button class="bg-primary text-on-primary px-6 py-2.5 rounded-full font-headline-md text-body-md font-bold hover:bg-primary-container active:scale-95 transition-all">Get Started</button>
+        </div>
+    </header>
+    <main class="pt-20">
+        <!-- Hero Section -->
+        <section id="home-section" class="relative overflow-hidden py-20 lg:py-20 px-margin-mobile md:px-margin-desktop bg-surface-container-lowest">
+            <div class="max-w-container-max mx-auto grid lg:grid-cols-2 gap-stack-lg items-center">
+                <div class="z-10">
+                    <span class="inline-block px-4 py-1.5 rounded-full bg-primary-fixed text-on-primary-fixed font-label-sm text-label-sm mb-stack-md">POINT OF SALE EVOLVED</span>
+                    <h1 class="font-display-lg text-display-lg text-primary mb-stack-md">The smartest way to run your business.</h1>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant mb-stack-lg max-w-xl">
+                        A seamless, powerful POS solution designed for modern retailers and restaurateurs. Simplify transactions, manage inventory, and gain deep insights—all in one intuitive platform.
+                    </p>
+                    <div class="flex flex-col sm:flex-row gap-stack-md">
+                        <button class="bg-primary text-on-primary px-8 py-4 rounded-xl font-headline-md text-headline-md hover:bg-primary-container transition-colors soft-shadow">Start Free Trial</button>
+                        <button class="flex items-center justify-center gap-stack-sm bg-surface-container-high text-primary px-8 py-4 rounded-xl font-headline-md text-headline-md hover:bg-surface-variant transition-colors">
+                            <span class="material-symbols-outlined">play_circle</span>
+                            Watch Demo
+                        </button>
+                    </div>
+                </div>
+                <div class="relative mt-12 lg:mt-0">
+                    <div class="absolute inset-0 bg-primary/5 rounded-3xl -rotate-2 transform scale-105"></div>
+                    <img alt="A high-fidelity interface mockup of the JPay POS dashboard displayed on a modern tablet. The screen shows a clean, organized layout with vibrant product tiles, a clear transaction summary, and a deep purple sidebar navigation. Soft ambient lighting illuminates the device, creating a professional and technologically advanced atmosphere against a minimalist office background." class="relative rounded-3xl soft-shadow w-full border border-outline-variant" data-alt="A professional product shot of a sleek tablet displaying the JPay Point of Sale interface. The UI is clean and modern, featuring vibrant product photos like lattes and sandwiches in a grid. To the right, a detailed digital receipt sidebar shows itemized orders and a bold purple 'Charge' button. The lighting is soft and high-key, emphasizing the premium quality and ease of use of the software in a bright contemporary retail setting." src="jpay-pos.jpg" />
+                </div>
+            </div>
+        </section>
+        <!-- Features Bento Grid -->
+        <sectionv id="feature-section" class="py-24 px-margin-mobile md:px-margin-desktop bg-surface">
+            <div class="max-w-container-max mx-auto">
+                <div class="text-center mb-16">
+                    <h2 class="font-headline-lg text-headline-lg text-primary mb-4">Everything you need to grow.</h2>
+                    <p class="font-body-lg text-body-lg text-on-surface-variant max-w-2xl mx-auto">From real-time analytics to global promotion management, JPay equips you with professional tools to scale your operations effortlessly.</p>
+                </div>
+                <div class="grid sm:grid-cols-2 lg:grid-cols-3 gap-6 text-left">           
+                    <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center mb-6 text-gray-800">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.5"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-store"
+                                 aria-hidden="true">
+                                <path d="M15 21v-5a1 1 0 0 0-1-1h-4a1 1 0 0 0-1 1v5"></path>
+                                <path d="M17.774 10.31a1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.451 0 1.12 1.12 0 0 0-1.548 0 2.5 2.5 0 0 1-3.452 0 1.12 1.12 0 0 0-1.549 0 2.5 2.5 0 0 1-3.77-3.248l2.889-4.184A2 2 0 0 1 7 2h10a2 2 0 0 1 1.653.873l2.895 4.192a2.5 2.5 0 0 1-3.774 3.244"></path>
+                                <path d="M4 10.95V19a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8.05"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Point of Sale (POS)</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm">
+                            Process transactions anywhere with our lightning-fast, intuitive interface designed specifically for retail and
+                            hospitality.
+                        </p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center mb-6 text-gray-800">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.5"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-layout-dashboard"
+                                 aria-hidden="true">
+                                <rect width="7" height="9" x="3" y="3" rx="1"></rect>
+                                <rect width="7" height="5" x="14" y="3" rx="1"></rect>
+                                <rect width="7" height="9" x="14" y="12" rx="1"></rect>
+                                <rect width="7" height="5" x="3" y="16" rx="1"></rect>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Dashboard</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm">
+                            Real-time insights and sales tracking at a glance to help you make informed decisions about your business
+                            performance.
+                        </p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center mb-6 text-gray-800">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.5"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-box"
+                                 aria-hidden="true">
+                                <path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z"></path>
+                                <path d="m3.3 7 8.7 5 8.7-5"></path>
+                                <path d="M12 22V12"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Product Management</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm">
+                            Easily organize, track, and update your entire inventory with powerful categorization tools.
+                        </p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center mb-6 text-gray-800">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.5"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-megaphone"
+                                 aria-hidden="true">
+                                <path d="M11 6a13 13 0 0 0 8.4-2.8A1 1 0 0 1 21 4v12a1 1 0 0 1-1.6.8A13 13 0 0 0 11 14H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2z"></path>
+                                <path d="M6 14a12 12 0 0 0 2.4 7.2 2 2 0 0 0 3.2-2.4A8 8 0 0 1 10 14"></path>
+                                <path d="M8 6v8"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Promotions</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm">
+                            Drive sales with targeted discounts and seasonal marketing campaigns that keep customers coming
+                            back.
+                        </p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center mb-6 text-gray-800">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.5"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-receipt"
+                                 aria-hidden="true">
+                                <path d="M4 2v20l2-1 2 1 2-1 2 1 2-1 2 1 2-1 2 1V2l-2 1-2-1-2 1-2-1-2 1-2-1-2 1Z"></path>
+                                <path d="M16 8h-6a2 2 0 1 0 0 4h4a2 2 0 1 1 0 4H8"></path>
+                                <path d="M12 17.5v-11"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Transactions</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm">
+                            Streamline your checkout flow and keep track of every sale with detailed digital records and lightning-fast
+                            processing.
+                        </p>
+                    </div>
+                    <div class="bg-white p-8 rounded-2xl border border-gray-100 shadow-sm hover:shadow-md transition-shadow">
+                        <div class="w-12 h-12 rounded-lg bg-pink-50 flex items-center justify-center mb-6 text-gray-800">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24"
+                                 height="24"
+                                 viewBox="0 0 24 24"
+                                 fill="none"
+                                 stroke="currentColor"
+                                 stroke-width="1.5"
+                                 stroke-linecap="round"
+                                 stroke-linejoin="round"
+                                 class="lucide lucide-chart-column"
+                                 aria-hidden="true">
+                                <path d="M3 3v16a2 2 0 0 0 2 2h16"></path>
+                                <path d="M18 17V9"></path>
+                                <path d="M13 17V5"></path>
+                                <path d="M8 17v-3"></path>
+                            </svg>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-3">Reporting</h3>
+                        <p class="text-gray-600 leading-relaxed text-sm">
+                            Deep-dive analytics to understand your business performance, growth trends, and customer behavior with custom
+                            reports.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </sectionv>
+
+        <section id="pricing-section" class="py-20 md:py-32 bg-white">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div class="text-center max-w-2xl mx-auto mb-16">
+                    <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 tracking-tight" style="color: rgb(45, 10, 49)">
+                        Simple, transparent pricing
+                    </h2>
+                    <p class="text-lg text-gray-600">Choose the plan that's right for your business. No hidden fees, ever.</p>
+                </div>
+                <div class="grid md:grid-cols-3 gap-8 items-center max-w-5xl mx-auto">
+                    <div class="bg-gray-50/50 rounded-3xl border border-gray-200 p-8 pt-10">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Starter</h3>
+                        <div class="flex items-end gap-1 mb-8">
+                            <span class="text-5xl font-bold tracking-tight text-gray-900">$29</span>
+                            <span class="text-gray-500 font-medium mb-1">/month</span>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-600 text-sm">1 Register</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-600 text-sm">Inventory Management</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-600 text-sm">Email Support</span>
+                            </li>
+                        </ul>
+                        <button class="w-full py-3 rounded-xl border border-gray-300 bg-white text-gray-900 font-medium hover:bg-gray-50 transition-colors">
+                            Get Started
+                        </button>
+                    </div>
+                    <div class="bg-white rounded-3xl border-2 shadow-xl p-8 pt-10 relative transform md:-translate-y-4"
+                         style="border-color: rgb(45, 10, 49)">
+                        <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 text-[10px] font-bold tracking-wider text-white rounded-full uppercase"
+                             style="background-color: rgb(45, 10, 49)">
+                            Most Popular
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Professional</h3>
+                        <div class="flex items-end gap-1 mb-8">
+                            <span class="text-5xl font-bold tracking-tight text-gray-900">$79</span>
+                            <span class="text-gray-500 font-medium mb-1">/month</span>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-900 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-700 font-medium text-sm">Up to 3 Registers</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-900 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-700 font-medium text-sm">Advanced Reporting</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-900 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-700 font-medium text-sm">Loyalty Program</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-900 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-700 font-medium text-sm">24/7 Priority Support</span>
+                            </li>
+                        </ul>
+                        <button class="w-full py-3 rounded-xl text-white font-medium hover:opacity-90 transition-opacity"
+                                style="background-color: rgb(45, 10, 49)">
+                            Get Started
+                        </button>
+                    </div>
+                    <div class="bg-gray-50/50 rounded-3xl border border-gray-200 p-8 pt-10">
+                        <h3 class="text-xl font-semibold text-gray-900 mb-2">Enterprise</h3>
+                        <div class="flex items-end gap-1 mb-8">
+                            <span class="text-5xl font-bold tracking-tight text-gray-900">$149</span>
+                            <span class="text-gray-500 font-medium mb-1">/month</span>
+                        </div>
+                        <ul class="space-y-4 mb-8">
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-600 text-sm">Unlimited Registers</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-600 text-sm">Multi-location Sync</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-600 text-sm">Custom API Access</span>
+                            </li>
+                            <li class="flex items-start gap-3">
+                                <svg xmlns="http://www.w3.org/2000/svg"
+                                     width="20"
+                                     height="20"
+                                     viewBox="0 0 24 24"
+                                     fill="none"
+                                     stroke="currentColor"
+                                     stroke-width="2"
+                                     stroke-linecap="round"
+                                     stroke-linejoin="round"
+                                     class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                     aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <path d="m9 12 2 2 4-4"></path>
+                                </svg>
+                                <span class="text-gray-600 text-sm">Dedicated Account Manager</span>
+                            </li>
+                        </ul>
+                        <button class="w-full py-3 rounded-xl border border-gray-300 bg-white text-gray-900 font-medium hover:bg-gray-50 transition-colors">
+                            Get Started
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- CTA Section -->
+        <section id="contact-section" class="py-0 px-margin-mobile md:px-margin-desktop">
+            <div class="max-w-container-max mx-auto rounded-[3rem] p-12 lg:p-24 text-center text-primary relative overflow-hidden">
+                <div class="absolute top-0 right-0 w-64 h-64 rounded-full blur-3xl opacity-50 -translate-y-1/2 translate-x-1/2"></div>
+                <div class="absolute bottom-0 left-0 w-64 h-64 rounded-full blur-3xl opacity-30 translate-y-1/2 -translate-x-1/2"></div>
+                <h2 class="font-display-lg text-display-lg mb-stack-md relative z-10">Ready to transform your business?</h2>
+                <p class="font-body-lg text-body-lg text-primary/80 mb-stack-lg max-w-2xl mx-auto relative z-10">Join over 10,000+ businesses that trust JPay for their daily operations and growth.</p>
+                <div class="flex flex-col sm:flex-row justify-center gap-stack-md relative z-10">
+                    <button class="bg-surface-container-lowest text-primary px-10 py-4 rounded-xl font-headline-md text-headline-md font-bold hover:bg-primary-fixed-dim transition-colors">Get Started Free</button>
+                    <button class="border-2 bg-primary border-primary/30 text-on-primary px-10 py-4 rounded-xl font-headline-md text-headline-md font-bold hover:bg-primary/80 transition-colors">Contact Sales</button>
+                </div>
+            </div>
+        </section>
+    </main>
+    <!-- Footer -->
+    <footer class="w-full py-12 px-margin-mobile md:px-margin-desktop flex flex-col md:flex-row justify-between items-start gap-stack-lg bg-primary text-on-primary">
+        <div class="flex flex-col gap-stack-sm max-w-sm">
+            <span class="text-headline-md font-headline-md font-bold text-on-primary">JPay</span>
+            <p class="text-body-md text-on-primary/70">Empowering small businesses with world-class point of sale technology. Simple, powerful, and reliable.</p>
+            <p class="font-label-sm text-label-sm text-on-primary/60 mt-4">© 2024 JPay Point of Sale. All rights reserved.</p>
+        </div>
+        <div class="grid grid-cols-2 sm:grid-cols-3 gap-stack-lg">
+            <div class="flex flex-col gap-stack-sm">
+                <span class="font-label-sm text-label-sm font-bold uppercase tracking-wider opacity-60">Company</span>
+                <a class="text-body-md text-on-primary/80 hover:text-tertiary-fixed transition-colors" href="#">Privacy Policy</a>
+                <a class="text-body-md text-on-primary/80 hover:text-tertiary-fixed transition-colors" href="#">Terms of Service</a>
+
+            </div>
+            <div class="flex flex-col gap-stack-sm">
+                <span class="font-label-sm text-label-sm font-bold uppercase tracking-wider opacity-60">Product</span>
+                <a class="text-body-md text-on-primary/80 hover:text-tertiary-fixed transition-colors" href="#feature-section">Features</a>
+                <a class="text-body-md text-on-primary/80 hover:text-tertiary-fixed transition-colors" href="#pricing-section">Pricing</a>
+            </div>
+            <div class="flex flex-col gap-stack-sm">
+                <span class="font-label-sm text-label-sm font-bold uppercase tracking-wider opacity-60">Support</span>
+                <a class="text-body-md text-on-primary/80 hover:text-tertiary-fixed transition-colors" href="#contact-section">Contact Us</a>
+            </div>
+        </div>
+    </footer>
+</body>
+</html>

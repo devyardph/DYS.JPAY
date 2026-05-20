@@ -126,65 +126,63 @@ namespace DYS.JPay.Shared.Features.Onboarding.ViewModels
         {
             IsBusy = true;
             var categories = new List<CategoryDto>();
+            var coffeeId = Guid.NewGuid();
+            var pastryId = Guid.NewGuid();
+            var teaId = Guid.NewGuid();
+            var sandwichId = Guid.NewGuid();
+            var smoothieId = Guid.NewGuid();
             categories.Add(new CategoryDto
             {
-                Id = new Guid("c2f8a7d1-4b3e-4f9a-9a1c-8e2d6b9f3a12"),
+                Id = coffeeId,
                 Name = "Coffee",
             });
             categories.Add(new CategoryDto
             {
-                Id = new Guid("7e4c9b8f-2d1a-4f6e-9c3b-1a5d8e7f4b23"),
+                Id = pastryId,
                 Name = "Pastry",
             });
             categories.Add(new CategoryDto
             {
-                Id = new Guid("a9d3f7c2-5e1b-4c8d-9f2a-7b6e1d4f5c34"),
+                Id = teaId,
                 Name = "Tea",
+            });
+            categories.Add(new CategoryDto
+            {
+                Id = sandwichId,
+                Name = "Sandwich",
+            });
+            categories.Add(new CategoryDto
+            {
+                Id = smoothieId,
+                Name = "Smoothie",
             });
             await _categoryService.SubmitCategoriesAsync(categories);
             var products = new List<ProductDto>();
 
-            products.Add(new ProductDto
-            {
-                Id = Guid.NewGuid(),
-                CategoryId = new Guid("c2f8a7d1-4b3e-4f9a-9a1c-8e2d6b9f3a12"),
-                Type = "Coffee",
-                Name = "Latte",
-                Price = 4.55,
-                ImageUrl = "https://images.unsplash.com/photo-1570968915860-54d5c301fa9f?auto=format&fit=crop&q=80&w=200&h=200",
-                Featured = false
-            });
-            products.Add(new ProductDto
-            {
-                Id = Guid.NewGuid(),
-                CategoryId = new Guid("a9d3f7c2-5e1b-4c8d-9f2a-7b6e1d4f5c34"),
-                Type = "Tea",
-                Name = "Ice tea",
-                Price = 2.55,
-                ImageUrl = "https://images.unsplash.com/photo-1556679343-c7306c1976bc?auto=format&fit=crop&q=80&w=200&h=200",
-                Featured = false
-            });
-            products.Add(new ProductDto
-            {
-                Id = Guid.NewGuid(),
-                CategoryId = new Guid("7e4c9b8f-2d1a-4f6e-9c3b-1a5d8e7f4b23"),
-                Type = "Pastry",
-                Name = "Turkey sandwich",
-                Price = 7.55,
-                ImageUrl = "https://images.unsplash.com/photo-1550507992-eb63ffee0847?auto=format&fit=crop&q=80&w=200&h=200",
-                Featured = false
-            });
-            products.Add(new ProductDto
-            {
-                Id = Guid.NewGuid(),
-                CategoryId = new Guid("7e4c9b8f-2d1a-4f6e-9c3b-1a5d8e7f4b23"),
-                Type = "Pastries",
-                Name = "Chocolate cookie",
-                Price = 2.55,
-                ImageUrl = "https://images.unsplash.com/photo-1499636136210-6f4ee915583e?auto=format&fit=crop&q=80&w=200&h=200",
-                Featured = false
-            });
-          
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = coffeeId, Type = "Coffee", Name = "Cappuccino", Price = 4.25, ImageUrl = "https://images.unsplash.com/photo-1572442388796-11668a67e53d?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Cappuccino
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = coffeeId, Type = "Coffee", Name = "Espresso", Price = 3.10, ImageUrl = "https://images.unsplash.com/photo-1512568400610-62da28bc8a13?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Espresso
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = coffeeId, Type = "Coffee", Name = "Mocha", Price = 4.75, ImageUrl = "https://images.unsplash.com/photo-1596078841242-12f73dc697c6?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Mocha
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = coffeeId, Type = "Coffee", Name = "Americano", Price = 3.50, ImageUrl = "https://images.unsplash.com/photo-1551030173-122aabc4489c?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Americano
+
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = teaId, Type = "Tea", Name = "Green Tea", Price = 2.95, ImageUrl = "https://images.unsplash.com/photo-1627435601361-ec25f5b1d0e5?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Green Tea
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = teaId, Type = "Tea", Name = "Black Tea", Price = 2.85, ImageUrl = "https://images.unsplash.com/photo-1617191880520-c6a69e04fa75?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Black Tea
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = teaId, Type = "Tea", Name = "Chamomile Tea", Price = 3.15, ImageUrl = "https://images.unsplash.com/photo-1719004322339-afe59dc291d5?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Chamomile Tea
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = teaId, Type = "Tea", Name = "Matcha Latte", Price = 4.95, ImageUrl = "https://images.unsplash.com/photo-1515823064-d6e0c04616a7?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Matcha Latte
+
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = pastryId, Type = "Pastry", Name = "Croissant", Price = 2.50, ImageUrl = "https://images.unsplash.com/photo-1600521853186-93b88b3a07b0?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Croissant
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = pastryId, Type = "Pastry", Name = "Blueberry Muffin", Price = 2.95, ImageUrl = "https://images.unsplash.com/photo-1587778306628-482a710ba9cb?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Blueberry Muffin
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = pastryId, Type = "Pastry", Name = "Chocolate Cake", Price = 3.95, ImageUrl = "https://images.unsplash.com/photo-1606890737304-57a1ca8a5b62?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Chocolate Cake
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = pastryId, Type = "Pastry", Name = "Donut", Price = 1.95, ImageUrl = "https://images.unsplash.com/photo-1551024601-bec78aea704b?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Donut
+
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = sandwichId, Type = "Sandwich", Name = "Club Sandwich", Price = 5.95, ImageUrl = "https://images.unsplash.com/photo-1553909489-cd47e0907980?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Club Sandwich
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = sandwichId, Type = "Sandwich", Name = "BLT Sandwich", Price = 5.25, ImageUrl = "https://images.unsplash.com/photo-1705538363245-03fe613f9eb9?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // BLT Sandwich
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = sandwichId, Type = "Sandwich", Name = "Grilled Cheese", Price = 4.75, ImageUrl = "https://images.unsplash.com/photo-1528736235302-52922df5c122?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Grilled Cheese
+
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = smoothieId, Type = "Smoothie", Name = "Strawberry Smoothie", Price = 4.95, ImageUrl = "https://images.unsplash.com/photo-1621797350488-fb28c9217e3b?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Strawberry Smoothie
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = smoothieId, Type = "Smoothie", Name = "Mango Smoothie", Price = 4.85, ImageUrl = "https://images.unsplash.com/photo-1697642452436-9c40773cbcbb?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Mango Smoothie
+            products.Add(new ProductDto { Id = Guid.NewGuid(), CategoryId = smoothieId, Type = "Smoothie", Name = "Banana Smoothie", Price = 4.65, ImageUrl = "https://images.unsplash.com/photo-1707219811295-0f283760668b?auto=format&fit=crop&q=80&w=200&h=200", Featured = false }); // Banana Smoothie
+
+
             await _productService.SubmitProductsAsync(products);
             IsBusy = false;
         }
