@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk.Razor">
+﻿                 <Project Sdk="Microsoft.NET.Sdk.Razor">
 
   <PropertyGroup>
     <TargetFrameworks>net10.0-android</TargetFrameworks>
@@ -135,11 +135,19 @@
     <PackageReference Include="Microsoft.Maui.Controls" Version="10.0.60" />
     <PackageReference Include="Microsoft.AspNetCore.Components.WebView.Maui" Version="10.0.51" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="10.0.6" />
+    <PackageReference Include="System.IO.Ports" Version="10.0.8" />
     <PackageReference Include="TaskScheduler" Version="2.12.2" />
+	<PackageReference Include="Plugin.BLE" Version="3.2.1" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\DYS.JPay.Shared\DYS.JPay.Shared.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Compile Update="Platforms\Android\PrinterService.cs">
+      <ExcludeFromCurrentConfiguration>true</ExcludeFromCurrentConfiguration>
+    </Compile>
   </ItemGroup>
 
 </Project>

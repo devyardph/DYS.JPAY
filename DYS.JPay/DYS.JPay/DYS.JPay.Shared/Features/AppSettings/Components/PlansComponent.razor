@@ -1,0 +1,248 @@
+﻿@using DYS.JPay.Shared.Shared.Entities
+@using DYS.JPay.Shared.Shared.Settings
+@inject IJSRuntime JS
+
+<div id="subscribe-modal" class="fixed inset-0 bg-black/50 backdrop-blur-sm z-[100] flex items-center justify-center p-4 hidden opacity-0 transition-opacity duration-300 ease-in-out">
+    <div class="bg-surface-container-lowest rounded-3xl p-5 max-w-5xl w-full shadow-2xl transform scale-95 transition-transform duration-300" id="subscribe-modal-content">
+        
+
+        <section id="pricing-section" class="py-10 md:py-10 bg-white">
+            <div class="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+               
+
+                <div class="flex items-center justify-center relative mb-1">
+                    <!-- Left button -->
+                    <div class="absolute left-0">
+                       
+                    </div>
+
+                    <!-- Centered amount -->
+                    <div class="text-center mb-3 p-2 rounded-xl">
+                        <div class="text-center max-w-2xl mx-auto mb-16">
+                            <h2 class="text-3xl sm:text-4xl font-bold text-gray-900 mb-4 tracking-tight" style="color: rgb(45, 10, 49)">
+                                Simple, transparent pricing
+                            </h2>
+                            <p class="text-lg text-gray-600">Choose the plan that's right for your business. No hidden fees, ever.</p>
+                        </div>
+                    </div>
+
+                    <!-- Right placeholder (optional) -->
+                    <div class="absolute right-0">
+                        <button @onclick="@OnCancelAsync" class="p-2 hover:bg-surface-container-highest rounded-full transition-colors">
+                            <svg xmlns="http://www.w3.org/2000/svg"
+                                 width="24" height="24" viewBox="0 0 24 24"
+                                 fill="none" stroke="currentColor" stroke-width="2"
+                                 stroke-linecap="round" stroke-linejoin="round"
+                                 class="lucide lucide-x w-5 h-5"
+                                 aria-hidden="true">
+                                <path d="M18 6L6 18"></path>
+                                <path d="M6 6l12 12"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+
+
+                <div class="grid md:grid-cols-3 gap-8 items-center max-w-5xl mx-auto">
+                    @foreach (var plan in SubscriptionPlans.OrderBy(query => query.Order))
+                    {
+                        @if (plan.Id != ActivePlanId)
+                        {
+                            <div class="bg-gray-50/50 rounded-3xl border border-gray-200 p-8 pt-10">
+                                <h3 class="text-xl font-semibold text-gray-900 mb-1">@plan.Tier</h3>
+                                <div class="flex items-end gap-1 mb-1">
+                                    <span class="text-5xl font-bold tracking-tight text-gray-900">@plan.Price</span>
+                                </div>
+                                <span class="text-gray-500 font-medium mb-8">per month</span>
+                                <ul class="space-y-4 mb-8">
+                                    <li class="flex items-start gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                        aria-hidden="true">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        <span class="text-gray-600 text-sm">1 Register</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                        aria-hidden="true">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        <span class="text-gray-600 text-sm">Inventory Management</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                        width="20"
+                                        height="20"
+                                        viewBox="0 0 24 24"
+                                        fill="none"
+                                        stroke="currentColor"
+                                        stroke-width="2"
+                                        stroke-linecap="round"
+                                        stroke-linejoin="round"
+                                        class="lucide lucide-circle-check text-gray-800 shrink-0 mt-0.5"
+                                        aria-hidden="true">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        <span class="text-gray-600 text-sm">Email Support</span>
+                                    </li>
+                                </ul>
+                                <button @onclick="() => SetPlan(plan)" class="w-full py-3 rounded-xl border border-gray-300 bg-white text-gray-900 font-medium hover:bg-primary hover:text-white transition-colors">
+                                    Get Started
+                                </button>
+                            </div>
+                        }
+                        else
+                        {
+                            <div class="bg-white rounded-3xl border-2 shadow-xl p-8 pt-10 relative transform md:-translate-y-4"
+                                 style="border-color: rgb(45, 10, 49)">
+                                <div class="absolute -top-3 left-1/2 -translate-x-1/2 px-4 py-1 text-[10px] font-bold tracking-wider text-white rounded-full uppercase"
+                                     style="background-color: rgb(45, 10, 49)">
+                                    Current plan
+                                </div>
+                                <h3 class="text-xl font-semibold text-gray-900 mb-2">@plan.Tier</h3>
+                                <div class="flex items-end gap-1 mb-1">
+                                    <span class="text-5xl font-bold tracking-tight text-gray-900">@plan.Price</span>
+                                </div>
+                                <span class="text-gray-500 font-medium mb-8">per month</span>
+                                <ul class="space-y-4 mb-8">
+                                    <li class="flex items-start gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="2"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round"
+                                             class="lucide lucide-circle-check text-gray-900 shrink-0 mt-0.5"
+                                             aria-hidden="true">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        <span class="text-gray-700 font-medium text-sm">Up to 3 Registers</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="2"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round"
+                                             class="lucide lucide-circle-check text-gray-900 shrink-0 mt-0.5"
+                                             aria-hidden="true">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        <span class="text-gray-700 font-medium text-sm">Advanced Reporting</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="2"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round"
+                                             class="lucide lucide-circle-check text-gray-900 shrink-0 mt-0.5"
+                                             aria-hidden="true">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        <span class="text-gray-700 font-medium text-sm">Loyalty Program</span>
+                                    </li>
+                                    <li class="flex items-start gap-3">
+                                        <svg xmlns="http://www.w3.org/2000/svg"
+                                             width="20"
+                                             height="20"
+                                             viewBox="0 0 24 24"
+                                             fill="none"
+                                             stroke="currentColor"
+                                             stroke-width="2"
+                                             stroke-linecap="round"
+                                             stroke-linejoin="round"
+                                             class="lucide lucide-circle-check text-gray-900 shrink-0 mt-0.5"
+                                             aria-hidden="true">
+                                            <circle cx="12" cy="12" r="10"></circle>
+                                            <path d="m9 12 2 2 4-4"></path>
+                                        </svg>
+                                        <span class="text-gray-700 font-medium text-sm">24/7 Priority Support</span>
+                                    </li>
+                                </ul>
+                                
+                            </div>
+                        }
+                    }
+                </div>
+            </div>
+        </section>
+    </div>
+</div>
+
+
+@code {
+    [Parameter]
+    public string ActionText { get; set; } = "Confirm subscription";
+    [Parameter]
+    public string ActionStyle { get; set; } = "bg-primary text-white";
+    [Parameter]
+    public bool IsBusy { get; set; }
+    [Parameter]
+    public AppSetting AppSetting { get; set; } = new AppSetting();
+    [Parameter]
+    public EventCallback Save { get; set; }
+    [Parameter]
+    public List<SubscriptionPlanDto> SubscriptionPlans { get; set; } = new List<SubscriptionPlanDto>();
+    [Parameter]
+    public SubscriptionPlanDto SubscriptionPlan { get; set; } = new SubscriptionPlanDto();
+    [Parameter]
+    public Guid? ActivePlanId { get; set; } 
+    [Parameter]
+    public EventCallback<Guid?> ActivePlanIdChanged { get; set; }
+    [Parameter]
+    public EventCallback<Guid?> SubscriptionPlanChanged { get; set; }
+
+    public async Task OnSaveAsync()
+    {
+        await Save.InvokeAsync();
+    }
+
+    public void SetDisplay(string display) => AppSetting.Display = display;
+    public async Task SetPlan(SubscriptionPlanDto plan)
+    {
+        SubscriptionPlan = plan;
+        await ActivePlanIdChanged.InvokeAsync(plan.Id);
+        await SubscriptionPlanChanged.InvokeAsync(plan.Id);
+    }
+
+    public async Task OnCancelAsync()
+    {
+        await JS.InvokeVoidAsync("closeModal", "subscribe-modal");
+    }
+}

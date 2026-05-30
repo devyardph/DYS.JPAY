@@ -11,6 +11,8 @@ using DYS.JPay.Shared.Shared.Settings;
 using DYS.JPay.Shared.Shared.ViewModels;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.Extensions.Logging;
+using Plugin.BLE;
+using Plugin.BLE.Abstractions.Contracts;
 
 namespace DYS.JPay
 {
@@ -28,7 +30,7 @@ namespace DYS.JPay
 
             // Add device-specific services used by the DYS.JPay.Shared project
             builder.Services.AddSingleton<IFormFactor, FormFactor>();
-            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-v1.20260519.db");
+            var dbPath = Path.Combine(FileSystem.AppDataDirectory, "jpay-v1.20260521.db");
             var dbContext = new DatabaseContext(dbPath);
 
             Task.Run(async () => await dbContext.InitializeAsync());
@@ -51,8 +53,14 @@ namespace DYS.JPay
             builder.Services.AddScoped<IRequestProvider, RequestProvider>();
             builder.Services.AddSingleton<IFileService, FileService>();
             builder.Services.AddSingleton<IResourceService, ResourceService>();
-            //builder.Services.AddSingleton<IReceiptService, ReceiptService>();
+         
 
+            // Register BLE services
+            //builder.Services.AddSingleton(CrossBluetoothLE.Current);
+            //builder.Services.AddSingleton(CrossBluetoothLE.Current.Adapter);
+            //builder.Services.AddSingleton<IBluetoothLE>(CrossBluetoothLE.Current);
+            //builder.Services.AddSingleton<IAdapter>(CrossBluetoothLE.Current.Adapter);
+            //builder.Services.AddSingleton<IBluetoothPrinterService, BluetoothPrinterService>();
 
             builder.Services.AddMauiBlazorWebView();
 
@@ -60,16 +68,16 @@ namespace DYS.JPay
 #if IOS
                 builder.Services.AddSingleton<IPeerService,  DYS.JPay.Platforms.iOS.PeerService>();
                 builder.Services.AddSingleton<IPhotoService, DYS.JPay.Platforms.iOS.PhotoService>();
-               
+                builder.Services.AddSingleton<IPrinterService, DYS.JPay.Platforms.iOS.PrinterService>();
 #elif ANDROID
             builder.Services.AddSingleton<IPeerService, DYS.JPay.Platforms.Android.PeerService>();
             builder.Services.AddSingleton<IPhotoService, DYS.JPay.Platforms.Android.PhotoService>();
-          
+            builder.Services.AddSingleton<IPrinterService, DYS.JPay.Platforms.Android.PrinterService>();
 #elif WINDOWS
                 builder.Services.AddSingleton<IPeerService, DYS.JPay.Platforms.Windows.PeerService>();
                 builder.Services.AddSingleton<IPhotoService, DYS.JPay.Platforms.Windows.PhotoService>();
                 builder.Services.AddSingleton<IFilePickerService, DYS.JPay.Platforms.Windows.FilePickerService>();
-              
+                builder.Services.AddSingleton<IPrinterService, DYS.JPay.Platforms.Windows.PrinterService>();
 #endif
 
 

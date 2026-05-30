@@ -10,11 +10,11 @@ namespace DYS.JPay.Platforms.Android
 {
     public class PhotoService : IPhotoService
     {
-        private readonly Context _context;
+       
 
-        public PhotoService(Context context)
+        public PhotoService()
         {
-            _context = context;
+           
         }
 
         public async Task<string> SaveImageToAlbumAsync(string tempPath, string album)

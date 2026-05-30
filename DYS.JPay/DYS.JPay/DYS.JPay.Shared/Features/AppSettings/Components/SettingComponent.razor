@@ -112,6 +112,9 @@
             </div>
         </div>
         <div class="space-y-1">
+            <TextComponent Id="printer-model" @bind-Item="@AppSetting.DefaultPrinter" Label="Default bluetooth printer" PlaceHolder="e.g. PT-210" Style="bg-[#f1f4fa]" />
+        </div>
+        <div class="space-y-1">
             <TextComponent Id="gmail-account" @bind-Item="@AppSetting.GmailAccount" Label="Gmail account for email notification" PlaceHolder="e.g. test@gmail.com" Style="bg-[#f1f4fa]" />
         </div>
         <div class="space-y-1">

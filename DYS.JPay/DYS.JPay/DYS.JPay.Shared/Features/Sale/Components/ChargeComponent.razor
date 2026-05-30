@@ -74,13 +74,15 @@
                CONFIRM PAYMENT
             </button>
         </div>
-      
+        @Notification.Description
     </div>
 </div>
 
 @code {
     [Parameter]
     public string Currency { get; set; } = string.Empty;
+    [Parameter]
+    public NotificationDto Notification { get; set; } = new NotificationDto();
     [Parameter]
     public TransactionDto Transaction { get; set; } = new TransactionDto();
     [Parameter]

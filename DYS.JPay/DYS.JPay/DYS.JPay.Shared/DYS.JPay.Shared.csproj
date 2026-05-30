@@ -38,6 +38,7 @@
 	  <PackageReference Include="CommunityToolkit.Mvvm" Version="8.4.2" />
 	  <PackageReference Include="MimeKit" Version="4.16.0" />
 	  <PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+	  <PackageReference Include="Plugin.BLE" Version="3.2.1" />
 	  <PackageReference Include="Plugin.InAppBilling" Version="10.0.0" />
 	  <PackageReference Include="SkiaSharp" Version="3.119.2" />
 	  <PackageReference Include="sqlite-net-pcl" Version="1.9.172" />

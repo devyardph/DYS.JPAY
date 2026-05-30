@@ -7,6 +7,7 @@ namespace DYS.JPay.Shared.Shared.Entities
     public class AppSetting : BaseEntity
     {
         public bool Setup { get; set; } = false;
+        public Guid? ActivePlanId { get; set; }
         public string StoreName { get; set; }
         public string StoreDescription { get; set; }
         public string Currency { get; set; }
@@ -23,6 +24,9 @@ namespace DYS.JPay.Shared.Shared.Entities
         public string GmailAccount { get; set; }
         public string AppPassword { get; set; }
         public bool ReceiveEmailNotification { get; set; } = true;
+
+        //Make sure to connect via bluetooth and set the printer name in the app setting
+        public string DefaultPrinter { get; set; }
 
     }
 }

@@ -31,12 +31,14 @@ namespace DYS.JPay.Shared.Shared.Data
 
             await _connection.CreateTableAsync<Promotion>();
             await _connection.CreateTableAsync<PromotionItem>();
+            await _connection.CreateTableAsync<Subscription>();
 
             // Seed default admin
             await SeedOwnerUser();
             await SeedAdminUser();
             //await SeedCategories();
             //await SeedProducts();
+            await SeedSubscriptions();
             await SeedSettings();
         }
         public SQLiteAsyncConnection Connection => _connection;
@@ -170,7 +172,9 @@ namespace DYS.JPay.Shared.Shared.Data
         {
             var existingStore = await _connection.Table<AppSetting>()
                       .ToListAsync();
-
+            var freePlan = await _connection.Table<Subscription>()
+                      .Where(s => s.Tier == GlobalSettings.FREE)
+                      .FirstOrDefaultAsync();   
             if (!existingStore.Any())
             {
                 var settings = new Entities.AppSetting
@@ -181,10 +185,66 @@ namespace DYS.JPay.Shared.Shared.Data
                     Display = "grid",
                     Default = true,
                     Tax = 12,
-                    Setup = false
+                    Setup = false,
+                    ActivePlanId = freePlan?.Id,
                 };
 
                 await _connection.InsertAsync(settings);
+            }
+        }
+
+        private async Task SeedSubscriptions()
+        {
+            var existingSubscriptions = await _connection.Table<Subscription>()
+                      .ToListAsync();
+
+            var freePlanId= new Guid("3f9a7c2b-1e4d-4a8f-9c3f-2d5b8a6f7c1d");
+            var basicPlanId = new Guid("7b2f9d4e-8c1a-4e3b-9f2d-1a9c8d7e5b2a");
+            var growthPlanId = new Guid("9a1c7d2f-3b4e-4c8d-8f2a-7d9b1c2e3f4a");
+
+            if (!existingSubscriptions.Any())
+            {
+                var subscriptions = new List<Subscription>
+                {
+                     new Subscription
+                     {
+                         Id = freePlanId,
+                         Order=1,
+                         Code = "jpay_monthly_free",
+                         Tier = GlobalSettings.FREE,
+                         MaxProducts = 20,
+                         MaxUsers = 3,
+                         AllowPromotions = false,
+                         AllowReports = true,
+                         AllowEmailNotifications = false
+                     },
+                     new Subscription
+                     {
+                         Id = basicPlanId,
+                         Order=2,
+                         Code = "jpay_monthly_basic",
+                         Tier = GlobalSettings.BASIC,
+                         MaxProducts = 50,
+                         MaxUsers = 5,
+                         AllowPromotions = true,
+                         AllowReports = true,
+                         AllowEmailNotifications = true
+                     },
+                     new Subscription
+                     {
+                         Id = growthPlanId,
+                         Order=3,
+                         Code = "jpay_monthly_growth",
+                         Tier = GlobalSettings.GROWTH,
+                         MaxProducts = int.MaxValue,
+                         MaxUsers = int.MaxValue,
+                         AllowPromotions = true,
+                         AllowReports = true,
+                         AllowEmailNotifications = true
+                     }
+                 };
+
+                await _connection.InsertAllAsync(subscriptions);
             }
         }
     }

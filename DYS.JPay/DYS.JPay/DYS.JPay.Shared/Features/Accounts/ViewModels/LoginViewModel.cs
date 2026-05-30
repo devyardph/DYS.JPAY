@@ -22,7 +22,7 @@ namespace DYS.JPay.Shared.Features.Accounts.ViewModels
 
         #region PROPERTIES
         [ObservableProperty]
-        private LoginDto profile = new LoginDto() { Username="", Passcode="" };
+        private LoginDto profile = new LoginDto() { Username="admin", Passcode="111111" };
         #endregion
         public LoginViewModel(
           NavigationManager navigationManager,
@@ -45,7 +45,7 @@ namespace DYS.JPay.Shared.Features.Accounts.ViewModels
             if (result != null)
             {
                 Notification.Success = true;
-                Notification.Description = "Logged in successfully.";
+                //Notification.Description = "Logged in successfully.";
                 _sessionService.SetUser(result);
 
                 //INITIALIZE SETTINGS

@@ -19,8 +19,8 @@
                             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path></svg>
                         </button>
                         <div>
-                            <h1 class="text-3xl font-headline font-bold text-primary">@VM.Session.AppSettings.StoreName</h1>
-                            <p class="text-on-surface-variant">@VM.Session.AppSettings.StoreDescription / @VM.Promotion?.Name</p>
+                            <h1 class="text-3xl font-headline font-bold text-primary">@VM.Session.AppSettings!.StoreName</h1>
+                            <p class="text-on-surface-variant">@VM.Session.AppSettings!.StoreDescription / @VM.Promotion?.Name</p>
                         </div>
                     </div>
                     <!--HEADER-->
@@ -70,7 +70,7 @@
         </div>
 
         <PaymentComponent @bind-Transaction="@VM.Transaction" Currency="@VM.Session.AppSettings.Currency" />
-        <ChargeComponent @bind-Transaction="@VM.Transaction" ProcessPayment="@VM.ProcessPaymentAsync" Currency="@VM.Session.AppSettings.Currency" />
+        <ChargeComponent Notification="@VM.Notification" @bind-Transaction="@VM.Transaction" ProcessPayment="@VM.ProcessPaymentAsync" Currency="@VM.Session.AppSettings.Currency" />
         <ResultComponent @bind-Transaction="@VM.Transaction" @bind-Orders="@VM.Orders" />
         <VariantsComponent Variants="@VM.Variants" Product="@VM.Product" Currency="@VM.Session.AppSettings.Currency" AddToOrder="VM.AddOrderAsync" />
         <DiscountComponent @bind-Transaction="@VM.Transaction" DiscountChanged="@VM.TransactionChanged" Currency="@VM.Session.AppSettings.Currency" />

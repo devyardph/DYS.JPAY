@@ -51,7 +51,6 @@
                                         <div class="space-y-2  mb-2">
                                             <LabelComponent Id="store-counter" Item="@VM.AppSetting.Counter" Label="Counter no." Style="bg-[#f1f4fa] rounded-2xl" />
                                         </div>
-
                                         <div class="space-y-2  mb-2">
                                             <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Product display settings</label>
                                             <div class="flex gap-2">
@@ -103,16 +102,7 @@
                                                 }
                                             </select>
                                         </div>
-                                      @*   <div class="space-y-2  mb-2">
-                                            <label class="text-[10px] font-bold uppercase tracking-widest text-[#40484c]">Time zone</label>
-                                            <select @bind="@VM.AppSetting.TimeZone" disabled
-                                                    class="w-full bg-[#f1f4fa] border-none rounded-2xl px-5 py-3 text-sm focus:ring-2 focus:ring-primary transition-all">
-                                                @foreach (var zone in VM.TimeZones!)
-                                                {
-                                                    <option value="@zone.Id">@zone.Name</option>
-                                                }
-                                            </select>
-                                        </div> *@
+                                     
                                         <div class="space-y-2 mb-5">
                                             <LabelComponent Id="tax" Item="@($"{VM.AppSetting.Tax?.ToString()}%")" Label="Tax" Style="bg-[#f1f4fa] rounded-2xl" />
                                         </div>
@@ -141,6 +131,57 @@
 
                                 <div class="bg-white p-3 space-y-3">
                                     <div class="flex-1">
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex-1 mb-5">
+                                                <h1 class="text-2xl font-headline font-extrabold text-gray tracking-tight">Subscription/Plan</h1>
+                                                <p class="text-sm text-on-surface-variant">Your current plan.</p>
+                                            </div>
+                                            <button @onclick="@(() => VM.OpenPlans(VM.Session.AppSettings))">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24"
+                                                     viewBox="0 0 24 24"
+                                                     fill="none"
+                                                     stroke="currentColor"
+                                                     stroke-width="2"
+                                                     stroke-linecap="round"
+                                                     stroke-linejoin="round"
+                                                     class="lucide lucide-credit-card w-5 h-5"
+                                                     aria-hidden="true">
+                                                    <rect x="2" y="4" width="20" height="16" rx="2" ry="2"></rect>
+                                                    <line x1="2" y1="10" x2="22" y2="10"></line>
+                                                </svg>
+
+                                            </button>
+                                        </div>
+                                        <div class="space-y-2 mb-5">
+                                            <LabelComponent Id="email" Item="@VM.ActivePlan" Label="Susbciption" Style="bg-[#f1f4fa] rounded-2xl" />
+                                        </div>
+                                        <div class="flex items-center justify-between">
+                                            <div class="flex-1 mb-5">
+                                                <h1 class="text-2xl font-headline font-extrabold text-gray tracking-tight">Bluetooth Printer setup</h1>
+                                                <p class="text-sm text-on-surface-variant">Add and test your thermal printer.</p>
+                                            </div>
+                                            <button @onclick="@(() => VM.TestPrint())">
+                                                <svg xmlns="http://www.w3.org/2000/svg"
+                                                     width="24" height="24"
+                                                     viewBox="0 0 24 24"
+                                                     fill="none"
+                                                     stroke="currentColor"
+                                                     stroke-width="2"
+                                                     stroke-linecap="round"
+                                                     stroke-linejoin="round"
+                                                     class="lucide lucide-printer w-5 h-5"
+                                                     aria-hidden="true">
+                                                    <polyline points="6 9 6 2 18 2 18 9"></polyline>
+                                                    <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"></path>
+                                                    <rect x="6" y="14" width="12" height="8"></rect>
+                                                </svg>
+                                            </button>
+                                        </div>
+                                        <div class="space-y-2  mb-2">
+                                            <LabelComponent Id="printer-model" Item="@VM.AppSetting.DefaultPrinter" Label="Printer Model(ex PT-210) for Android or Port(ex. COM9) for Windows" Style="bg-[#f1f4fa] rounded-2xl" />
+                                        </div>
+
                                         <div class="flex-1 mb-5">
                                             <h1 class="text-2xl font-headline font-extrabold text-gray tracking-tight">Account and email configuration.</h1>
                                             <p class="text-sm text-on-surface-variant">Setings to receive email notification.</p>
@@ -154,6 +195,8 @@
                                         <div class="space-y-2 mb-3 p-1">
                                             <CheckboxComponent Disabled="true" @bind-Item="@VM.AppSetting.ReceiveEmailNotification" Label="Receive email notification" SubLabel="Activate email sending." />
                                         </div>
+
+                                       
 
                                         <div class="bg-white p-8 rounded-[2.5rem] shadow-sm border border-[#dfe3e8]/30 space-y-6">
                                             <div class="flex items-center space-x-4">
@@ -198,9 +241,13 @@
     
         <OffCanvassComponent Overlay="setting-overlay" Id="setting-component">
             <Content>
-                <SettingComponent IsBusy="@VM.IsBusy" Save="@VM.SaveAppSettings" TimeZones="@VM.TimeZones" @bind-AppSetting="@VM.AppSetting" />
+                <SettingComponent IsBusy="@VM.IsProcessing" Save="@VM.SaveAppSettings" TimeZones="@VM.TimeZones" @bind-AppSetting="@VM.AppSetting" />
             </Content>
         </OffCanvassComponent>
+        <PlansComponent IsBusy="@VM.IsProcessing"
+             SubscriptionPlanChanged="@VM.SubscribeToPlanAsync"
+             @bind-ActivePlanId="@VM.AppSetting.ActivePlanId" 
+             Save="@VM.SaveAppSettings" SubscriptionPlans="@VM.SubscriptionPlans" />
     </PageContent>
 </PageComponent>
 

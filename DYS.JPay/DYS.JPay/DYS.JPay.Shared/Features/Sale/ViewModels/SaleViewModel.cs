@@ -2,6 +2,7 @@
 using DYS.JPay.Shared.Shared.Dtos;
 using DYS.JPay.Shared.Shared.Entities;
 using DYS.JPay.Shared.Shared.Extensions;
+using DYS.JPay.Shared.Shared.Helpers;
 using DYS.JPay.Shared.Shared.Services;
 using DYS.JPay.Shared.Shared.Settings;
 using DYS.JPay.Shared.Shared.ViewModels;
@@ -18,7 +19,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         public readonly ITransactionService _transactionService;
         public readonly IPromotionService _promotionService;
         public readonly IPeerService _peerService;
-
+        public readonly IPrinterService _printerService;
         public SaleViewModel(NavigationManager navigationManager,
             IJSRuntime jsRuntime,
             IAppSettingService appSettingService,
@@ -26,6 +27,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             IProductService productService,
             ITransactionService transactionService,
             IPromotionService promotionService,
+            IPrinterService printerService,
             //IPeerService peerService,
             SessionService sessionService) : base(navigationManager, jsRuntime, sessionService)
         {
@@ -33,6 +35,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             _productService = productService;
             _transactionService = transactionService;
             _promotionService = promotionService;
+            _printerService = printerService;
             //_peerService = peerService;;
         }
 
@@ -177,6 +180,7 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
         }
         public async Task ProcessPaymentAsync()
         {
+            Notification = new NotificationDto();
             var count = Orders.Sum(query => query.Count);
             var transaction = Transaction;
             transaction.DateOrdered = DateTime.UtcNow;
@@ -212,10 +216,25 @@ namespace DYS.JPay.Shared.Features.Products.ViewModels
             //PASS TO OTHER MAIN DEVICE
             //_peerService.SendOrder(JsonExtensions.Convert(cart));
 
-            await _jsRuntime.InvokeVoidAsync("closeModal", "charge-modal");
-            await _jsRuntime.InvokeVoidAsync("openModal", "result-modal");
-            Transaction = new TransactionDto();
-            Orders = new List<OrderDto>();
+            //PRINTING
+            var device = Session?.AppSettings.DefaultPrinter ?? string.Empty;
+            var connection = await _printerService.ConnectAsync(device);
+            if (connection.Success)
+            {
+                var data = EscPosHelper.BuildReceipt(Session!.AppSettings, cart);
+                await _printerService.PrintAsync(data);
+                await _printerService.DisconnectAsync();
+                //PRINTING
+                await _jsRuntime.InvokeVoidAsync("closeModal", "charge-modal");
+                await _jsRuntime.InvokeVoidAsync("openModal", "result-modal");
+                Transaction = new TransactionDto();
+                Orders = new List<OrderDto>();
+            }
+            else
+            {
+                Notification.Success = false;
+                Notification.Description = connection.Message;
+            }
         }      
         #endregion
 
